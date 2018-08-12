@@ -1,0 +1,30 @@
+{
+	"index.html": {
+		"resources": [
+			"home.html"
+		],
+		"refer": [
+			"sala.html",
+			"home.html",
+			"my.html",
+			"room.html"
+		]
+	},
+	"login.html": {
+		"refer": [
+			"main.html",
+			"reg.html",
+			"forget_password.html",
+			"register.html"
+		],
+		"resources": [
+			"images/登录注册页头部背景.png"
+		]
+	},
+	"register.html": {
+		"refer": [
+			"main.html",
+			"login.html"
+		]
+	}
+}

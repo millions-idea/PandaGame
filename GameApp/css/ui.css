@@ -1,0 +1,104 @@
+.my-title{
+	background-color: #FE532A;
+	min-height: 70px;
+	box-shadow: 0px 10px 20px #00000030;
+}
+
+.my-title-color{
+	color: #fff;
+	font-size: 15px;
+	padding-top: 10px;
+}
+
+.my-bar-tab{
+ 	border-top-style: none !important;
+ 	box-shadow: 0px -5px 20px 0px #0000002e;
+ }
+ 
+.mui-btn-primary{
+	background-color: #FE532A !important;
+	border: 1px solid #FE532A !important;
+    border-radius: 22px;
+}
+
+
+/*表单项*/
+.form-item{
+	margin-top: 10px !important;
+	margin: auto;
+	width: 70%;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.form-item-full{
+	width: 100% !important;
+}
+
+
+/*输入框组件*/
+.form-input{
+	border: none !important;
+	border-bottom: 1px solid #DDDDDD !important;
+	height: 40px !important;
+	line-height: 40px !important;
+}
+ 
+.form-input:hover{
+	width: 100%;
+	border: none !important;
+	border-radius: 0px !important;
+	border-bottom: 2px solid #FE532A !important;
+	transition: all 0.3s;
+}
+
+
+/*logo图像组件*/
+.logo{
+	width:100px;
+	height:100px;
+	text-align: center;
+}
+
+/*占位符组件*/
+.form-placeholder-100{
+	height:100px
+}
+
+.form-placeholder-50{
+	height:50px
+}
+
+.form-placeholder-40{
+	height:40px
+}
+
+.form-placeholder-30{
+	height:30px
+}
+
+.form-placeholder-20{
+	height:20px
+}
+
+.form-placeholder-10{
+	height:10px
+}
+ 
+footer{
+	text-align: center;
+	line-height: 50px;
+}
+
+footer a{
+	color: #242424;
+}
+
+footer a:link{
+	color: #555555;
+}
+
+footer a:hover{
+	color: #555555;
+	cursor: pointer;
+}
