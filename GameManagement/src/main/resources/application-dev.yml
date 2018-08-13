@@ -1,0 +1,49 @@
+#开发环境
+profiles: dev
+
+
+#数据库配置
+spring:
+  datasource:
+    url: jdbc:mysql://193.112.151.148/panda?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    type: com.alibaba.druid.pool.DruidDataSource
+    dbcp2:
+      max-wait-millis: 60000
+#缓存数据库配置
+  redis:
+    host: 193.112.151.148
+    port: 6379
+    password: 123456
+    database: 1
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: -1
+        min-idle: 0
+    timeout: 10000
+
+
+#数据库框架配置
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+#服务容器配置
+server:
+  port: 59845
+  tomcat:
+    uri-encoding: UTF-8
+  address: 0.0.0.0
+
+#日志配置
+logging:
+  level:
+    root: info
+  file: c:boot.log
+
+
+
+

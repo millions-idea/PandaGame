@@ -58,19 +58,6 @@ body{
 	color: #555555;
 	cursor: pointer;
 }
- 
-.mui-btn-primary{
-	background-color: #fe5a2f !important;
-    border: 1px solid #fe5a2f !important;
-    box-shadow: 3px 5px 20px 0px #ffb150;
-    height: 50px;
-    line-height: 50px;
-    padding: 0px !important;
-}
-
-.mui-btn-primary:hover{
-	background-color: #FC7858 !important;
-}
 
 
 button:enabled,button:enabled:active{

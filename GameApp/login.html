@@ -23,7 +23,7 @@
 			
 			<!--username begin-->
 			<div class="form-item form-item-full">
-				<input type="text" class="form-input" name="username" placeholder="用户名"/>
+				<input type="text" class="form-input" name="phone" placeholder="用户名"/>
 			</div>
 			<!--username end-->
 			
@@ -38,7 +38,7 @@
 			<!--login button begin-->
 			<div class="form-placeholder-20"></div>
 			<div class="form-item">
-				<button id='reg' class="mui-btn mui-btn-block mui-btn-primary">登&nbsp;&nbsp;录</button>
+				<button id='loginButton' class="mui-btn mui-btn-block mui-btn-orange">登&nbsp;&nbsp;录</button>
 			</div>
 			<!--login button end-->
 			 
@@ -48,7 +48,7 @@
 		<!--footer begin-->
 		<div class="form-placeholder-50"></div>
 		<footer>
-			<span><a href="javascript:void(0)" id="register">立即注册></a></span>
+			<span><a href="javascript:void(0)" id="registerButton">立即注册></a></span>
 		</footer>
 		<!--footer end-->
 		
@@ -69,8 +69,10 @@
 					// 禁止屏幕翻转
 					plus.screen.lockOrientation("portrait-primary");''
 					
-					var registerButton = doc.getElementById('register');
-					
+					var loginButton = doc.getElementById('loginButton'),
+						registerButton = doc.getElementById('registerButton'),
+						phoneInput = doc.getElementById('phone'),
+						passwordInput = doc.getElementById('password');
 					
 					
 					// 动态绑定事件

@@ -4,29 +4,46 @@
  * 请注意将相关方法调整成 “基于服务端Service” 的实现。
  **/
 (function($, owner) {
+	var apiCloud = "http://chwd9e.natappfree.cc/";
+	
+	/**
+	 * 获取api接口
+	 * @param {Object} url
+	 */
+	toUrl = function(url){
+		return apiCloud + url; 
+	}
+	
+	ajaxError = function(xhr,type,errorThrown,errorCallback){
+		plus.nativeUI.toast("服务器有些拥挤喔");
+		errorCallback();
+	}
+	
+	
 	/**
 	 * 用户登录
 	 **/
-	owner.login = function(loginInfo, callback) {
-		callback = callback || $.noop;
-		loginInfo = loginInfo || {};
-		loginInfo.account = loginInfo.account || '';
-		loginInfo.password = loginInfo.password || '';
-		if (loginInfo.account.length < 5) {
-			return callback('账号最短为 5 个字符');
+	owner.login = function(param, callback) {
+		callback = callback || $.noop; 
+		if (param.phone.length < 11) {
+			return errorCallback("手机号最短为 11 个字符");
 		}
-		if (loginInfo.password.length < 6) {
-			return callback('密码最短为 6 个字符');
+		if (param.password.length < 6) {
+			return errorCallback('密码最短为 6 个字符');
 		}
-		var users = JSON.parse(localStorage.getItem('$users') || '[]');
-		var authed = users.some(function(user) {
-			return loginInfo.account == user.account && loginInfo.password == user.password;
-		});
-		if (authed) {
-			return owner.createState(loginInfo.account, callback);
-		} else {
-			return callback('用户名或密码错误');
-		}
+		
+		$.ajax(toUrl("api/bootstrap/login"), {
+			type: "post",
+			data: param,	
+			success: function(data){
+				owner.createState(loginInfo.account, callback);
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+		
 	};
 
 	owner.createState = function(name, callback) {
@@ -59,6 +76,72 @@
 		localStorage.setItem('$users', JSON.stringify(users));
 		return callback();
 	};
+	
+	
+	/**
+	 * 手机注册
+	 * @param {Object} param
+	 * @param {Object} callback
+	 * @param {Object} errorCallback
+	 */
+	owner.register = function(param, callback, errorCallback){
+		callback = callback || $.noop; 
+		
+		console.log(param.phone.length > 11)
+		
+		if (param.phone.length < 11) {
+			return errorCallback("手机号最短需要11位数字");
+		}
+		if (param.phone.length > 11) {
+			return errorCallback("手机号最长需要11位数字");
+		}
+		if (param.password.length < 6) {
+			return errorCallback("密码最短需要6位字符");
+		}
+		if (param.password.length > 32) {
+			return errorCallback("密码最长需要32位字符");
+		}
+		if (param.password != param.password2) {
+			return errorCallback("两次密码不一致");
+		}
+		$.ajax(toUrl("api/bootstrap/register"), {
+			type: "post",
+			data: param,	
+			success: function(data){
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+	}
+	
+	/**
+	 * 获取手机验证码
+	 * @param {Object} param
+	 * @param {Object} callback
+	 * @param {Object} errorCallback
+	 */
+	owner.getSmsCode = function(phone, callback, errorCallback){ 
+		callback = callback || $.noop; 
+		if (phone.length < 11) {
+			return errorCallback("手机号最短需要11位数字");
+		}
+		
+		$.ajax(toUrl("api/bootstrap/getSmsCode"), {
+			type: "get",
+			data: {
+				"phone": phone
+			},	
+			success: function(data){
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+		
+	} 
 
 	/**
 	 * 获取当前状态
