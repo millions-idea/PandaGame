@@ -1,30 +1,33 @@
 {
-	"index.html": {
-		"resources": [
-			"home.html"
-		],
-		"refer": [
-			"sala.html",
-			"home.html",
-			"my.html",
-			"room.html"
-		]
-	},
-	"login.html": {
-		"refer": [
-			"main.html",
-			"reg.html",
-			"forget_password.html",
-			"register.html"
-		],
-		"resources": [
-			"images/ç™»å½•æ³¨å†Œé¡µå¤´éƒ¨èƒŒæ™¯.png"
-		]
-	},
-	"register.html": {
-		"refer": [
-			"main.html",
-			"login.html"
-		]
-	}
+  "index.html": {
+    "resources": [
+      "home.html"
+    ],
+    "refer": [
+      "sala.html",
+      "home.html",
+      "my.html",
+      "room.html"
+    ]
+  },
+  "login.html": {
+    "refer": [
+      "main.html",
+      "reg.html",
+      "forget_password.html",
+      "register.html",
+      "index.html"
+    ],
+    "resources": [
+      "images/{UèŒu4èÌo.png",
+      "images/{Uýu4ýýo.png"
+    ]
+  },
+  "register.html": {
+    "refer": [
+      "main.html",
+      "login.html"
+    ],
+    "resources": []
+  }
 }

@@ -147,7 +147,8 @@
 					"main.html",
 					"reg.html",
 					"forget_password.html",
-					"register.html"
+					"register.html",
+					"index.html"
 				],
 				"priority": 0
 			},

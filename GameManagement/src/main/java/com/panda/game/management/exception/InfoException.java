@@ -28,7 +28,7 @@ public class InfoException extends RuntimeException {
     }
 
     /**
-     * Constructs a new runtime exception with the specified cause and a
+     * Constructs a new runtime exceptionAsString with the specified cause and a
      * detail message of <tt>(cause==null ? null : cause.toString())</tt>
      * (which typically contains the class and detail message of
      * <tt>cause</tt>).  This constructor is useful for runtime exceptions
@@ -53,7 +53,7 @@ public class InfoException extends RuntimeException {
     }
 
     /**
-     * Constructs a new runtime exception with {@code null} as its
+     * Constructs a new runtime exceptionAsString with {@code null} as its
      * detail message.  The cause is not initialized, and may subsequently be
      * initialized by a call to {@link #initCause}.
      */

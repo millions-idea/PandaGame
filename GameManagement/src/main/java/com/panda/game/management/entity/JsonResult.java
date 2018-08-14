@@ -18,12 +18,12 @@ import lombok.ToString;
 @ToString
 public class JsonResult<T> {
     private Integer code;
-    private String msg;
+    private Object msg;
 
     public JsonResult() {
     }
 
-    public JsonResult(Integer code, String msg) {
+    public JsonResult(Integer code, Object msg) {
         this.code = code;
         this.msg = msg;
     }
@@ -33,14 +33,21 @@ public class JsonResult<T> {
      * @param msg
      * @return
      */
-    public JsonResult successful(T msg){
+    public JsonResult successfulAsString(T msg){
         return new JsonResult(200, JsonUtil.getJson(msg));
     }
 
-    public JsonResult exception(T msg){
+    public JsonResult successful(T msg){
+        return new JsonResult(200, msg);
+    }
+
+    public JsonResult exceptionAsString(T msg){
         return new JsonResult(300, JsonUtil.getJson(msg));
     }
 
+    public JsonResult exception(T msg){
+        return new JsonResult(300, msg);
+    }
 
     /**
      * 成功JSON 韦德 2018年8月13日13:03:35
@@ -55,8 +62,12 @@ public class JsonResult<T> {
      * @param msg
      * @return
      */
-    public JsonResult failing(T msg){
+    public JsonResult failingAsString(T msg){
         return new JsonResult(500, JsonUtil.getJson(msg));
+    }
+
+    public JsonResult failing(T msg){
+        return new JsonResult(500, msg);
     }
 
 

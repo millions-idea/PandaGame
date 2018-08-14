@@ -119,3 +119,21 @@ footer a:hover{
 .mui-btn-orange:hover{
 	background-color: #FC7858 !important;
 }
+
+.disabled{
+	color:#242424;
+}
+
+.disabled:hover{
+	color:#242424;
+}
+
+.button-disabled{
+	color:#fff;
+	background-color: #FC7858!important;
+}
+
+
+.bootstrap{
+	background-image: url(../images/5b2f46ba1e422.jpg);
+}

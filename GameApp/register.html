@@ -17,7 +17,7 @@
 		<div class="container">
 			<div class="header">
 				<!--logo begin-->
-				<span style="color: #fff;">Game</span>
+				<span style="color: #fff;" id="title"></span>
 				<!--logo end-->
 			</div>
 			<div class="form-placeholder-30"></div>
@@ -71,6 +71,7 @@
 
 		<script src="js/mui.min.js"></script>
 		<script src="js/mui.enterfocus.js"></script>
+		<script src="js/config.js"></script>
 		<script src="js/app.js"></script>
 		<script>
 			(function($, doc) {
@@ -79,6 +80,8 @@
 					statusBarBackground: '#fe5a2f'
 				});
 				$.plusReady(function() {
+					document.getElementById("title").innerText = window.config.title;
+					
 					// 设置顶部状态栏样式
 					plus.navigator.setStatusBarStyle("light");
 					plus.navigator.setStatusBarBackground("#FE532A");
@@ -170,7 +173,9 @@
 						}, function(msg){
 							smsCodeButton.disabled = false;
 							smsCodeButton.classList.remove("disabled");
-							smsCodeButton.innerText="获取短信验证码"; 
+							smsCodeButton.innerText="获取短信验证码";
+							initval = 120;
+                            clearInterval(timer);
 							plus.nativeUI.toast(msg);
 						})
 						 
@@ -203,13 +208,12 @@
 							if(data.code == 300){
 								registerButton.disabled = false;
 								registerButton.classList.remove("button-disabled");
-								plus.nativeUI.toast(data.msg);
+								mui.alert(data.msg);
 								return false;
 							}
-							
+							plus.nativeUI.toast("注册成功");
 							registerButton.disabled = false;
 							registerButton.classList.remove("button-disabled");
-							mui.alert("注册成功");
 							$.openWindow({
 								url: 'login.html',
 								id: 'login',

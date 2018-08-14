@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<title>登录</title>
+		<title></title>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" href="css/animate.min.css" />
 		<link href="css/ui.css" rel="stylesheet" /> 
@@ -16,21 +16,21 @@
 		<div class="container">
 			<div class="header">
 				<!--logo begin-->
-				<span style="color: #fff;">Game</span>
+				<span style="color: #fff;" id="title"></span>
 				<!--logo end-->
 			</div>
 			<div class="form-placeholder-30"></div>
 			
 			<!--username begin-->
 			<div class="form-item form-item-full">
-				<input type="text" class="form-input" name="phone" placeholder="用户名"/>
+				<input type="text" class="form-input" id="phone" placeholder="手机号" value="15253133391"/>
 			</div>
 			<!--username end-->
 			
 			
 			<!--password begin-->
 			<div class="form-item form-item-full">
-				<input type="password" class="form-input" name="password" placeholder="密码"/>
+				<input type="password" class="form-input" id="password" placeholder="密码" value="123456"/>
 			</div>
 			<!--password end-->
 			
@@ -55,28 +55,67 @@
 
 		<script src="js/mui.min.js"></script>
 		<script src="js/mui.enterfocus.js"></script>
+		<script src="js/config.js"></script>
 		<script src="js/app.js"></script>
 		<script>
+			document.getElementById("title").innerText = window.config.title;
+			
 			(function($, doc) {
 				$.init({
 					statusBarStyle: "light",
 					statusBarBackground: '#fe5a2f'
 				});
+				 
+				
 				$.plusReady(function() {
+					
 					// 设置顶部状态栏样式
 					plus.navigator.setStatusBarStyle("light");
 					plus.navigator.setStatusBarBackground("#FE532A");
-					// 禁止屏幕翻转
-					plus.screen.lockOrientation("portrait-primary");''
 					
+					// 禁止屏幕翻转
+					plus.screen.lockOrientation("portrait-primary");
+					
+					
+					// 自动登录
+					var localCache;
+					var isAutoLogin = plus.storage.getItem('$isAutoLogin');
+					if(isAutoLogin == null || isAutoLogin != true) localCache =  null;
+					localCache = plus.storage.getItem('userInfo');
+					if(localCache != null){
+						var session = JSON.parse(localCache);
+						app.getUserInfo({
+							"token": session.token.toString()
+						}, function(data){
+							if(data.code == 500){
+								plus.nativeUI.toast("登录失败");
+							}else if(data.code == 300){
+								plus.nativeUI.toast(data.msg);
+							}else if(data.code == 200){
+								plus.nativeUI.toast("登录成功");
+								toHome($);
+							}else {
+								plus.nativeUI.toast("未知错误");
+							}
+						}, function(){
+							plus.nativeUI.toast("服务器有些拥挤喔~");
+						})
+					}
+					 
 					var loginButton = doc.getElementById('loginButton'),
 						registerButton = doc.getElementById('registerButton'),
 						phoneInput = doc.getElementById('phone'),
 						passwordInput = doc.getElementById('password');
 					
 					
-					// 动态绑定事件
+					/**
+					 * 注册
+					 */
 					registerButton.addEventListener('tap', function(event) {
+						
+						console.log(plus.storage.getItem('$loginSession'));
+						return false;
+						
 						$.openWindow({
 							url: 'register.html',
 							id: 'register',
@@ -94,8 +133,72 @@
 							}
 						});
 					}, false);
+				
+					
+					/**
+					 * 登录
+					 */
+					loginButton.addEventListener("tap",function(){
+						
+						
+						loginButton.disabled = true;
+						loginButton.classList.add("button-disabled");
+						
+						app.login({
+							phone: phoneInput.value,
+							password: passwordInput.value
+						}, function(data){
+							if(data == null || data.code == null || data.code == 500){
+								plus.nativeUI.toast("登录失败");
+								loginButton.disabled = false;
+								loginButton.classList.remove("button-disabled");
+								return false;
+							}
+							
+							if(data.code == 300){
+								loginButton.disabled = false;
+								loginButton.classList.remove("button-disabled");
+								plus.nativeUI.toast(data.msg);
+								return false;
+							}
+							
+							plus.nativeUI.toast("登录成功");
+							loginButton.disabled = false;
+							loginButton.classList.remove("button-disabled");
+							
+							toHome($);
+							
+						}, function(msg){
+							loginButton.disabled = false;
+							loginButton.classList.remove("button-disabled");
+							plus.nativeUI.toast(msg);
+						})
+					}, false) 
 				});
 			}(mui, document));
+			
+			
+			/**
+			 * 跳转到首页
+			 */
+			function toHome($){
+				$.openWindow({
+					url: 'index.html',
+					id: 'index',
+					preload: true,
+					show: {
+						aniShow: 'pop-in',
+						duration: 200
+					},
+					styles: {
+						popGesture: 'hide'
+					},
+					waiting: {
+						title: "正在加载...",
+						autoShow: true
+					}
+				});
+			}
 		</script>
 	</body>
 

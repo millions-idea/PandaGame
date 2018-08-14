@@ -1,8 +1,8 @@
-#¿ª·¢»·¾³
+#å¼€å‘ç¯å¢ƒ
 profiles: dev
 
 
-#Êı¾İ¿âÅäÖÃ
+#æ•°æ®åº“é…ç½®
 spring:
   datasource:
     url: jdbc:mysql://193.112.151.148/panda?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
@@ -12,7 +12,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     dbcp2:
       max-wait-millis: 60000
-#»º´æÊı¾İ¿âÅäÖÃ
+#ç¼“å­˜æ•°æ®åº“é…ç½®
   redis:
     host: 193.112.151.148
     port: 6379
@@ -26,24 +26,20 @@ spring:
     timeout: 10000
 
 
-#Êı¾İ¿â¿ò¼ÜÅäÖÃ
+#æ•°æ®åº“æ¡†æ¶é…ç½®
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
-#·şÎñÈİÆ÷ÅäÖÃ
+#æœåŠ¡å®¹å™¨é…ç½®
 server:
   port: 59845
   tomcat:
     uri-encoding: UTF-8
   address: 0.0.0.0
 
-#ÈÕÖ¾ÅäÖÃ
+#æ—¥å¿—é…ç½®
 logging:
   level:
     root: info
-  file: c:boot.log
-
-
-
-
+  #file: c:boot.log

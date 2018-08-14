@@ -29,15 +29,3 @@
 .form-link-button:hover{ 
 	background-color: #f1f1f17d !important;
 }
-
-.disabled{
-	color:#242424;
-}
-
-.disabled:hover{
-	color:#242424;
-}
-
-.button-disabled{
-	background-color: #FC7858!important;
-}
