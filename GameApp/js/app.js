@@ -17,6 +17,7 @@
 	 * @param {Object} url
 	 */
 	toUrl = function(url){
+		console.log("网络请求: " + window.config.api + url)
 		return window.config.api + url; 
 	};
 	
@@ -37,6 +38,9 @@
 	 * 用户登录
 	 **/
 	owner.login = function(param, callback, errorCallback) {
+		
+		console.log("发送登录请求")
+		
 		callback = callback || $.noop; 
 		if (param.phone.length < 11) {
 			return errorCallback("手机号最短为 11 个字符");
@@ -44,7 +48,6 @@
 		if (param.password.length < 6) {
 			return errorCallback('密码最短为 6 个字符');
 		}
-		
 		$.ajax(toUrl("api/bootstrap/login"), {
 			type: "post",
 			data: param,	
@@ -90,6 +93,26 @@
 	 */
 	owner.getUserInfo = function(param, callback, errorCallback){
 		$.ajax(toUrl("api/bootstrap/getUserInfo"), {
+			type: "get",
+			data: param,	
+			success: function(data){
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+	}
+	
+	
+	/**
+	 * 查询用户详细信息
+	 * @param {Object} param
+	 * @param {Object} callback
+	 * @param {Object} errorCallback
+	 */
+	owner.getUserDetailInfo = function(param, callback, errorCallback){
+		$.ajax(toUrl("api/user/getUserInfo"), {
 			type: "get",
 			data: param,	
 			success: function(data){

@@ -88,12 +88,13 @@
 					if(isAutoLogin == null || isAutoLogin != "true") localCache =  null;
 					console.log("是否自动登录:" + isAutoLogin)
 					console.log("本地存储用户信息:" + localCache)
-					
 					if(localCache != null && localCache.length > 0){
+						console.log("刷新令牌:" + JSON.parse(localCache).token.toString())
 						app.getUserInfo({
 							"token": JSON.parse(localCache).token.toString()
 						}, function(data){
 							console.log("自动登录结果:" + JSON.stringify(data))
+							
 							if(data.code == 200){
 								 toHome($);
 							}else{
@@ -129,8 +130,6 @@
 					 * 登录
 					 */
 					loginButton.addEventListener("tap",function(){
-						
-						
 						loginButton.disabled = true;
 						loginButton.classList.add("button-disabled");
 						
@@ -138,6 +137,8 @@
 							phone: phoneInput.value,
 							password: passwordInput.value
 						}, function(data){
+							console.log("登录响应JSON: " + JSON.stringify(data))
+							
 							if(data == null || data.code == null || data.code == 500){
 								plus.nativeUI.toast("登录失败");
 								loginButton.disabled = false;
@@ -161,8 +162,6 @@
 							plus.storage.setItem('isAutoLogin', "true");
 							
 							console.log("登录后获取自动登录: " + plus.storage.getItem('isAutoLogin'))
-							
-							
 							console.log("登录后获取本地存储用户信息: " + plus.storage.getItem('userInfo'))
 				
 							toHome($);

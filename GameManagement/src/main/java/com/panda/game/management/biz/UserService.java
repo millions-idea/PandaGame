@@ -35,4 +35,11 @@ public interface UserService extends BaseService<Users> {
      * @param token
      */
     void logout(String token);
+
+    /**
+     * 根据令牌获取用户详细信息 韦德 2018年8月16日00:08:26
+     * @param token
+     * @return
+     */
+    UserResp getUserDetailByToken(String token);
 }

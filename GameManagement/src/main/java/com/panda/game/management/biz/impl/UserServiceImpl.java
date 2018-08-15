@@ -136,4 +136,30 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements UserServi
             redisTemplate.delete(key);
         }
     }
+
+    /**
+     * 根据令牌获取用户详细信息 韦德 2018年8月16日00:08:26
+     *
+     * @param token
+     * @return
+     */
+    @Override
+    public UserResp getUserDetailByToken(String token) {
+        Map<String, String> map = TokenUtil.validate(token);
+        if(map.isEmpty()) return null;
+
+        String phone = map.get("phone");
+        String userId = map.get("userId");
+
+        Users condition = new Users();
+        condition.setPhone(phone);
+        condition.setUserId(Integer.parseInt(userId));
+        Users userInfo = userMapper.selectOne(condition);
+
+        UserResp userResp = new UserResp();
+        PropertyUtil.clone(userInfo, userResp);
+        userResp.setToken(token);
+
+        return userResp;
+    }
 }

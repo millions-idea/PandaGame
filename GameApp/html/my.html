@@ -143,7 +143,33 @@
 			
 			function refreshUserInfo(){
 				console.log("刷新用户信息");
-				 mui('#refreshContainer').pullRefresh().endPulldown();
+				var localCache = plus.storage.getItem('userInfo');
+				app.getUserDetailInfo({
+					"token": JSON.parse(localCache).token.toString()
+				}, function(data){
+					mui('#refreshContainer').pullRefresh().endPulldown();
+					
+					console.log("刷新用户信息响应JSON: " + JSON.stringify(data))
+							
+					if(data == null || data.code == null || data.code == 500){
+						plus.nativeUI.toast("刷新失败");
+						return false;
+					}
+					
+					if(data.code == 300){
+						plus.nativeUI.toast(data.msg);
+						return false;
+					}
+					
+					
+					plus.nativeUI.toast("刷新成功");
+					
+				}, function(){
+					mui('#refreshContainer').pullRefresh().endPulldown();
+					
+					plus.nativeUI.toast("刷新失败，网络超时！");
+				})
+				
 			}
 			
 			/**
