@@ -130,12 +130,18 @@
 		"pages": {
 			"index.html": {
 				"resources": [
-					"home.html"
+					"home.html",
+					"html/home.html"
 				],
 				"refer": [
 					"sala.html",
 					"my.html",
-					"room.html"
+					"room.html",
+					"login.html",
+					"html/my.html",
+					"html/room.html",
+					"html/sala.html",
+					"html/custom-service.html"
 				],
 				"priority": 0
 			},
@@ -156,6 +162,15 @@
 				"resources": [],
 				"refer": [
 					"main.html",
+					"login.html"
+				],
+				"priority": 0
+			},
+			"html/my.html": {
+				"resources": [],
+				"refer": [
+					"html/custom-service.html",
+					"html/update-password.html",
 					"login.html"
 				],
 				"priority": 0

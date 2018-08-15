@@ -23,7 +23,8 @@ spring:
         max-active: 8
         max-wait: -1
         min-idle: 0
-    timeout: 10000
+        max-idle: 8
+    timeout: 60000
 
 
 #数据库框架配置

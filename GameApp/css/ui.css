@@ -1,18 +1,44 @@
+@font-face {
+	font-family:A-Roboto-Regular;
+	src: url("../fonts/Roboto-Regular.ttf");
+}
+
+@font-face {
+	font-family:A-Roboto-Light;
+	src: url("../fonts/Roboto-Light.ttf");
+}
+
+
+@font-face {
+	font-family:I-NotoSansHans-DemiLight;
+	src: url("../fonts/NotoSansHans-DemiLight.otf");
+}
+
 .my-title{
+	color:#fff;
 	background-color: #FE532A;
-	min-height: 70px;
 	box-shadow: 0px 10px 20px #00000030;
 }
 
 .my-title-color{
 	color: #fff;
 	font-size: 15px;
-	padding-top: 10px;
+	
+}
+
+.bottom-navigation-style{
+	position: fixed;
+	bottom: 0px;
+	height: 1px;
+	width: 100%;
+	background-color: #EFEFF4;
+	box-shadow: 0px 40px 100px 20px #787878;
+	z-index: 999;
 }
 
 .my-bar-tab{
  	border-top-style: none !important;
- 	box-shadow: 0px -5px 20px 0px #0000002e;
+ 	box-shadow: 0px -5px 20px 0px #f7f7f7 !important;
  }
  
 .mui-btn-primary{
@@ -22,7 +48,7 @@
 }
 
 
-/*表单项*/
+ 
 .form-item{
 	margin-top: 10px !important;
 	margin: auto;
@@ -36,7 +62,7 @@
 }
 
 
-/*输入框组件*/
+ 
 .form-input{
 	border: none !important;
 	border-bottom: 1px solid #DDDDDD !important;
@@ -52,15 +78,14 @@
 	transition: all 0.3s;
 }
 
-
-/*logo图像组件*/
+ 
 .logo{
 	width:100px;
 	height:100px;
 	text-align: center;
 }
 
-/*占位符组件*/
+ 
 .form-placeholder-100{
 	height:100px
 }
@@ -103,8 +128,7 @@ footer a:hover{
 	cursor: pointer;
 }
 
-
-/*覆盖按钮样式*/
+ 
  
 .mui-btn-orange{
 	background-color: #fe5a2f !important;
@@ -132,8 +156,35 @@ footer a:hover{
 	color:#fff;
 	background-color: #FC7858!important;
 }
-
-
+ 
 .bootstrap{
 	background-image: url(../images/5b2f46ba1e422.jpg);
+}
+
+
+
+/*下拉刷新文字的样式*/
+/*.mui-pull-caption {
+    background-image: url(../images/list_header_info.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 144px;
+    height: 31px;
+    font-size: 0px;
+}*/
+/*下拉刷新圆形进度条的大小和样式*/
+
+/*.mui-spinner {
+    width: 32px;
+    height: 32px;
+}
+.mui-spinner:after {
+    background-image: url(../images/progress_circle.png);
+}*/
+
+
+/*下拉刷新的箭头颜色*/
+.mui-icon-pulldown {
+    color: #FE532A !important;
 }

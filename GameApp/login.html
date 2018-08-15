@@ -23,7 +23,7 @@
 			
 			<!--username begin-->
 			<div class="form-item form-item-full">
-				<input type="text" class="form-input" id="phone" placeholder="手机号" value="15253133391"/>
+				<input type="text" class="form-input" id="phone" placeholder="手机号" value="12345678901"/>
 			</div>
 			<!--username end-->
 			
@@ -75,32 +75,6 @@
 					
 					// 禁止屏幕翻转
 					plus.screen.lockOrientation("portrait-primary");
-					
-					
-					// 自动登录
-					var localCache;
-					var isAutoLogin = plus.storage.getItem('$isAutoLogin');
-					if(isAutoLogin == null || isAutoLogin != true) localCache =  null;
-					localCache = plus.storage.getItem('userInfo');
-					if(localCache != null){
-						var session = JSON.parse(localCache);
-						app.getUserInfo({
-							"token": session.token.toString()
-						}, function(data){
-							if(data.code == 500){
-								plus.nativeUI.toast("登录失败");
-							}else if(data.code == 300){
-								plus.nativeUI.toast(data.msg);
-							}else if(data.code == 200){
-								plus.nativeUI.toast("登录成功");
-								toHome($);
-							}else {
-								plus.nativeUI.toast("未知错误");
-							}
-						}, function(){
-							plus.nativeUI.toast("服务器有些拥挤喔~");
-						})
-					}
 					 
 					var loginButton = doc.getElementById('loginButton'),
 						registerButton = doc.getElementById('registerButton'),
@@ -108,14 +82,30 @@
 						passwordInput = doc.getElementById('password');
 					
 					
+					// 检查用户是否已登录
+					var localCache = plus.storage.getItem('userInfo');
+					var isAutoLogin = plus.storage.getItem('isAutoLogin');
+					if(isAutoLogin == null || isAutoLogin != "true") localCache =  null;
+					console.log("是否自动登录:" + isAutoLogin)
+					console.log("本地存储用户信息:" + localCache)
+					
+					if(localCache != null && localCache.length > 0){
+						app.getUserInfo({
+							"token": JSON.parse(localCache).token.toString()
+						}, function(data){
+							console.log("自动登录结果:" + JSON.stringify(data))
+							if(data.code == 200){
+								 toHome($);
+							}else{
+								plus.nativeUI.toast("自动登录失败");
+							}
+						}, function(){ })
+					}
+					
 					/**
 					 * 注册
 					 */
 					registerButton.addEventListener('tap', function(event) {
-						
-						console.log(plus.storage.getItem('$loginSession'));
-						return false;
-						
 						$.openWindow({
 							url: 'register.html',
 							id: 'register',
@@ -166,6 +156,15 @@
 							loginButton.disabled = false;
 							loginButton.classList.remove("button-disabled");
 							
+							console.log("登录后存储本地用户信息: " + JSON.stringify(data.msg))
+							plus.storage.setItem('userInfo', JSON.stringify(data.msg));
+							plus.storage.setItem('isAutoLogin', "true");
+							
+							console.log("登录后获取自动登录: " + plus.storage.getItem('isAutoLogin'))
+							
+							
+							console.log("登录后获取本地存储用户信息: " + plus.storage.getItem('userInfo'))
+				
 							toHome($);
 							
 						}, function(msg){

@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/ui.css" />
+		<link rel="stylesheet" href="../css/my.css" />
+	</head>
+
+	<body>
+		<div class="mui-content" id="refreshContainer">
+		    <!--header begin-->
+		    <div class="header">
+		    	<!--phone begin-->
+		    	<span class="phone">178******91</span>
+		    	<!--phone end-->
+
+				<!--balance begin-->
+				<span class="balance">
+					总金币
+					<span>1,024</span>
+					&nbsp;
+					枚
+				</span>
+		    	<!--balance end--> 
+		    </div>
+		    <!--header end-->
+		    
+		    <!--info begin-->
+	    	<div class="info mui-content">
+	    		<div class="mui-row">
+	    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-title">有效战绩统计</label></div>
+	    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-title">可提现金额(元)</label></div>
+	    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-title">已提现金额(元)</label></div>
+	    		</div>
+	    		<div class="mui-row">
+	    			<div class="mui-col-sm-4 mui-col-xs-4 col" ><label class="item-content">59</label></div>
+	    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-content">536</label></div>
+	    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-content">95969.65</label></div>
+	    		</div>
+	    	</div> 
+	    	<!--info end-->
+	    	
+	    	<!--list begin-->
+	    	<div class="form-placeholder-20"></div>
+	    	<div class="pannel">
+	    		<ul class="mui-table-view settings">
+		    	    <li class="mui-table-view-cell mui-media">
+		    	        <a href="javascript:;" id="updatePasswordButton">
+		    	            <img style="margin-top: 5px;"  class="mui-media-object mui-pull-left" src="../images/if_Paul-16_2534330.png">
+		    	            <div class="mui-media-body">
+	    	                	修改密码
+		    	            	<span class="mui-icon mui-icon-arrowright mui-pull-right pannel-right-icon"></span>
+		    	            </div>
+
+		    	        </a>
+		    	    </li>
+		    	    <li class="mui-table-view-cell mui-media">
+		    	        <a href="javascript:;" id="customServiceButton">
+		    	            <img style="margin-top: 5px;" class="mui-media-object mui-pull-left" src="../images/if_04_Costumer_Care_1871421.png">
+		    	            <div class="mui-media-body">
+		    	              	联系客服
+		    	            	<span class="mui-icon mui-icon-arrowright mui-pull-right pannel-right-icon"></span>
+		    	            </div>
+		    	        </a>
+		    	    </li>
+		    	    
+		    	    <li class="mui-table-view-cell mui-media">
+		    	        <a href="javascript:;" id="logoutButton">
+		    	            <img style="margin-top: 5px;" class="mui-media-object mui-pull-left" src="../images/quit.png">
+		    	            <div class="mui-media-body" >
+		    	              	注销登录
+		    	            </div>
+		    	        </a>
+		    	    </li>
+		    	</ul>
+	    	</div>
+	    	<!--list end-->
+			<div class="bottom-navigation-style"></div>
+		</div>
+		
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/config.js"></script>
+		<script src="../js/app.js"></script>
+		<script type="text/javascript">
+			(function($, doc) {
+				$.init({
+					pullRefresh : {
+					    container:"#refreshContainer",//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+					    down : {
+					      style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+					      color:'#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+					      height:'50px',//可选,默认50px.下拉刷新控件的高度,
+					      range:'100px', //可选 默认100px,控件可下拉拖拽的范围
+					      offset:'0px', //可选 默认0px,下拉刷新控件的起始位置
+					      auto: true,//可选,默认false.首次加载自动上拉刷新一次
+					      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+					      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+					      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+					      callback :refreshUserInfo //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					    }
+				  	}
+				});
+				
+				  
+				
+				$.plusReady(function() {
+					var customServiceButton = doc.getElementById("customServiceButton"),
+						updatePasswordButton = doc.getElementById("updatePasswordButton");
+						logoutButton = doc.getElementById("logoutButton");
+						
+					// 修改密码
+					updatePasswordButton.addEventListener("tap", function(){
+						plus.webview.open('/html/update-password.html', 'new', {}, 'slide-in-right', 200);
+					}, false)
+					
+					// 联系客服
+					customServiceButton.addEventListener("tap", function(){
+						plus.webview.open('/html/custom-service.html', 'new', {}, 'slide-in-right', 200);
+					}, false)
+					
+					// 注销登录
+					logoutButton.addEventListener("tap", function(){
+						var localCache = plus.storage.getItem('userInfo');
+						if(localCache != null && localCache.length > 0){ 
+							app.logout({
+								"token": JSON.parse(localCache).token.toString()
+							}, function(data){
+								toLogin($);
+							}, function(){
+								toLogin($);
+							})
+						}else{
+							toLogin($);
+						}
+					}, false)
+					 
+				});
+			}(mui, document));
+			
+			function refreshUserInfo(){
+				console.log("刷新用户信息");
+				 mui('#refreshContainer').pullRefresh().endPulldown();
+			}
+			
+			/**
+			 * 跳转登录页
+			 * @param {Object} $
+			 */
+			function toLogin($){
+				plus.storage.setItem('userInfo','');
+				plus.storage.setItem('isAutoLogin','false');
+				$.openWindow({
+					url: '/login.html',
+					id: 'login',
+					preload: true,
+					show: {
+						aniShow: 'pop-in',
+						duration: 200
+					},
+					styles: {
+						popGesture: 'hide'
+					},
+					waiting: {
+						title: "正在加载...",
+						autoShow: true
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

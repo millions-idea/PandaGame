@@ -31,13 +31,7 @@
 		state.data = param;
 		owner.setState(state); 
 	};
-	
-	
-	owner.getSession = function(){
-		return loginSession.getSession();
-	}
-	
-	
+	 
 	
 	/**
 	 * 用户登录
@@ -56,9 +50,28 @@
 			data: param,	
 			success: function(data){
 				if(data.code == 200){
-					loginSession.setSession(data.msg);
-					plus.storage.setItem('$isAutoLogin', true);
+					plus.storage.setItem('userInfo', data.msg);
+					plus.storage.setItem('isAutoLogin', true);
 				}
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+		
+	};
+	
+	
+	
+	/**
+	 * 用户登出
+	 **/
+	owner.logout = function(param, callback, errorCallback) {
+		$.ajax(toUrl("api/bootstrap/logout"), {
+			type: "get",
+			data: param,
+			success: function(data){
 				return callback(data);
 			},
 			error: function(xhr,type,errorThrown){
@@ -80,9 +93,6 @@
 			type: "get",
 			data: param,	
 			success: function(data){
-				if(data.code != 200){
-					loginSession.removeSession();
-				}
 				return callback(data);
 			},
 			error: function(xhr,type,errorThrown){

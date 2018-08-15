@@ -1,13 +1,20 @@
 {
   "index.html": {
     "resources": [
-      "home.html"
+      "home.html",
+      "html/home.html"
     ],
     "refer": [
       "sala.html",
       "home.html",
       "my.html",
-      "room.html"
+      "room.html",
+      "login.html",
+      "html/my.html",
+      "html/room.html",
+      "html/sala.html",
+      "html/home.html",
+      "html/custom-service.html"
     ]
   },
   "login.html": {
@@ -19,7 +26,7 @@
       "index.html"
     ],
     "resources": [
-      "images/{UèŒu4èÌo.png",
+      "images/{Uýu4ýýo.png",
       "images/{Uýu4ýýo.png"
     ]
   },
@@ -29,5 +36,12 @@
       "login.html"
     ],
     "resources": []
+  },
+  "html/my.html": {
+    "refer": [
+      "html/custom-service.html",
+      "html/update-password.html",
+      "login.html"
+    ]
   }
 }
