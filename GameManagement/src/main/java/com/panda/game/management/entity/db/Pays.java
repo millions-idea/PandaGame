@@ -8,7 +8,9 @@
 package com.panda.game.management.entity.db;
 
 import lombok.*;
+import tk.mybatis.mapper.annotation.KeySql;
 
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -19,7 +21,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Pays {
-    private Integer payId;
+    @Id
+    private Long payId;
     private Integer fromUid;
     private String fromName;
     private Integer toUid;
@@ -27,12 +30,12 @@ public class Pays {
     private Integer channelType;
     private String channelName;
     private Integer productType;
-    private Integer productName;
+    private String productName;
     private Integer tradeType;
     private String tradeName;
     private Date addTime;
     private Double amount;
-    private String systemRecordId;
+    private Long systemRecordId;
     private String remark;
     private String channelRecordId;
     private Integer status;

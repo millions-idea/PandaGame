@@ -90,6 +90,23 @@
 	height:100px
 }
 
+.form-placeholder-90{
+	height:90px
+}
+
+
+.form-placeholder-80{
+	height:80px
+}
+
+.form-placeholder-70{
+	height:70px
+}
+
+.form-placeholder-60{
+	height:60px
+}
+
 .form-placeholder-50{
 	height:50px
 }
@@ -108,6 +125,10 @@
 
 .form-placeholder-10{
 	height:10px
+}
+
+.form-placeholder-5{
+	height:5px
 }
  
 footer{

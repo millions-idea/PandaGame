@@ -1,28 +1,23 @@
 /***
  * @pName management
- * @name Users
+ * @name UserWalletDetail
  * @user HongWei
- * @date 2018/8/13
+ * @date 2018/8/16
  * @desc
  */
-package com.panda.game.management.entity.db;
+package com.panda.game.management.entity.dbExt;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Date;
 
-@Table(name = "tb_users")
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Users {
-    @Id
+public class UserDetailInfo {
+    /*users*/
     private Integer userId;
     private String phone;
     private String password;
@@ -31,4 +26,10 @@ public class Users {
     private String ip;
     private Integer isEnable;
     private Integer isDelete;
+
+    /*wallets*/
+    private Integer walletId;
+    private Double balance;
+    private Date updateTime;
+    private Integer version;
 }

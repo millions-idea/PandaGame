@@ -8,41 +8,47 @@
 		<link href="../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" href="../css/ui.css" />
 		<link rel="stylesheet" href="../css/my.css" />
+		<script src="../js/frame/template-web.js"></script>
 	</head>
 
 	<body>
 		<div class="mui-content" id="refreshContainer">
-		    <!--header begin-->
-		    <div class="header">
-		    	<!--phone begin-->
-		    	<span class="phone">178******91</span>
-		    	<!--phone end-->
-
-				<!--balance begin-->
-				<span class="balance">
-					总金币
-					<span>1,024</span>
-					&nbsp;
-					枚
-				</span>
-		    	<!--balance end--> 
-		    </div>
-		    <!--header end-->
-		    
-		    <!--info begin-->
-	    	<div class="info mui-content">
-	    		<div class="mui-row">
-	    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-title">有效战绩统计</label></div>
-	    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-title">可提现金额(元)</label></div>
-	    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-title">已提现金额(元)</label></div>
-	    		</div>
-	    		<div class="mui-row">
-	    			<div class="mui-col-sm-4 mui-col-xs-4 col" ><label class="item-content">59</label></div>
-	    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-content">536</label></div>
-	    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-content">95969.65</label></div>
-	    		</div>
-	    	</div> 
-	    	<!--info end-->
+			<div id="userInfo"></div>
+		    <!--template begin-->
+		    <script id="userInfoTemplate" type="text/html">
+		    	<!--header begin-->
+			    <div class="header">
+			    	<!--phone begin-->
+			    	<span class="phone">{{phone}}</span>
+			    	<!--phone end-->
+	
+					<!--balance begin-->
+					<span class="balance">
+						总金币
+						<span>{{balance}}</span>
+						&nbsp;
+						枚
+					</span>
+			    	<!--balance end--> 
+			    </div>
+			    <!--header end-->
+			    
+			    <!--info begin-->
+		    	<div class="info mui-content">
+		    		<div class="mui-row">
+		    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-title">有效战绩统计</label></div>
+		    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-title">可提现金额(元)</label></div>
+		    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-title">已提现金额(元)</label></div>
+		    		</div>
+		    		<div class="mui-row">
+		    			<div class="mui-col-sm-4 mui-col-xs-4 col" ><label class="item-content">59</label></div>
+		    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-content">{{canWithdrawAmount}}</label></div>
+		    			<div class="mui-col-sm-4 mui-col-xs-4 col"><label class="item-content">{{canNotWithdrawAmount}}</label></div>
+		    		</div>
+		    	</div> 
+		    	<!--info end-->
+		    </script>
+		    <!--template end-->
 	    	
 	    	<!--list begin-->
 	    	<div class="form-placeholder-20"></div>
@@ -84,9 +90,16 @@
 		
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/config.js"></script>
+		<script src="../js/common/money.js"></script>
 		<script src="../js/app.js"></script>
 		<script type="text/javascript">
+			
+			var gDoc;
+			
 			(function($, doc) {
+				
+				gDoc = doc;
+				
 				$.init({
 					pullRefresh : {
 					    container:"#refreshContainer",//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
@@ -105,6 +118,16 @@
 				  	}
 				});
 				
+				
+				// 设置个人信息初始值
+				var data = {
+					phone: "...",
+					balance: "...",
+					canWithdrawAmount: "...",
+					canNotWithdrawAmount: "..."
+				}
+				var html = template("userInfoTemplate",data);
+				doc.getElementById("userInfo").innerHTML = html;
 				  
 				
 				$.plusReady(function() {
@@ -141,16 +164,17 @@
 				});
 			}(mui, document));
 			
-			function refreshUserInfo(){
-				console.log("刷新用户信息");
+			
+			/**
+			 * 刷新用户信息
+			 */
+			function refreshUserInfo(){ 
 				var localCache = plus.storage.getItem('userInfo');
 				app.getUserDetailInfo({
 					"token": JSON.parse(localCache).token.toString()
 				}, function(data){
 					mui('#refreshContainer').pullRefresh().endPulldown();
-					
-					console.log("刷新用户信息响应JSON: " + JSON.stringify(data))
-							
+
 					if(data == null || data.code == null || data.code == 500){
 						plus.nativeUI.toast("刷新失败");
 						return false;
@@ -164,9 +188,19 @@
 					
 					plus.nativeUI.toast("刷新成功");
 					
+					// 格式化信息
+					var oldJson = data.msg;
+					var newJson = oldJson;
+					newJson.balance =  window.moneyUtil.dealNumber(newJson.balance);
+					newJson.canWithdrawAmount  = window.moneyUtil.dealNumber(newJson.canWithdrawAmount);
+					newJson.canNotWithdrawAmount  = window.moneyUtil.dealNumber(newJson.canNotWithdrawAmount);
+					
+					var html = template("userInfoTemplate", newJson);
+					gDoc.getElementById("userInfo").innerHTML = html;
+					  
+					
 				}, function(){
 					mui('#refreshContainer').pullRefresh().endPulldown();
-					
 					plus.nativeUI.toast("刷新失败，网络超时！");
 				})
 				

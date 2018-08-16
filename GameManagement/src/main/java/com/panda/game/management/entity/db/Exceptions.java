@@ -7,11 +7,10 @@
  */
 package com.panda.game.management.entity.db;
 
+import javax.persistence.Id;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+
+import lombok.*;
 
 import java.util.Date;
 
@@ -20,9 +19,10 @@ import java.util.Date;
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 public class Exceptions {
+    @Id
     private Integer logId;
-    private Integer userId;
     private String body;
     private Date addDate;
 }

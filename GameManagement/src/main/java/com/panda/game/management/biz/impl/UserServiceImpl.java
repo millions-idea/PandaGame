@@ -116,6 +116,7 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements UserServi
         UserResp userResp = new UserResp();
         PropertyUtil.clone(userInfo, userResp);
         userResp.setToken(token);
+
         String key  = "token:" + MD5Util.encrypt16(phone + userId);
         Long expire = redisTemplate.getExpire(key);
         if(expire <= 0) throw new InfoException("登录令牌失效");
@@ -159,7 +160,42 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements UserServi
         UserResp userResp = new UserResp();
         PropertyUtil.clone(userInfo, userResp);
         userResp.setToken(token);
+        userResp.setCanWithdrawAmount(999.99D);
+        userResp.setCanNotWithdrawAmount(58.65D);
+        userResp.setBalance(1024D);
 
+        String key  = "token:" + MD5Util.encrypt16(phone + userId);
+        Long expire = redisTemplate.getExpire(key);
+        if(expire <= 0) throw new InfoException("登录令牌失效");
         return userResp;
+    }
+
+    /**
+     * 修改密码 韦德 2018年8月17日00:35:30
+     *
+     * @param token
+     * @param password
+     * @param newPassword
+     */
+    @Override
+    public boolean editPassword(String token, String password, String newPassword) {
+        Map<String, String> map = TokenUtil.validate(token);
+        if(map.isEmpty()) return false;
+        String phone = map.get("phone");
+        Integer userId = Integer.valueOf(map.get("userId"));
+
+        Users users = userMapper.selectByPrimaryKey(userId);
+        if(users == null) throw new RuntimeException("用户不存在");
+
+        if(!users.getPassword().equalsIgnoreCase(MD5Util.md5(phone + password))) throw new RuntimeException("密码不正确");
+
+        users.setPassword(MD5Util.md5(phone + newPassword));
+        int count = userMapper.updateByPrimaryKey(users);
+        if(count == 0) throw new RuntimeException("修改失败");
+
+        String key  = "token:" + MD5Util.encrypt16(phone + userId);
+        Long expire = redisTemplate.getExpire(key);
+        if(expire <= 0) throw new InfoException("登录令牌失效");
+        return true;
     }
 }

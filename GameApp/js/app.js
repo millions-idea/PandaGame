@@ -38,9 +38,6 @@
 	 * 用户登录
 	 **/
 	owner.login = function(param, callback, errorCallback) {
-		
-		console.log("发送登录请求")
-		
 		callback = callback || $.noop; 
 		if (param.phone.length < 11) {
 			return errorCallback("手机号最短为 11 个字符");

@@ -25,13 +25,25 @@ public class UserResp {
     public interface FinanceView extends SampleView {}
     public interface SecurityView extends SampleView  {}
 
-    @JsonView(SecurityView.class)
     private Integer userId;
-    @JsonView(SecurityView.class)
     private String phone;
-    @JsonView(SecurityView.class)
     private String token;
 
+    private Double balance;
+    private Double canWithdrawAmount;
+    private Double canNotWithdrawAmount;
+
+    @JsonView(SecurityView.class)
+    public Integer getUserId() {
+        return userId;
+    }
+
+    @JsonView(SecurityView.class)
+    public String getToken() {
+        return token;
+    }
+
+    @JsonView(SecurityView.class)
     public String getPhone() {
         String encryptPhoneBefore = phone.substring(0,3);
         String encryptPhoneAfter = phone.substring(9,11);
@@ -40,9 +52,17 @@ public class UserResp {
     }
 
     @JsonView(FinanceView.class)
-    private Double balance;
+    public Double getBalance() {
+        return balance;
+    }
+
     @JsonView(FinanceView.class)
-    private Double canWithdrawAmount;
+    public Double getCanWithdrawAmount() {
+        return canWithdrawAmount;
+    }
+
     @JsonView(FinanceView.class)
-    private Double canNotWithdrawAmount;
+    public Double getCanNotWithdrawAmount() {
+        return canNotWithdrawAmount;
+    }
 }

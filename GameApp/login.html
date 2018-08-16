@@ -63,7 +63,10 @@
 			(function($, doc) {
 				$.init({
 					statusBarStyle: "light",
-					statusBarBackground: '#fe5a2f'
+					statusBarBackground: '#fe5a2f',
+					keyEventBind: {
+						backbutton: false  //关闭back按键监听
+					}
 				});
 				 
 				
@@ -80,28 +83,10 @@
 						registerButton = doc.getElementById('registerButton'),
 						phoneInput = doc.getElementById('phone'),
 						passwordInput = doc.getElementById('password');
-					
+					  
 					
 					// 检查用户是否已登录
-					var localCache = plus.storage.getItem('userInfo');
-					var isAutoLogin = plus.storage.getItem('isAutoLogin');
-					if(isAutoLogin == null || isAutoLogin != "true") localCache =  null;
-					console.log("是否自动登录:" + isAutoLogin)
-					console.log("本地存储用户信息:" + localCache)
-					if(localCache != null && localCache.length > 0){
-						console.log("刷新令牌:" + JSON.parse(localCache).token.toString())
-						app.getUserInfo({
-							"token": JSON.parse(localCache).token.toString()
-						}, function(data){
-							console.log("自动登录结果:" + JSON.stringify(data))
-							
-							if(data.code == 200){
-								 toHome($);
-							}else{
-								plus.nativeUI.toast("自动登录失败");
-							}
-						}, function(){ })
-					}
+					isLogin($);
 					
 					/**
 					 * 注册
@@ -137,8 +122,6 @@
 							phone: phoneInput.value,
 							password: passwordInput.value
 						}, function(data){
-							console.log("登录响应JSON: " + JSON.stringify(data))
-							
 							if(data == null || data.code == null || data.code == 500){
 								plus.nativeUI.toast("登录失败");
 								loginButton.disabled = false;
@@ -157,13 +140,11 @@
 							loginButton.disabled = false;
 							loginButton.classList.remove("button-disabled");
 							
-							console.log("登录后存储本地用户信息: " + JSON.stringify(data.msg))
 							plus.storage.setItem('userInfo', JSON.stringify(data.msg));
 							plus.storage.setItem('isAutoLogin', "true");
 							
-							console.log("登录后获取自动登录: " + plus.storage.getItem('isAutoLogin'))
-							console.log("登录后获取本地存储用户信息: " + plus.storage.getItem('userInfo'))
-				
+							console.log(data.msg.token)
+							
 							toHome($);
 							
 						}, function(msg){
@@ -174,6 +155,28 @@
 					}, false) 
 				});
 			}(mui, document));
+			
+			
+			/**
+			 * 用户是否登录
+			 */
+			function isLogin($){
+				var localCache = plus.storage.getItem('userInfo');
+				var isAutoLogin = plus.storage.getItem('isAutoLogin');
+				if(isAutoLogin == null || isAutoLogin != "true") localCache =  null;
+				console.log("自动登录:" + localCache);
+				if(localCache != null && localCache.length > 0){
+					app.getUserInfo({
+						"token": JSON.parse(localCache).token.toString()
+					}, function(data){
+						if(data.code == 200){
+							 toHome($);
+						}else{
+							plus.nativeUI.toast("自动登录失败");
+						}
+					}, function(){ })
+				}
+			}
 			
 			
 			/**

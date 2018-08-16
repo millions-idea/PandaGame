@@ -8,7 +8,9 @@
 package com.panda.game.management.entity.db;
 
 import lombok.*;
+import tk.mybatis.mapper.annotation.KeySql;
 
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -19,11 +21,12 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Accounts {
-    private Integer accountId;
-    private Integer payId;
+    @Id
+    private Long accountsId;
+    private Long payId;
     private Integer tradeAccountId;
     private String tradeAccountName;
-    private Integer accountType;
+    private Integer accountsType;
     private Double amount;
     private Double beforeBalance;
     private Double afterBalance;

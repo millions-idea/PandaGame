@@ -42,4 +42,12 @@ public interface UserService extends BaseService<Users> {
      * @return
      */
     UserResp getUserDetailByToken(String token);
+
+    /**
+     * 修改密码 韦德 2018年8月17日00:35:30
+     * @param token
+     * @param password
+     * @param newPassword
+     */
+    boolean editPassword(String token, String password, String newPassword);
 }

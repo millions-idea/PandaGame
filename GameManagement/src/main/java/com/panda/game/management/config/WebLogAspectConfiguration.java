@@ -11,6 +11,7 @@ import com.alibaba.druid.support.json.JSONUtils;
 import com.panda.game.management.annotaion.AspectLog;
 import com.panda.game.management.biz.ExceptionService;
 import com.panda.game.management.entity.db.Exceptions;
+import com.panda.game.management.utils.JsonUtil;
 import com.panda.game.management.utils.RequestUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -73,7 +74,7 @@ public class WebLogAspectConfiguration {
         jsonView.setStartTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(startTimeMillis));
         jsonView.setEndTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endTimeMillis));
 
-        String body = JSONUtils.toJSONString(jsonView);
+        String body = JsonUtil.getJson(jsonView);
 
         logger.info(body);
         return true;
@@ -88,7 +89,7 @@ public class WebLogAspectConfiguration {
         jsonView.setRet(rvt);
         if(rvt == null) jsonView.setRet("void");
 
-        String body = JSONUtils.toJSONString(jsonView);
+        String body = JsonUtil.getJson(jsonView);
         logger.info(body);
         return true;
     }
@@ -99,14 +100,16 @@ public class WebLogAspectConfiguration {
 
         JsonView jsonView = getJsonView(joinPoint);
         jsonView.setType("afterThrowing");
-        jsonView.setThrowable(ex);
-        if(ex == null) jsonView.setThrowable(new Throwable());
+        jsonView.setThrowable(ex.getMessage() == null ? "" : ex.getMessage());
+        if(ex == null) jsonView.setThrowable(new String());
 
-        String body = JSONUtils.toJSONString(jsonView);
+        String body = JsonUtil.getJson(jsonView);
         logger.error(body);
 
         if(isUpload){
-            exceptionService.asyncInsert(new Exceptions(null, 0, body, new Date()));
+            Exceptions exceptions = new Exceptions();
+            exceptions.setBody(body);
+            exceptionService.asyncInsert(exceptions);
         }
         return true;
     }
@@ -191,7 +194,7 @@ public class WebLogAspectConfiguration {
         private String startTime;
         private String endTime;
         private Object ret;
-        private Throwable throwable;
+        private String throwable;
 
         public String getType() {
             return type;
@@ -265,11 +268,11 @@ public class WebLogAspectConfiguration {
             this.ret = ret;
         }
 
-        public Throwable getThrowable() {
+        public String getThrowable() {
             return throwable;
         }
 
-        public void setThrowable(Throwable throwable) {
+        public void setThrowable(String throwable) {
             this.throwable = throwable;
         }
 
@@ -277,7 +280,7 @@ public class WebLogAspectConfiguration {
 
         }
 
-        public JsonView(String type, String url, String targetName, String methodName, Object[] arguments, String description, String startTime, String endTime, Object ret, Throwable throwable) {
+        public JsonView(String type, String url, String targetName, String methodName, Object[] arguments, String description, String startTime, String endTime, Object ret, String throwable) {
 
             this.type = type;
             this.url = url;

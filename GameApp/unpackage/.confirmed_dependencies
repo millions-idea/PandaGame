@@ -1,47 +1,52 @@
 {
-  "index.html": {
-    "resources": [
-      "home.html",
-      "html/home.html"
-    ],
-    "refer": [
-      "sala.html",
-      "home.html",
-      "my.html",
-      "room.html",
-      "login.html",
-      "html/my.html",
-      "html/room.html",
-      "html/sala.html",
-      "html/home.html",
-      "html/custom-service.html"
-    ]
-  },
-  "login.html": {
-    "refer": [
-      "main.html",
-      "reg.html",
-      "forget_password.html",
-      "register.html",
-      "index.html"
-    ],
-    "resources": [
-      "images/{Uýu4ýýo.png",
-      "images/{Uýu4ýýo.png"
-    ]
-  },
-  "register.html": {
-    "refer": [
-      "main.html",
-      "login.html"
-    ],
-    "resources": []
-  },
-  "html/my.html": {
-    "refer": [
-      "html/custom-service.html",
-      "html/update-password.html",
-      "login.html"
-    ]
-  }
+	"index.html": {
+		"resources": [
+			"home.html",
+			"html/home.html"
+		],
+		"refer": [
+			"sala.html",
+			"home.html",
+			"my.html",
+			"room.html",
+			"login.html",
+			"html/my.html",
+			"html/room.html",
+			"html/sala.html",
+			"html/home.html",
+			"html/custom-service.html"
+		]
+	},
+	"login.html": {
+		"refer": [
+			"main.html",
+			"reg.html",
+			"forget_password.html",
+			"register.html",
+			"index.html"
+		],
+		"resources": [
+			"images/{Uï¿½u4ï¿½ï¿½o.png",
+			"images/{Uï¿½u4ï¿½ï¿½o.png"
+		]
+	},
+	"register.html": {
+		"refer": [
+			"main.html",
+			"login.html"
+		],
+		"resources": []
+	},
+	"html/my.html": {
+		"refer": [
+			"html/custom-service.html",
+			"html/update-password.html",
+			"login.html"
+		]
+	},
+	"html/update-password.html": {
+		"refer": [
+			"login.html"
+		]
+	}
 }
