@@ -1,12 +1,15 @@
+*{margin:0;padding:0ï¼›}
+
 .runnerAd{
 	display: block;
 	background-color: #fff;
-	min-height: 170px;
-	height: 170px;
+	/* min-height: 160px; */
+	/* height: 165px; */
 	box-shadow: 0px 3px 20px 0px #d4d4d4;
 	style="z-index: 999;";
 	z-index: 999;
 	position: relative;
+	padding-bottom: 8px;
 }
 
 
@@ -245,23 +248,48 @@ body,.mui-content{
 
 
 .category{
-	height: 85px;
 	width: 100%;
 	cursor: pointer;
 	list-style: none;
 	padding: 0px;
+	height: 100%;
+	margin-top: 10px;
 }
 
 .category li{
 	position: relative;
-	left: 5%;
-	box-shadow: 0px 6px 20px 0px #949494;
-	border-radius: 15px;
-	width: 90%;
-	height: 72px;
+	left: 3%;
+	box-shadow: 0px 5px 10px 0px #949494;
+	border-radius: 10px;
+	width: 93%;
+	/* height: 72px; */
 	overflow: hidden;
+	margin-bottom: 15px;
 }
 
 .category li img{
+	display:block;
 	width: 100%;
+}
+
+.popular{
+	text-align: center;
+}
+
+.popular span{
+	display: block;
+	width: 100%;
+	color: #cacaca;
+	font-size: 15px;
+}
+
+
+
+.popular .icon{
+	color: #b2b2b2;
+}
+
+.popular img{
+	width: 140px;
+	height: 140px;
 }
