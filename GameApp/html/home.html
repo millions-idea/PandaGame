@@ -6,13 +6,132 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/ui.css" />
+		<link rel="stylesheet" href="../css/home/index.css" />
 	</head>
 
 	<body>
-		<h1>Home</h1>
+		
+		
+		<div class="mui-content">
+		    
+		    <!--runner ad begin-->
+		    <div class="runnerAd">
+		    	<!--runner image begin-->
+					<div class="runnerImage">
+						<!--image begin-->
+				    	<div class="mui-slider">
+						  <div class="mui-slider-group">
+						    <div class="mui-slider-item"><a href="#"><img src="../images/default_ad.png" /></a></div>
+						    <div class="mui-slider-item"><a href="#"><img src="../images/default_ad.png" /></a></div>
+						    <div class="mui-slider-item"><a href="#"><img src="../images/default_ad.png" /></a></div>
+						    <div class="mui-slider-item"><a href="#"><img src="../images/default_ad.png" /></a></div>
+						  </div>
+						  <!--小圆点-->
+						  <div class="mui-slider-indicator">
+			                <div class="mui-indicator mui-active"></div>
+			                <div class="mui-indicator"></div>
+			                <div class="mui-indicator"></div>
+			                <div class="mui-indicator"></div>
+		            	  </div>
+						</div>
+				    	<!--image end-->
+					</div>
+				<!--runner image end-->
+				
+				<div class="form-placeholder-10"></div>
+				<div class="form-placeholder-5"></div>
+				
+		    	<!--text ad begin-->
+		    	<div class="textAd">
+		    		<span class="mui-icon mui-icon-chatbubble mui-pull-left icon"></span>
+		    		<span class="text">金币100枚以上的用户可每隔180分钟领取房卡30张哟！</span>
+		    	</div>
+		    	<!--text ad end-->
+		    </div>
+		    <!--runner ad end-->
+
+			<div class="form-placeholder-10 form-placeholder-gray"></div>
+			<div class="form-placeholder-5 form-placeholder-gray"></div>
+			
+			<!--container begin-->
+			<div class="container">
+				<!--small navigation begin-->
+				<div class="small-navigation">
+					<span class="left">快速入门</span>
+					<span class="right">HOT</span>
+				</div>
+				<!--small navigation end-->
+				
+				<!--finance begin-->
+				<div class="finance">
+					<div class="recharge">
+						<span>免费领取的房卡不够用？</span>
+						<p>充值金币可购买限量特价房卡</p>
+						<button>立刻充值</button>
+					</div>
+					
+					<div class="withdraw">
+						<span>赢了游戏来领钱啦~</span>
+						<p>秒结算！真金白银带回家</p>
+						<button>我要提现</button>
+					</div>
+				</div>
+				<!--finance begin-->
+				
+				
+				<!--room card begin-->
+				<div class="roomCard">
+					<!--image begin-->
+					<div class="image">
+						<img src="../images/roomCardAd.png" alt="" />
+					</div>
+					<!--image end-->
+					
+					<!--content begin-->
+					<div class="content">
+						<span class="title">免费领取熊猫麻将房卡</span>
+						<p>多种组局玩法，快来大战三百回合~</p>
+						<span class="mui-icon mui-icon-person icon"></span>
+						<span class="personNum">982652</span>
+					</div>
+					<!--content end-->
+				</div>
+				<!--room card end-->
+
+				
+				<ul class="category">
+					<li>
+						<img src="../images/defaultGame.png" />
+					</li>
+				</div>
+				
+			</div>
+			<!--container end-->
+		    
+		    <!--bottom navigation begin-->
+			<div class="bottom-navigation-style"></div>
+		    <!--bottom navigation end-->
+		</div>
+		
+		
 		<script src="../js/mui.min.js"></script>
+		<script src="../js/config.js"></script>
+		<script src="../js/app.js"></script>
+
+		
 		<script type="text/javascript">
-			mui.init()
+			(function($, doc){
+				
+				
+				// 图像轮播组件
+				var gallery = mui('.mui-slider');
+				gallery.slider({
+				  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+				});
+				
+				
+			})(mui, document);
 		</script>
 		 
 	</body>

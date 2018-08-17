@@ -9,6 +9,7 @@ package com.panda.game.management.handler;
 
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.exception.InfoException;
+import com.panda.game.management.exception.MsgException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -32,6 +33,12 @@ public class GlobalExceptionHandler {
         return  new JsonResult().exceptionAsString(exception.getMsg() == null ? "错误" : exception.getMsg());
     }
 
+    @ExceptionHandler(value = MsgException.class)
+    public JsonResult preException(HttpServletRequest request,
+                                   MsgException exception) throws Exception {
+        logger.error(String.format("普通异常消息: %s",exception.toString()));
+        return  new JsonResult().exceptionAsString(exception.getMsg() == null ? "错误" : exception.getMsg());
+    }
 
 
     @ExceptionHandler(value = TimeoutException.class)

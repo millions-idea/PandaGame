@@ -49,6 +49,8 @@
 			type: "post",
 			data: param,	
 			success: function(data){
+				console.log(JSON.stringify(data))
+							
 				if(data.code == 200){
 					plus.storage.setItem('userInfo', data.msg);
 					plus.storage.setItem('isAutoLogin', true);
@@ -72,6 +74,8 @@
 			type: "get",
 			data: param,
 			success: function(data){
+				console.log(JSON.stringify(data))
+				
 				return callback(data);
 			},
 			error: function(xhr,type,errorThrown){
@@ -93,6 +97,8 @@
 			type: "get",
 			data: param,	
 			success: function(data){
+				console.log(JSON.stringify(data))
+				
 				return callback(data);
 			},
 			error: function(xhr,type,errorThrown){
@@ -113,6 +119,8 @@
 			type: "get",
 			data: param,	
 			success: function(data){
+				console.log(JSON.stringify(data))
+				
 				return callback(data);
 			},
 			error: function(xhr,type,errorThrown){
@@ -150,6 +158,8 @@
 			type: "post",
 			data: param,	
 			success: function(data){
+				console.log(JSON.stringify(data))
+				
 				if(data.code == 200){
 					var users = JSON.parse(localStorage.getItem('$users') || '[]');
 					users.push(param);

@@ -42,5 +42,7 @@ server:
 #日志配置
 logging:
   level:
-    root: info
+    tk.mybatis.mapper.common.base.select: debug
+    com.panda.game.management.repository: debug
+    root: debug
   #file: c:boot.log

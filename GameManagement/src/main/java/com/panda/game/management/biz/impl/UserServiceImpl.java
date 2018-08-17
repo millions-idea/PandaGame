@@ -12,6 +12,7 @@ import com.panda.game.management.biz.UserService;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.resp.UserResp;
 import com.panda.game.management.exception.InfoException;
+import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.repository.UserMapper;
 import com.panda.game.management.utils.MD5Util;
 import com.panda.game.management.utils.PropertyUtil;
@@ -166,7 +167,7 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements UserServi
 
         String key  = "token:" + MD5Util.encrypt16(phone + userId);
         Long expire = redisTemplate.getExpire(key);
-        if(expire <= 0) throw new InfoException("登录令牌失效");
+        if(expire <= 0) throw new MsgException("登录令牌失效");
         return userResp;
     }
 
@@ -185,17 +186,17 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements UserServi
         Integer userId = Integer.valueOf(map.get("userId"));
 
         Users users = userMapper.selectByPrimaryKey(userId);
-        if(users == null) throw new RuntimeException("用户不存在");
+        if(users == null) throw new MsgException("用户不存在");
 
-        if(!users.getPassword().equalsIgnoreCase(MD5Util.md5(phone + password))) throw new RuntimeException("密码不正确");
+        if(!users.getPassword().equalsIgnoreCase(MD5Util.md5(phone + password))) throw new MsgException("密码不正确");
 
         users.setPassword(MD5Util.md5(phone + newPassword));
         int count = userMapper.updateByPrimaryKey(users);
-        if(count == 0) throw new RuntimeException("修改失败");
+        if(count == 0) throw new MsgException("修改失败");
 
         String key  = "token:" + MD5Util.encrypt16(phone + userId);
         Long expire = redisTemplate.getExpire(key);
-        if(expire <= 0) throw new InfoException("登录令牌失效");
+        if(expire <= 0) throw new MsgException("登录令牌失效");
         return true;
     }
 }
