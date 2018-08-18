@@ -19,4 +19,10 @@ public interface SubareaService extends BaseService<Subareas> {
      */
     List<Subareas> getLevelSubareas();
 
+    /**
+     * 获取指定id关联的游戏分区 韦德 2018年8月18日17:12:17
+     * @param subareaId
+     * @return
+     */
+    List<Subareas> getSubareas(Integer subareaId);
 }

@@ -48,5 +48,10 @@
 		"refer": [
 			"login.html"
 		]
+	},
+	"html/home.html": {
+		"refer": [
+			"html/create-room.html"
+		]
 	}
 }

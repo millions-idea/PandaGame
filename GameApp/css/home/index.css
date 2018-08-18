@@ -293,3 +293,8 @@ body,.mui-content{
 	width: 140px;
 	height: 140px;
 }
+
+.popInput{
+	font-size:18px;
+	background-color: red !important;
+}

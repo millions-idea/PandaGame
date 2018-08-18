@@ -38,4 +38,15 @@ public class SubareaServiceImpl extends BaseServiceImpl<Subareas> implements Sub
         return subareaMapper.select(subareas);
     }
 
+    /**
+     * 获取指定id关联的游戏分区 韦德 2018年8月18日17:12:17
+     *
+     * @param subareaId
+     * @return
+     */
+    @Override
+    public List<Subareas> getSubareas(Integer subareaId) {
+        return subareaMapper.selectRelations(subareaId);
+    }
+
 }

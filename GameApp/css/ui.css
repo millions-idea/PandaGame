@@ -266,3 +266,11 @@ footer a:hover{
 .mui-slider-indicator .mui-number span {
     color: #ff5053
 }
+
+
+.mui-bar-tab .mui-tab-item.mui-active{
+	color: #FE532A; /* 这里放你想要的颜色 */
+}
+.mui-bar .mui-icon:active{
+	opacity:1;
+}

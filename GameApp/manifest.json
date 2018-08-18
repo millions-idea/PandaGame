@@ -181,6 +181,13 @@
 					"login.html"
 				],
 				"priority": 0
+			},
+			"html/home.html": {
+				"resources": [],
+				"refer": [
+					"html/create-room.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {

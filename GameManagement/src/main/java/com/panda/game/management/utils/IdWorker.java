@@ -68,6 +68,30 @@ public class IdWorker {
         return timestamp - this.epoch << this.timestampLeftShift | this.workerId << this.workerIdShift | this.sequence;
     }
 
+
+    public synchronized long nextId(Integer count) throws Exception {
+        long timestamp = this.timeGen();
+        if (this.lastTimestamp == timestamp) { // 如果上一个timestamp与新产生的相等，则sequence加一(0-4095循环); 对新的timestamp，sequence从0开始
+            this.sequence = this.sequence + 1 & this.sequenceMask;
+            if (this.sequence == 0) {
+                timestamp = this.tilNextMillis(this.lastTimestamp);// 重新生成timestamp
+            }
+        } else {
+            this.sequence = 0;
+        }
+
+        if (timestamp < this.lastTimestamp) {
+            logger.error(String.format("clock moved backwards.Refusing to generate id for %d milliseconds", (this.lastTimestamp - timestamp)));
+            throw new Exception(String.format("clock moved backwards.Refusing to generate id for %d milliseconds", (this.lastTimestamp - timestamp)));
+        }
+
+        this.lastTimestamp = timestamp;
+        long num = timestamp - this.epoch << this.timestampLeftShift | this.workerId << this.workerIdShift | this.sequence;
+        String numStr = String.valueOf(num);
+        return Long.valueOf(numStr.substring(numStr.length() - 6, numStr.length()));
+    }
+
+
     private static IdWorker flowIdWorker = new IdWorker(1);
     public static IdWorker getFlowIdWorkerInstance() {
         return flowIdWorker;

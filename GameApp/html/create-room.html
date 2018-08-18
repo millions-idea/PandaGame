@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/ui.css" />
+		<link rel="stylesheet" href="../css/home/index.css" />
+		<script src="../js/frame/template-web.js"></script>
+		
+	</head>
+
+	<body>	
+		<header class="mui-bar mui-bar-nav my-title">
+			<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" style="color: #fff;"></a>
+			<h1 class="mui-title my-title-color">创建房间</h1>
+		</header>
+		
+		
+		<div class="mui-content" id="refreshContainer">
+		 	<div class="form-placeholder-5"></div>
+			
+			<div class="container">
+				<ul id="subareas" class="subareas"></ul>
+				<script id="subareasTemplate" type="text/html">
+					{{each list as item index}}
+					    <li name="create-room-item" data-id="{{item.subareaId}}">
+							<img src="{{item.backgroundImage}}" alt="{{item.name}}" />
+						</li>
+					{{/each}}
+				</script>
+				<!--subareas end-->
+			</div>
+				
+		</div>
+		    
+	    <!--bottom navigation begin-->
+		<div class="bottom-navigation-style"></div>
+	    <!--bottom navigation end-->
+		</div>
+		
+		
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/config.js"></script>
+		<script src="../js/app.js"></script>
+		<script src="../js/home/index.js"></script>
+
+		<script type="text/javascript">
+			var gDoc;
+			var pages = window.config.pages;
+			
+			(function($, doc){
+				gDoc = doc;  
+				
+				$.plusReady(function(){
+					// 设置顶部状态栏样式
+					plus.navigator.setStatusBarStyle("light");
+					plus.navigator.setStatusBarBackground("#FE532A");
+					
+					// 禁止屏幕翻转
+					plus.screen.lockOrientation("portrait-primary"); 
+					 
+					
+					var self = plus.webview.currentWebview();
+	                var subareaId = self.subareaId;
+	                 
+				
+					// 获取房间类型
+					home.getSubareas({
+						subareaId: subareaId
+					}, function(data){
+						if(data == null || data.code != 200) return plus.nativeUI.toast("获取列表失败");
+							 	
+						var html = template("subareasTemplate", {
+							list: data.data
+						}); 
+						doc.getElementById("subareas").innerHTML = html;
+						
+		                 //关闭等待框
+		                plus.nativeUI.closeWaiting();
+		                //显示当前页面
+		                mui.currentWebview.show();
+		                
+		                // 创建房间
+		                var items = doc.getElementsByName("create-room-item");
+		                for (var i = 0; i < items.length; i++) {
+		                	items[i].addEventListener("tap", function(data){
+
+								plus.webview.show("room", "fade-in", 200);
+							
+								for (var i = 0 ; i < pages.length ; i ++) {
+									if (i != 2) { 
+										plus.webview.hide(pages[i].id, "fade-out", 200);
+									}
+								}
+								
+								var roomTab = doc.getElementById("roomTab");
+								var current = doc.querySelector(".mui-bar-tab>.mui-tab-item.mui-active");
+								
+								console.log(roomTab)
+								console.log(current)
+								
+								if (roomTab !== current) {
+						            current.classList.remove('mui-active');
+						            roomTab.classList.add('mui-active');
+						        }
+								
+								plus.webview.currentWebview().close();
+								
+							
+								
+		                		/*$.openWindow({
+									url: 'room.html',
+									id: 'room',
+									preload: true,
+									show: {
+										aniShow: 'pop-in',
+										duration: 200
+									},
+									styles: {
+										popGesture: 'hide'
+									},
+									waiting: {
+										title: "正在加载...",
+										autoShow: true
+									}
+								});*/
+		                		return;
+		                		
+		                		var id = this.getAttribute("data-id");
+		                		var parentAreaId = subareaId;
+		                		
+		                		$.prompt("请输入<span style='color:red'>熊猫麻将</span>房间号码</br>", "", "请输入房间号码", ['取消','确定'], function(e){
+		                			var popInput = document.querySelector('.mui-popup-input input');
+		                			if(e.index == 1){
+		                				if(popInput.value.length != 6){
+		                					plus.nativeUI.toast("房间号码应为6位数字")
+		                					return false;
+		                				}
+		                				var localCache = plus.storage.getItem('userInfo');
+										if(localCache != null && localCache.length > 0){ 
+											home.createRoom({
+			                					"token": JSON.parse(localCache).token.toString(),
+			                					"parentAreaId": parentAreaId,
+			                					"subareaId": id, 
+			                					"externalRoomId": popInput.value
+			                				}, function(data){
+			                					if(data == null || data.code == null || data.code == 500){
+													plus.nativeUI.toast("创建失败");
+													return false;
+												}
+			                					
+			                					if(data.code == 300){
+													plus.nativeUI.toast(data.msg);
+													return false;
+												}
+			                					
+												plus.nativeUI.toast("创建成功");
+			                					plus.webview.show("room");
+			                					
+			                				}, function(){
+												plus.nativeUI.toast("创建失败");
+			                				})
+										}
+		                				
+		                				
+		                			}
+		                		}, "div");
+	                			var popInput = document.querySelector('.mui-popup-input input');
+		                		popInput.maxLength = 6;
+		                		popInput.type = "number";
+
+		                	})
+		                }
+		                
+					}, function(){
+						plus.nativeUI.toast("获取列表失败");
+						
+		                 //关闭等待框
+		                plus.nativeUI.closeWaiting();
+		                //显示当前页面
+		                mui.currentWebview.show();
+						
+					});
+	                 
+				})
+				
+			})(mui, document);
+			 
+		</script>
+		 
+	</body>
+
+</html>

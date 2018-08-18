@@ -36,6 +36,12 @@ public class HomeController {
     }
 
 
+    @GetMapping("/getSubareas")
+    public JsonArrayResult<Subareas> getSubareas(Integer subareaId){
+        List<Subareas> list = subareaService.getSubareas(subareaId);
+        return new JsonArrayResult<>(list);
+    }
+
     @GetMapping("/getGroupInformation")
     public JsonResult<GroupInformation> getGroupInformation(){
         GroupInformation groupInformation= dictionaryService.getGroupInformation();
