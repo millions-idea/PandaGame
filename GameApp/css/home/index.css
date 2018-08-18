@@ -247,7 +247,7 @@ body,.mui-content{
 }
 
 
-.category{
+.subareas{
 	width: 100%;
 	cursor: pointer;
 	list-style: none;
@@ -256,7 +256,7 @@ body,.mui-content{
 	margin-top: 10px;
 }
 
-.category li{
+.subareas li{
 	position: relative;
 	left: 3%;
 	box-shadow: 0px 5px 10px 0px #949494;
@@ -267,7 +267,7 @@ body,.mui-content{
 	margin-bottom: 15px;
 }
 
-.category li img{
+.subareas li img{
 	display:block;
 	width: 100%;
 }

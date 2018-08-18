@@ -1,0 +1,29 @@
+/***
+ * @pName management
+ * @name tGroupInformation
+ * @user HongWei
+ * @date 2018/8/18
+ * @desc
+ */
+package com.panda.game.management.entity.resp;
+
+import lombok.*;
+
+import java.util.List;
+
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+public class GroupInformation {
+    private List<String> topRunnerAds;
+    private String topTextAd;
+    private String centerLeftAdTitle;
+    private String centerLeftAdDesc;
+    private String centerRightAdTitle;
+    private String centerRightAdDesc;
+    private String centerBottomAdTitle;
+    private String centerBottomAdDesc;
+    private String centerBottomAdQCode;
+}

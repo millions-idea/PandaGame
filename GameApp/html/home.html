@@ -8,12 +8,14 @@
 		<link href="../css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" href="../css/ui.css" />
 		<link rel="stylesheet" href="../css/home/index.css" />
+		<script src="../js/frame/template-web.js"></script>
+		
 	</head>
 
 	<body>
 		
 		
-		<div class="mui-content">
+		<div class="mui-content" id="refreshContainer">
 		    
 		    <!--runner ad begin-->
 		    <div class="runnerAd">
@@ -21,22 +23,23 @@
 					<div class="runnerImage">
 						<!--image begin-->
 				    	<div class="mui-slider">
-						  <div class="mui-slider-group">
-						    <div class="mui-slider-item"><a href="#"><img src="../images/default_ad.png" /></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../images/default_ad.png" /></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../images/default_ad.png" /></a></div>
-						    <div class="mui-slider-item"><a href="#"><img src="../images/default_ad.png" /></a></div>
+						  <div class="mui-slider-group" id="runnerImage">
+						    
 						  </div>
 						  <!--小圆点-->
 						  <div class="mui-slider-indicator">
 			                <div class="mui-indicator mui-active"></div>
 			                <div class="mui-indicator"></div>
 			                <div class="mui-indicator"></div>
-			                <div class="mui-indicator"></div>
 		            	  </div>
 						</div>
 				    	<!--image end-->
 					</div>
+					<script id="runnerImageTemplate" type="text/html">
+						{{each list as value index}}
+						    <div class="mui-slider-item"><a href="#"><img src="{{value}}" alt="{{index}}" /></a></div>
+						{{/each}}
+					</script>
 				<!--runner image end-->
 				
 				<div class="form-placeholder-10"></div>
@@ -45,7 +48,7 @@
 		    	<!--text ad begin-->
 		    	<div class="textAd">
 		    		<span class="mui-icon mui-icon-chatbubble mui-pull-left icon"></span>
-		    		<span class="text">金币100枚以上可每隔180分钟领取房卡30张哟！</span>
+		    		<span class="text" id="topTextAd">金币100枚以上可每隔180分钟领取房卡30张哟！</span>
 		    	</div>
 		    	<!--text ad end-->
 		    </div>
@@ -66,14 +69,14 @@
 				<!--finance begin-->
 				<div class="finance">
 					<div class="recharge">
-						<span>免费房卡不够用？</span>
-						<p>充值金币特价房卡享不停</p>
+						<span id="centerLeftAdTitle">免费房卡不够用？</span>
+						<p id="centerLeftAdDesc">充值金币特价房卡享不停</p>
 						<button>立刻充值</button>
 					</div>
 					
 					<div class="withdraw">
-						<span>赢了游戏来领钱啦~</span>
-						<p>秒结算！真金白银带回家</p>
+						<span id="centerRightAdTitle">赢了游戏来领钱啦~</span>
+						<p id="centerRightAdDesc">秒结算！真金白银带回家</p>
 						<button>我要提现</button>
 					</div>
 				</div>
@@ -90,8 +93,8 @@
 					
 					<!--content begin-->
 					<div class="content">
-						<span class="title">免费领取熊猫麻将房卡</span>
-						<p>多种玩法，快来大战三百回合~</p>
+						<span class="title" id="bottomAdTitle">免费领取熊猫麻将房卡</span>
+						<p id="bottomAdDesc">多种玩法，快来大战三百回合~</p>
 						<span class="mui-icon mui-icon-person icon"></span>
 						<span class="personNum">982652</span>
 					</div>
@@ -99,28 +102,22 @@
 				</div>
 				<!--room card end-->
 
-				<!--category begin-->
-				<ul class="category">
-					<li>
-						<img src="../images/defaultGame.png" alt="0.1元体验区" />
-					</li>
-					<li>
-						<img src="../images/defaultGame.png" alt="1元游戏区" />
-					</li>
-					<li>
-						<img src="../images/defaultGame.png" alt="2元游戏区" />
-					</li>
-					<li>
-						<img src="../images/defaultGame.png" alt="5元游戏区" />
-					</li>
-				</div>
-				<!--category end-->
+				<!--subareas begin-->
+				<ul id="subareas" class="subareas"></ul>
+				<script id="subareasTemplate" type="text/html">
+					{{each list as item index}}
+					    <li>
+							<img src="{{item.backgroundImage}}" alt="{{item.name}}" />
+						</li>
+					{{/each}}
+				</script>
+				<!--subareas end-->
 				
 				<!--popular begin-->
 				<div class="popular">
 					<span>把我推荐给你的朋友吧</span>
 					<span class="mui-icon mui-icon-arrowdown icon"></span>
-					<img src="../images/QRCode.png" alt="" />
+					<img id="centerBottomAdQCode" src="../images/QRCode.png" alt="" />
 				</div>
 				<!--popular end-->
 				
@@ -136,20 +133,106 @@
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/config.js"></script>
 		<script src="../js/app.js"></script>
-
+		<script src="../js/home/index.js"></script>
 		
 		<script type="text/javascript">
+			var gDoc;
+			
+			// 图像轮播组件
+			var gallery = mui('.mui-slider');
+			
+			
 			(function($, doc){
+				gDoc = doc;
 				
 				
-				// 图像轮播组件
-				var gallery = mui('.mui-slider');
-				gallery.slider({
-				  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+				$.init({
+					pullRefresh : {
+					    container:"#refreshContainer",//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+					    down : {
+					      style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+					      color:'#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+					      height:'50px',//可选,默认50px.下拉刷新控件的高度,
+					      range:'100px', //可选 默认100px,控件可下拉拖拽的范围
+					      offset:'0px', //可选 默认0px,下拉刷新控件的起始位置
+					      auto: true,//可选,默认false.首次加载自动上拉刷新一次
+					      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+					      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+					      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+					      callback :refresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					    }
+				  	}
 				});
+			 
 				
+				$.plusReady(function(){
+					// 设置顶部状态栏样式
+					plus.navigator.setStatusBarStyle("light");
+					plus.navigator.setStatusBarBackground("#FE532A");
+					
+					// 禁止屏幕翻转
+					plus.screen.lockOrientation("portrait-primary"); 
+					 
+					
+					// 加载游戏分区 
+					home.getLevelSubareas({}, function(data){
+						if(data == null || data.code != 200 || data.count == 0) return plus.nativeUI.toast("获取游戏分区失败");
+						var html = template("subareasTemplate", {
+							list: data.data
+						});
+						doc.getElementById("subareas").innerHTML = html;
+					},function(){
+						plus.nativeUI.toast("获取游戏分区失败");
+					});
+					
+				})
 				
 			})(mui, document);
+			
+			function refresh(){
+				
+				
+				var topTextAd = gDoc.getElementById("topTextAd"),
+					centerBottomAdQCode = gDoc.getElementById("centerBottomAdQCode"),
+					bottomAdTitle = gDoc.getElementById("bottomAdTitle"),
+					bottomAdDesc = gDoc.getElementById("bottomAdDesc"),
+					centerLeftAdTitle = gDoc.getElementById("centerLeftAdTitle"),
+					centerLeftAdDesc = gDoc.getElementById("centerLeftAdDesc"),
+					centerRightAdTitle = gDoc.getElementById("centerRightAdTitle"),
+					centerRightAdDesc = gDoc.getElementById("centerRightAdDesc");
+				
+				home.getGroupInformation({}, function(data){
+					mui('#refreshContainer').pullRefresh().endPulldown();
+									if(data == null || data.code != 200) return plus.nativeUI.toast("获取首页信息失败");
+					var html = template("runnerImageTemplate", {
+						list: data.msg.topRunnerAds
+					}); 
+					gDoc.getElementById("runnerImage").innerHTML = html;
+					
+					
+					topTextAd.innerText = data.msg.topTextAd;
+					centerBottomAdQCode.style.src = data.msg.centerBottomAdQCode;
+					
+					
+					bottomAdTitle.innerText = data.msg.centerBottomAdTitle;
+					bottomAdDesc.innerText = data.msg.centerBottomAdDesc;
+					
+					
+					centerLeftAdTitle.innerText = data.msg.centerLeftAdTitle;
+					centerLeftAdDesc.innerText = data.msg.centerLeftAdDesc;
+					
+					centerRightAdTitle.innerText = data.msg.centerRightAdTitle;
+					centerRightAdDesc.innerText = data.msg.centerRightAdDesc;
+					 
+					gallery.slider({
+					  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+					});
+				}, function(){
+					plus.nativeUI.toast("获取首页信息失败");
+					mui('#refreshContainer').pullRefresh().endPulldown();
+					
+				});
+			}
 		</script>
 		 
 	</body>
