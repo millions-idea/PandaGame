@@ -53,5 +53,10 @@
 		"refer": [
 			"html/create-room.html"
 		]
+	},
+	"html/room.html": {
+		"refer": [
+			"html/room-detail.html"
+		]
 	}
 }

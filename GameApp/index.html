@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-    <title></title>
+    <title>Layou</title>
     <script src="js/mui.min.js"></script>
 	<script src="js/mui.enterfocus.js"></script>
     <link href="css/mui.min.css" rel="stylesheet"/>
@@ -13,19 +13,19 @@
 <body> 
 	<nav class="mui-bar mui-bar-tab my-bar-tab" id="bottom-navigation">
 	    <a class="mui-tab-item mui-active" tabindex="0">
-	        <span class="mui-icon mui-icon-home"></span>
+	        <span class="mui-icon mui-icon-location"></span>
 	        <span class="mui-tab-label">首页</span>
 	    </a>
 	    <a class="mui-tab-item" tabindex="1">
-	        <span class="mui-icon mui-icon-phone"></span>
+	        <span class="mui-icon mui-icon-map"></span>
 	        <span class="mui-tab-label">游戏大厅</span>
 	    </a>
 	    <a class="mui-tab-item" tabindex="2" id="roomTab">
-	        <span class="mui-icon mui-icon-email"></span>
-	        <span class="mui-tab-label">聊天群组</span>
+	        <span class="mui-icon mui-icon-home"></span>
+	        <span class="mui-tab-label">游戏房间</span>
 	    </a>
 	    <a class="mui-tab-item" tabindex="3">
-	        <span class="mui-icon mui-icon-gear"></span>
+	        <span class="mui-icon mui-icon-contact"></span>
 	        <span class="mui-tab-label">个人中心</span>
 	    </a>
 	</nav>
@@ -34,15 +34,18 @@
 	<script src="js/app.js"></script> 
 	
 	<script type="text/javascript"> 
-		
+		var gDoc;
 		var pages = window.config.pages;
 		   
 		(function($, doc) {
+			gDoc = doc;
+			
 			$.init({
 				statusBarStyle: "light",
 				statusBarBackground: '#fe5a2f'
 			});
 			
+			window.config.doc = doc;
 			
 			$.plusReady(function() {
 				// 设置顶部状态栏样式
@@ -78,20 +81,22 @@
 						,pages[i].id
 						,pages[i].style);
 					page.hide();
+					// 为每个选项卡注册show事件
+		            plus.webview.getWebviewById(pages[i].id).addEventListener('show',showCallback.bind(page, pages[i].id)); 
 					currentWebView.append(page);
 				}
 				plus.webview.show(pages[0].id);
 				
 				// 注册TAB触摸事件
-				mui(".mui-bar-tab").on("tap", "a", function(){
+				mui(".mui-bar-tab").on("tap", "a", function(e){
 					var tabindex = this.getAttribute("tabindex");
 					plus.webview.show(pages[tabindex].id, "fade-in", 200);
 					for (var i = 0 ; i < pages.length ; i ++) {
 						if (i != tabindex) { 
 							plus.webview.hide(pages[i].id, "fade-out", 200);
 						}
-					}
-				})
+					} 
+				}) 
 				
 				 
 			});
@@ -161,6 +166,17 @@
 					autoShow: true
 				}
 			});
+		}
+		
+		/**
+		 * webView的show回调事件
+		 * @param {Object} id
+		 */
+		function showCallback(id){
+			console.log("show id: " + id)
+			if(id == "room"){
+				app.toBar(2, gDoc);
+			}
 		}
 	</script>
 </body>

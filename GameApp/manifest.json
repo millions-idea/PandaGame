@@ -188,6 +188,13 @@
 					"html/create-room.html"
 				],
 				"priority": 0
+			},
+			"html/room.html": {
+				"resources": [],
+				"refer": [
+					"html/room-detail.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {

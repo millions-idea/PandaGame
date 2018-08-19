@@ -2,7 +2,7 @@
 	
 	window.config = {
 		title: "宜乐",
-		api: "http://aui4xq.natappfree.cc/",
+		api: "http://kh26q5.natappfree.cc/",
 		pages: [{
 			id: "home",
 			url: "html/home.html",

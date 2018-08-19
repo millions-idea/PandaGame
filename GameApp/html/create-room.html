@@ -23,7 +23,10 @@
 		 	<div class="form-placeholder-5"></div>
 			
 			<div class="container">
-				<ul id="subareas" class="subareas"></ul>
+				<ul id="subareas" class="subareas">
+					    <span class="mui-icon mui-icon-spinner mui-spin loading"></span>
+						<span class="loading">系统正在加载,请稍后……</span>
+				</ul>
 				<script id="subareasTemplate" type="text/html">
 					{{each list as item index}}
 					    <li name="create-room-item" data-id="{{item.subareaId}}">
@@ -71,12 +74,13 @@
 					home.getSubareas({
 						subareaId: subareaId
 					}, function(data){
-						if(data == null || data.code != 200) return plus.nativeUI.toast("获取列表失败");
+						if(data == null || data.code != 200) return plus.nativeUI.toast("加载列表失败");
 							 	
 						var html = template("subareasTemplate", {
 							list: data.data
 						}); 
 						doc.getElementById("subareas").innerHTML = html;
+						
 						
 		                 //关闭等待框
 		                plus.nativeUI.closeWaiting();
@@ -86,49 +90,7 @@
 		                // 创建房间
 		                var items = doc.getElementsByName("create-room-item");
 		                for (var i = 0; i < items.length; i++) {
-		                	items[i].addEventListener("tap", function(data){
-
-								plus.webview.show("room", "fade-in", 200);
-							
-								for (var i = 0 ; i < pages.length ; i ++) {
-									if (i != 2) { 
-										plus.webview.hide(pages[i].id, "fade-out", 200);
-									}
-								}
-								
-								var roomTab = doc.getElementById("roomTab");
-								var current = doc.querySelector(".mui-bar-tab>.mui-tab-item.mui-active");
-								
-								console.log(roomTab)
-								console.log(current)
-								
-								if (roomTab !== current) {
-						            current.classList.remove('mui-active');
-						            roomTab.classList.add('mui-active');
-						        }
-								
-								plus.webview.currentWebview().close();
-								
-							
-								
-		                		/*$.openWindow({
-									url: 'room.html',
-									id: 'room',
-									preload: true,
-									show: {
-										aniShow: 'pop-in',
-										duration: 200
-									},
-									styles: {
-										popGesture: 'hide'
-									},
-									waiting: {
-										title: "正在加载...",
-										autoShow: true
-									}
-								});*/
-		                		return;
-		                		
+		                	items[i].addEventListener("tap", function(data){  
 		                		var id = this.getAttribute("data-id");
 		                		var parentAreaId = subareaId;
 		                		
@@ -158,7 +120,29 @@
 												}
 			                					
 												plus.nativeUI.toast("创建成功");
-			                					plus.webview.show("room");
+			                					$.openWindow({
+													url: 'room.html',
+													id: 'room',
+													preload: true,
+													show: {
+														aniShow: 'pop-in',
+														duration: 200
+													},
+													styles: {
+														popGesture: 'hide'
+													},
+													waiting: {
+														title: "正在加载...",
+														autoShow: true
+													}
+												});
+												
+												for (var i = 0 ; i < pages.length ; i ++) {
+													if (i != 2) { 
+														plus.webview.hide(pages[i].id, "fade-out", 200);
+													}
+												}
+												plus.webview.currentWebview().close();
 			                					
 			                				}, function(){
 												plus.nativeUI.toast("创建失败");
@@ -176,7 +160,7 @@
 		                }
 		                
 					}, function(){
-						plus.nativeUI.toast("获取列表失败");
+						plus.nativeUI.toast("加载列表失败");
 						
 		                 //关闭等待框
 		                plus.nativeUI.closeWaiting();

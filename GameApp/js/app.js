@@ -247,5 +247,18 @@
 		var settingsText = localStorage.getItem('$settings') || "{}";
 		return JSON.parse(settingsText);
 	}
+	
+	
+	/**
+	 * 跳转到指定选项卡
+	 * @param {Object} index
+	 */
+	owner.toBar = function(index){
+		var items = document.getElementsByClassName("mui-tab-item");
+		for (var i = 0; i < items.length; i++) {
+			items[i].classList.remove("mui-active");
+		}
+		items[index].classList.add("mui-active");
+	}
 		
 }(mui, window.app = {}));

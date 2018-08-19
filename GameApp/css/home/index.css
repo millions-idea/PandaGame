@@ -298,3 +298,13 @@ body,.mui-content{
 	font-size:18px;
 	background-color: red !important;
 }
+
+
+.loading{
+	text-align: center;
+	display: block;
+	position: relative;
+	top: 140px;
+	line-height: 50px;
+	color:#6a6a6a
+}

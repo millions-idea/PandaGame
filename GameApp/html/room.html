@@ -6,13 +6,173 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/ui.css" rel="stylesheet" />
+		<link href="../css/room/index.css" rel="stylesheet" />
+		<script src="../js/frame/template-web.js"></script>
+		
 	</head>
-
+ 
 	<body>
-		<h1>Room</h1>
+		
+		<div class="mui-content" id="refreshContainer">
+		    <!--content begin-->
+		    <ul id="list" class="mui-table-view">
+				<span class="loading" id="loading-text">系统正在加载,请稍后……</span> 
+			</ul>
+			<script id="template" type="text/html">
+				{{each list as item index}}
+					<li name="room-item"  class="mui-table-view-cell mui-media" data-code="{{item.roomCode}}" data-name="{{item.name}}">
+				        <a href="javascript:;" name="item" data-code="{{item.roomCode}}"  data-name="{{item.name}}">
+				            <img class="mui-media-object mui-pull-left" src="../images/house.png">
+				            <div class="mui-media-body">
+		                		{{item.name}}
+				                <p class='mui-ellipsis info'>
+				                	<span class="mui-badge mui-badge-success mui-badge-inverted my-badge-success">房间ID: {{item.roomCode}}</span>
+				                	<span class="mui-badge mui-badge-danger   mui-badge-inverted">人气: {{item.personCount}}</span>
+				                </p>
+				            </div> 
+				           <span class="mui-badge mui-badge-warning mui-badge-badge" style="right: 70px;display: {{item.isOwner == null ? 'none': 'block'}};">拥有者</span>
+				           {{@item.statusHtml}} 
+				        </a>
+				    </li>
+				{{/each}}
+			</script>
+			<!--content end-->
+			 <!--bottom navigation begin-->
+			<div class="bottom-navigation-style"></div>
+		    <!--bottom navigation end-->
+		</div>
+		
 		<script src="../js/mui.min.js"></script>
+		<script src="../js/config.js"></script>
+		<script src="../js/app.js"></script>
+		<script src="../js/room/index.js"></script>
+		
 		<script type="text/javascript">
-			mui.init()
+			var gDoc;
+			var pages = window.config.pages;
+			
+			(function($, doc){
+				gDoc = doc;
+				
+				$.init({
+					pullRefresh : {
+					    container:"#refreshContainer",//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+					    down : {
+					      style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+					      color:'#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+					      height:'50px',//可选,默认50px.下拉刷新控件的高度,
+					      range:'100px', //可选 默认100px,控件可下拉拖拽的范围
+					      offset:'0px', //可选 默认0px,下拉刷新控件的起始位置
+					      auto: true,//可选,默认false.首次加载自动上拉刷新一次
+					      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+					      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+					      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+					      callback: refresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					    }
+				  	}
+				});
+				
+				$.plusReady(function(){
+					// 设置顶部状态栏样式
+					plus.navigator.setStatusBarStyle("light");
+					plus.navigator.setStatusBarBackground("#FE532A");
+					
+					// 禁止屏幕翻转
+					plus.screen.lockOrientation("portrait-primary");
+					
+					var currentWebView = plus.webview.currentWebview();
+					
+					currentWebView.addEventListener("show", function(){
+						refresh();
+					})
+					
+					
+					
+				})
+				
+			})(mui, document);
+			
+			
+			function refresh(callback){
+				var localCache = plus.storage.getItem('userInfo');
+				if(!(localCache != null && localCache.length > 0)) return false; 
+				room.getRoomList({
+					"token": JSON.parse(localCache).token.toString()
+				}, function(data){
+					if(gDoc.getElementById("loading-text") != null)	gDoc.getElementById("loading-text").innerText = "您还没有创建或加入房间";
+		
+					
+					mui('#refreshContainer').pullRefresh().endPulldown();
+
+					if(data == null || data.code != 200) return plus.nativeUI.toast("加载列表失败");
+					
+					for (var i = 0; i < data.data.length; i++) {
+						var item = data.data[i];
+						//状态(0=未开始,1=已就绪,2=已开始,3=已暂停,4=已结束,5=已结算,6=已失效)
+						switch (item.status){
+							case 0:
+								item.statusHtml = '<span class="mui-badge mui-badge-outlined">未开始</span>';
+								break;
+							case 1:
+								item.statusHtml = '<span class="mui-badge mui-badge-primary">已就绪</span>';
+								break;
+							case 2:
+								item.statusHtml = '<span class="mui-badge mui-badge-success">游戏中</span>';
+								break;
+							case 3:
+								item.statusHtml = '<span class="mui-badge">已暂停</span>';
+								break;
+							case 4:
+								item.statusHtml = '<span class="mui-badge mui-badge-danger ">已结束</span>';
+								break;
+							case 5:
+								item.statusHtml = '<span class="mui-badge mui-badge-royal ">已结算</span>';
+								break;
+							case 6:
+								item.statusHtml = '<span class="mui-badge ">已失效</span>';
+								break;
+						}
+
+					}
+					
+					var html = template("template", {
+						list: data.data
+					}); 
+					gDoc.getElementById("list").innerHTML = html; 
+					
+					var roomItems = gDoc.getElementsByName("item");
+					for (var i = 0; i < roomItems.length; i++) {
+						var roomItem = roomItems[i];
+						var roomCode = roomItem.getAttribute("data-code");
+						var name =roomItem.getAttribute("data-name");
+						
+						roomItem.addEventListener("tap", function(){ 
+							mui.openWindow({
+			                    url: "/html/room-detail.html",
+			                    id: "room-detail",
+			                    preload: true,
+			                    waiting: {
+			                        autoShow: true,
+		                          title:'正在加载...'
+			                    },
+			                    extras:{
+			                    	"title": roomCode + " - " + name,
+									"room_code": roomCode
+							    },
+							    createNew:true
+			    
+			                });
+						}, false)
+					}
+					
+				}, function(){
+					plus.nativeUI.toast("加载列表失败");
+					gDoc.getElementById("loading-text").innerText = "加载列表失败";
+					mui('#refreshContainer').pullRefresh().endPulldown();
+					
+				})
+			}
 		</script>
 	</body>
 
