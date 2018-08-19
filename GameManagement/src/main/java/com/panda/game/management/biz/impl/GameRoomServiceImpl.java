@@ -109,4 +109,27 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
 
         return gameRoomMapper.selectByUid(Integer.valueOf(userId));
     }
+
+    /**
+     * 解散房间 韦德 2018年8月20日01:05:48
+     *
+     * @param token
+     * @param gameRoom
+     */
+    @Override
+    public void disband(String token, GameRoom gameRoom) {
+
+    }
+
+    /**
+     * 申请结算 韦德 2018年8月20日01:07:26
+     *
+     * @param token
+     * @param standings
+     * @param beRouted
+     */
+    @Override
+    public void closeAccounts(String token, Double standings, Double beRouted) {
+
+    }
 }

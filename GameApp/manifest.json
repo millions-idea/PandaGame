@@ -195,6 +195,20 @@
 					"html/room-detail.html"
 				],
 				"priority": 0
+			},
+			"html/room-detail.html": {
+				"resources": [],
+				"refer": [
+					"html/close-accounts.html"
+				],
+				"priority": 0
+			},
+			"html/sala.html": {
+				"resources": [],
+				"refer": [
+					"html/room-detail.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {

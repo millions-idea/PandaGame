@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/ui.css" rel="stylesheet" />
+		<link href="../css/room/detail.css" rel="stylesheet" /> 
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav my-title" style="height: 65px;">
+			<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" style="color: #fff; position: relative; top:12px"></a>
+			<h1 class="mui-title my-title-color" id="title">...</h1>
+			<h1 class="top-down-title">
+				<span style="font-size:16px" class="mui-icon mui-icon-person"></span>&nbsp;<span id="personCount" style="font-size:12px">0</span>
+			</h1>
+			<a id="openMenu" class="mui-icon mui-icon-right-nav mui-pull-right" style="color: white;position: relative;top: 8px;right:5px">…</a>
+		</header>
+		
+		<div id="sheet" class="mui-popover mui-popover-bottom mui-popover-action ">
+		    <!-- 可选择菜单 -->
+		    <ul class="mui-table-view">
+		      <li class="mui-table-view-cell">
+		        <a id="toDisband" href="#">解散房间</a>
+		      </li>
+		      <li class="mui-table-view-cell">
+		        <a id="toCloseAccounts" href="#">去结算</a>
+		      </li>
+		    </ul>
+		    <!-- 取消菜单 -->
+		    <ul class="mui-table-view">
+		      <li class="mui-table-view-cell">
+		        <a href="#sheet"><b>取消</b></a>
+		      </li>
+		    </ul>
+		</div>
+		
+		<div id="msg-outter" class="mui-content">
+			<div id='msg'>
+				
+				<div class="friend_lists">
+					<div class="header_img">
+						<img src="../images/if_unknown_403017.png" width="40px" height="40px" />
+					</div>
+					<div class="msg-wrapper right">
+						<p class="msg-left-white">晚上过来吃饭？</p>
+					</div>
+				</div>
+
+				<div class="me_lists">
+					<div class="header_img">
+						<img src="../images/if_unknown_403017.png" width="40px" height="40px" />
+					</div>
+					<div class="msg-wrapper left">
+						<p class="msg-right-green">好的，没问题！时间地点？</p>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		
+		<footer>
+			<div class="footer-center">
+				<textarea id='msg-text' type="text" class='input-text'></textarea>
+			</div>
+			<label for="" class="footer-right">
+				<button type="button" class="mui-btn mui-btn-gray" id="send">发送</button>
+			</label>
+		</footer>
+		
+		
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/config.js"></script>
+		<script src="../js/app.js"></script> 
+		<script type="text/javascript">
+			
+			(function($, doc){
+				$.init({
+					statusBarStyle: "light",
+					statusBarBackground: '#fe5a2f'
+				});
+				
+				$.plusReady(function(){
+					// 设置顶部状态栏样式
+					plus.navigator.setStatusBarStyle("light");
+					plus.navigator.setStatusBarBackground("#FE532A");
+					
+					// 禁止屏幕翻转
+					plus.screen.lockOrientation("portrait-primary");
+					
+					// 绑定动态标题事件
+					var self = plus.webview.currentWebview(),
+						titleComponent = doc.getElementById("title"); 
+					self.addEventListener("show", function(){ 
+						console.log(JSON.stringify(self))
+						titleComponent.innerHTML = self.title; 
+					})
+					
+					
+					// 绑定选择菜单
+					var openMenu = doc.getElementById("openMenu"),
+						toDisband = doc.getElementById("toDisband"),
+						toCloseAccounts = doc.getElementById("toCloseAccounts");
+						
+						
+					openMenu.addEventListener("tap", function() {
+						$("#sheet").popover("toggle");  
+					});
+					
+					toDisband.addEventListener("tap", function(){
+					 	plus.nativeUI.confirm("您确定要解散此房间？", function(e){
+					 		if(e.index == 1){
+					 			plus.nativeUI.toast("您解散了房间")
+					 		}
+					 	}, "敏感操作", ["取消","确定"]);
+					})
+					
+					toCloseAccounts.addEventListener("tap", function(){
+					 	mui.openWindow({
+		                    url: "/html/close-accounts.html",
+		                    id: "close-accunts",
+		                    preload: false,
+		                    waiting: {
+		                        autoShow: true,
+	                          title:'正在加载...'
+		                    },
+		                    extras:{
+								"room_code": self.roomCode
+						    },
+						    createNew:true
+		    
+		                });
+						$("#sheet").popover("toggle");  
+						
+					})
+					
+				});
+
+			})(mui, document)
+			 
+			  
+		</script>
+	</body>
+
+</html>

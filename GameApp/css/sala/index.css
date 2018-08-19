@@ -1,0 +1,59 @@
+
+.runnerAd{
+	display: block;
+	background-color: #fff;
+	/* min-height: 160px; */
+	/* height: 165px; */
+	box-shadow: 0px 3px 20px 0px #d4d4d4;
+	style="z-index: 999;";
+	z-index: 999;
+	position: fixed;
+	top:0px;
+	padding-top: 10px;
+	/* padding-bottom: 8px; */
+}
+
+
+.runnerImage{
+	margin: 0 auto;
+	top: 10px;
+	width: 90%;
+	border-radius: 15px;
+	overflow: hidden;
+}
+
+.runnerImage span{
+	border-radius: 15px;
+	overflow: hidden;
+	max-height: 260px;
+	max-width: 700px;
+}
+
+
+.textAd{
+	display: block;
+	line-height: 24px;
+	height: 24px;
+	padding-left: 15px;
+}
+
+
+.textAd .icon{
+	color:#0A78FF;
+}
+
+
+.textAd .text{
+	position: relative;
+	left: 5px;
+	font-size:12px;
+	line-height: 24px;
+	height: 24px;
+	color:#6A6A6A;
+}
+
+
+.list{
+	position: relative;
+	top:110px;
+}

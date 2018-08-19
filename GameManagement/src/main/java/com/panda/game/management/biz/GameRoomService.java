@@ -27,4 +27,19 @@ public interface GameRoomService extends BaseService<GameRoom> {
      * @return
      */
     List<GameRoomDetailInfo> getRoomList(String token);
+
+    /**
+     * 解散房间 韦德 2018年8月20日01:05:48
+     * @param token
+     * @param gameRoom
+     */
+    void disband(String token, GameRoom gameRoom);
+
+    /**
+     * 申请结算 韦德 2018年8月20日01:07:26
+     * @param token
+     * @param standings
+     * @param beRouted
+     */
+    void closeAccounts(String token, Double standings, Double beRouted);
 }

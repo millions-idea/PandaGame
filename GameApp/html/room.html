@@ -144,14 +144,17 @@
 					var roomItems = gDoc.getElementsByName("item");
 					for (var i = 0; i < roomItems.length; i++) {
 						var roomItem = roomItems[i];
-						var roomCode = roomItem.getAttribute("data-code");
-						var name =roomItem.getAttribute("data-name");
 						
 						roomItem.addEventListener("tap", function(){ 
+							var roomCode = this.getAttribute("data-code");
+							var name =this.getAttribute("data-name");
+						
+							console.log(roomCode + " - " + name);
+						
 							mui.openWindow({
 			                    url: "/html/room-detail.html",
 			                    id: "room-detail",
-			                    preload: true,
+			                    preload: false,
 			                    waiting: {
 			                        autoShow: true,
 		                          title:'正在加载...'

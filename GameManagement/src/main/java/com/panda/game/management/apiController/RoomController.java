@@ -37,4 +37,17 @@ public class RoomController {
         List<GameRoomDetailInfo> list = gameRoomService.getRoomList(token);
         return new JsonArrayResult<>(list);
     }
+
+
+    @PostMapping("/disband")
+    public JsonResult disband(String token, GameRoom gameRoom){
+        gameRoomService.disband(token, gameRoom);
+        return JsonResult.successful();
+    }
+
+    @PostMapping("/closeAccounts")
+    public JsonResult closeAccounts(String token, Double standings, Double beRouted){
+        gameRoomService.closeAccounts(token, standings, beRouted);
+        return JsonResult.successful();
+    }
 }

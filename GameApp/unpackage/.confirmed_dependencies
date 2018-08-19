@@ -58,5 +58,15 @@
 		"refer": [
 			"html/room-detail.html"
 		]
+	},
+	"html/room-detail.html": {
+		"refer": [
+			"html/close-accounts.html"
+		]
+	},
+	"html/sala.html": {
+		"refer": [
+			"html/room-detail.html"
+		]
 	}
 }
