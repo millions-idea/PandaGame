@@ -57,7 +57,7 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements PayService 
     @AspectLog(description = "财务交易转账")
     public void transfer(PayParam payParam) {
         // 高并发环境下的重试机制
-        long start =  System.currentTimeMillis();
+       /* long start =  System.currentTimeMillis();
         while (true){
             // 获取循环当前时间
             long end = System.currentTimeMillis();
@@ -65,7 +65,6 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements PayService 
             if (end - start > 3000) {
                 throw new InfoException("交易超时");
             }
-
             try {
                 // 查询交易主体信息
                 List<UserDetailInfo> userDetailInfoList = this.getUsersInfo(payParam);
@@ -117,10 +116,54 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements PayService 
             }catch (InfoException e){
                 logger.error(e.getMsg());
             }
+        }*/
+
+
+        // 查询交易主体信息
+        List<UserDetailInfo> userDetailInfoList = this.getUsersInfo(payParam);
+        UserDetailInfo fromUserInfo = userDetailInfoList.stream().filter(u -> u.getUserId().equals(payParam.getFromUid())).findFirst().get();
+        UserDetailInfo toUserInfo =userDetailInfoList.stream().filter(u -> u.getUserId().equals(payParam.getToUid())).findFirst().get();
+
+        if(fromUserInfo.getBalance() <= 0) throw new InfoException("甲方钱包余额不足");
+
+        // 生成交易流水账单
+        Pays pays = null;
+        try {
+            pays = extractPayModel(userDetailInfoList, payParam);
+        } catch (Exception e) {
+            logger.error("生成交易流水异常：" + JsonUtil.getJson(e));
+            throw new InfoException("生成交易流水异常");
         }
+        int count = payMapper.insert(pays);
+        if(count == 0) throw new InfoException("生成交易流水失败");
 
 
+        // 变更钱包余额
+        count = 0;
+        count = walletMapper.reduceBalance(fromUserInfo.getUserId(), payParam.getAmount(),fromUserInfo.getVersion());
+        if(count == 0) throw new InfoException("甲方账户扣款失败");
 
+        count = 0;
+        count = walletMapper.addBalance(toUserInfo.getUserId(), payParam.getAmount(), toUserInfo.getVersion());
+        if(count == 0) throw new InfoException("乙方账户加款失败");
+
+
+        // 生成往来账目单
+        List<Accounts> accountsList = new ArrayList<>();
+        PayParam newPayParam = payParam;
+        try {
+            accountsList.add(extractAccountModel(payParam, fromUserInfo, 2));
+            newPayParam.setFromUid(payParam.getToUid());
+            accountsList.add(extractAccountModel(payParam, toUserInfo, 1));
+        } catch (Exception e) {
+            logger.error("生成往来账异常：" + JsonUtil.getJson(e));
+            throw new InfoException("生成往来账异常");
+        }
+        count = 0;
+        count = accountMapper.insertList(accountsList);
+        if(count == 0) throw new InfoException("生成往来账失败");
+
+        System.out.println("交易成功");
     }
 
     /**

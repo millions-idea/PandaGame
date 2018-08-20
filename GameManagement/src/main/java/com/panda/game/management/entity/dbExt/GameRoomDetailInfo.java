@@ -29,8 +29,13 @@ public class GameRoomDetailInfo {
     private Integer isEnable;
     private Long roomCode;
     private Integer externalRoomId;
+    private Integer maxPersonCount;
+
+    private String parentName;
+    private Double parentPrice;
 
     /*gameRoomMemberGroup*/
     private Integer personCount;
     private Integer isOwner;
+
 }

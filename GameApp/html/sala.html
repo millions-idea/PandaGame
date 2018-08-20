@@ -54,7 +54,7 @@
 				                	<span class="mui-badge mui-badge-danger   mui-badge-inverted">人气: {{item.personCount}}</span>
 				                </p>
 				            </div> 
-				           <span class="mui-badge mui-badge-warning mui-badge-badge" style="right: 70px;">0.1元体验厅</span>
+				           <span class="mui-badge mui-badge-warning mui-badge-badge" style="right: 70px;">{{item.parentPrice}}元区</span>
 				           {{@item.statusHtml}} 
 				        </a>
 				    </li>
@@ -119,10 +119,8 @@
 			function refresh(callback){
 				var localCache = plus.storage.getItem('userInfo');
 				if(!(localCache != null && localCache.length > 0)) return false; 
-				room.getRoomList({
-					"token": JSON.parse(localCache).token.toString()
-				}, function(data){
-					if(gDoc.getElementById("loading-text") != null)	gDoc.getElementById("loading-text").innerText = "您还没有创建或加入房间";
+				room.getAllRoomList({}, function(data){
+					if(gDoc.getElementById("loading-text") != null)	gDoc.getElementById("loading-text").innerText = "暂时还没有游戏房间";
 		
 					
 					mui('#refreshContainer').pullRefresh().endPulldown();
@@ -158,6 +156,11 @@
 
 					}
 					
+					if(data.data.length == 0) {
+						gDoc.getElementById("list").innerHTML = '<span class="loading" id="loading-text">暂时还没有游戏房间</span>';
+						return;
+					}
+					
 					var html = template("template", {
 						list: data.data
 					}); 
@@ -171,23 +174,54 @@
 							var roomCode = this.getAttribute("data-code");
 							var name =this.getAttribute("data-name");
 						
-							console.log(roomCode + " - " + name);
 						
-							mui.openWindow({
-			                    url: "/html/room-detail.html",
-			                    id: "room-detail",
-			                    preload: false,
-			                    waiting: {
-			                        autoShow: true,
-		                          title:'正在加载...'
-			                    },
-			                    extras:{
-			                    	"title": roomCode + " - " + name,
-									"room_code": roomCode
-							    },
-							    createNew:true
-			    
-			                });
+							// 加入房间
+							plus.nativeUI.confirm("确定要加入此房间吗？", function(e){
+								if(e.index == 0){
+									var localCache = plus.storage.getItem('userInfo');
+									if(localCache != null && localCache.length > 0){
+										room.joinRoom({
+											"token": JSON.parse(localCache).token.toString(),
+											"roomCode": roomCode
+										}, function(data){
+											if(data == null || data.code == null || data.code == 500  || data.code == 300){
+												plus.nativeUI.toast("加入房间失败");
+												return false;
+											}
+		                					
+		                					if(data.code == 400){
+		                						if(data.msg == "已存在") data.msg = "您已是此房间的成员";
+												plus.nativeUI.toast(data.msg);
+												return false;
+											}
+		                					
+											plus.nativeUI.toast("加入成功");
+											
+											mui.openWindow({
+							                    url: "/html/room-detail.html",
+							                    id: "room-detail",
+							                    preload: false,
+							                    waiting: {
+							                        autoShow: true,
+						                          title:'正在加载...'
+							                    },
+							                    extras:{
+							                    	"title": roomCode + " - " + name,
+													"room_code": roomCode
+											    },
+											    createNew:true
+							    
+							                });
+										}, function(){
+											
+										});
+									}
+									
+								}
+							}, ["取消", "确定"])
+						
+						
+							
 						}, false)
 					}
 					

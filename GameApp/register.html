@@ -7,12 +7,13 @@
 		<title></title>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<link rel="stylesheet" href="css/animate.min.css" />
-		<link href="css/ui.css" rel="stylesheet" /> 
-		<link href="css/login.css" rel="stylesheet" /> 
-		<link href="css/register.css" rel="stylesheet" /> 
+		<link href="css/ui.css" rel="stylesheet" />
+		<link href="css/login.css" rel="stylesheet" />
+		<link href="css/register.css" rel="stylesheet" />
 	</head>
+
 	<body>
-		
+
 		<!--container begin-->
 		<div class="container">
 			<div class="header">
@@ -21,53 +22,48 @@
 				<!--logo end-->
 			</div>
 			<div class="form-placeholder-30"></div>
-			
+
 			<!--username begin-->
 			<div class="form-item form-item-full">
-				<input type="text" class="form-input" id="phone" maxlength="11" placeholder="请输入手机号" value="15253133391"/>
+				<input type="text" class="form-input" id="phone" maxlength="11" placeholder="请输入手机号" value="15253133391" />
 			</div>
 			<!--username end-->
-			
-			
+
 			<!--password begin-->
 			<div class="form-item form-item-full">
-				<input type="text" class="form-input" id="password" maxlength="16" placeholder="请输入密码" value="123456"/>
+				<input type="text" class="form-input" id="password" maxlength="16" placeholder="请输入密码" value="123456" />
 			</div>
 			<!--password end-->
-			
-			
+
 			<!--password begin-->
 			<div class="form-item form-item-full">
-				<input type="text" class="form-input" id="password2" maxlength="16" placeholder="请重复输入密码" value="123456"/>
+				<input type="text" class="form-input" id="password2" maxlength="16" placeholder="请重复输入密码" value="123456" />
 			</div>
 			<!--password end-->
-			
-			
+
 			<!--validate begin-->
 			<div class="form-item form-item-full">
-				<input type="text" class="form-input form-input-half" id="smsCode" maxlength="4" placeholder="请输入验证码" value="1234"/>
+				<input type="text" class="form-input form-input-half" id="smsCode" maxlength="4" placeholder="请输入验证码" value="1234" />
 				<a class="form-link-button" href="javascript:void(0)" id="smsCodeButton">获取短信验证码</a>
 			</div>
 			<!--validate end-->
-			
-			
+
 			<!--login button begin-->
 			<div class="form-placeholder-20"></div>
 			<div class="form-item">
 				<button id='registerButton' class="mui-btn mui-btn-block mui-btn-orange">注&nbsp;&nbsp;册</button>
 			</div>
 			<!--login button end-->
-			 
+
 		</div>
 		<!--container end-->
-		
+
 		<!--footer begin-->
 		<div class="form-placeholder-50"></div>
 		<footer>
 			<span><a href="javascript:void(0)" id="toLogin">已有账号,去登录&nbsp;></a></span>
 		</footer>
 		<!--footer end-->
-		
 
 		<script src="js/mui.min.js"></script>
 		<script src="js/mui.enterfocus.js"></script>
@@ -81,13 +77,14 @@
 				});
 				$.plusReady(function() {
 					document.getElementById("title").innerText = window.config.title;
-					
+
 					// 设置顶部状态栏样式
 					plus.navigator.setStatusBarStyle("light");
 					plus.navigator.setStatusBarBackground("#FE532A");
 					// 禁止屏幕翻转
-					plus.screen.lockOrientation("portrait-primary");''
-					
+					plus.screen.lockOrientation("portrait-primary");
+					''
+
 					var toLoginButton = doc.getElementById('toLogin'),
 						phoneInput = doc.getElementById("phone"),
 						passwordInput = doc.getElementById("password"),
@@ -95,8 +92,7 @@
 						smsCodeInput = doc.getElementById("smsCode"),
 						smsCodeButton = doc.getElementById("smsCodeButton"),
 						registerButton = doc.getElementById("registerButton");
-					
-					
+
 					// 动态绑定事件
 					toLoginButton.addEventListener('tap', function(event) {
 						$.openWindow({
@@ -116,99 +112,93 @@
 							}
 						});
 					}, false);
-					
-					
+
 					/**
 					 * 获取短信验证码
 					 */
-					smsCodeButton.addEventListener("tap", function(){
+					smsCodeButton.addEventListener("tap", function() {
 						smsCodeButton.disabled = true;
 						smsCodeButton.classList.add("disabled");
-						smsCodeButton.innerText="重新获取短信";
-						 
-						 
+						smsCodeButton.innerText = "重新获取短信";
+
 						var initval = 120;
-	                    var timer = setInterval(function () {
-	                        if (initval >= 2) {
-	                            initval--;
-	                            smsCodeButton.innerText = "重新获取(" + initval + ")"
-	                        } else {
-	                            smsCodeButton.disabled = false;
+						var timer = setInterval(function() {
+							if(initval >= 2) {
+								initval--;
+								smsCodeButton.innerText = "重新获取(" + initval + ")"
+							} else {
+								smsCodeButton.disabled = false;
 								smsCodeButton.classList.remove("disabled");
-								smsCodeButton.innerText="获取短信验证码";
+								smsCodeButton.innerText = "获取短信验证码";
 								initval = 120;
-	                            clearInterval(timer);
-	                        }
-	                    }, 1000)
-		                    
-						 
-						app.getSmsCode(phoneInput.value, function(data){ 
-							if(data.code == 500){
+								clearInterval(timer);
+							}
+						}, 1000)
+
+						app.getSmsCode(phoneInput.value, function(data) {
+							if(data.code == 500) {
 								plus.nativeUI.toast("获取短信验证码失败");
 								smsCodeButton.disabled = false;
 								smsCodeButton.classList.remove("disabled");
-								smsCodeButton.innerText="获取短信验证码"; 
+								smsCodeButton.innerText = "获取短信验证码";
 								initval = 120;
-	                            clearInterval(timer);
+								clearInterval(timer);
 								return false;
 							}
-							
-							if(data.code == 300){
+
+							if(data.code == 300) {
 								smsCodeButton.disabled = false;
 								smsCodeButton.classList.remove("disabled");
-								smsCodeButton.innerText="获取短信验证码"; 
+								smsCodeButton.innerText = "获取短信验证码";
 								initval = 120;
-	                            clearInterval(timer);
+								clearInterval(timer);
 								plus.nativeUI.toast(data.msg);
 								return false;
 							}
-							 
-							
+
 							smsCodeButton.disabled = false;
 							smsCodeButton.classList.remove("disabled");
-							smsCodeButton.innerText="获取短信验证码"; 
+							smsCodeButton.innerText = "获取短信验证码";
 							initval = 120;
-                            clearInterval(timer);
+							clearInterval(timer);
 							mui.alert(data.msg);
-						}, function(msg){
+						}, function(msg) {
 							smsCodeButton.disabled = false;
 							smsCodeButton.classList.remove("disabled");
-							smsCodeButton.innerText="获取短信验证码";
+							smsCodeButton.innerText = "获取短信验证码";
 							initval = 120;
-                            clearInterval(timer);
+							clearInterval(timer);
 							plus.nativeUI.toast(msg);
 						})
-						 
-						
+
 					}, false);
-					
-					
+
 					/**
 					 * 注册
 					 */
-					registerButton.addEventListener("tap", function(){
+					registerButton.addEventListener("tap", function() {
 						registerButton.disabled = true;
 						registerButton.classList.add("button-disabled");
-						
+
 						app.register({
 							phone: phoneInput.value,
 							password: passwordInput.value,
 							password2: password2Input.value,
 							smsCode: smsCodeInput.value
-						}, function(data){
+						}, function(data) {
 							console.log(JSON.stringify(data))
-							
-							if(data.code == 500){
+
+							if(data.code == 500 || data.code == 300) {
 								plus.nativeUI.toast("注册失败");
 								registerButton.disabled = false;
 								registerButton.classList.remove("button-disabled");
 								return false;
 							}
-							
-							if(data.code == 300){
+
+							if(data.code == 400) {
 								registerButton.disabled = false;
 								registerButton.classList.remove("button-disabled");
-								mui.alert(data.msg);
+								plus.nativeUI.toast(data.msg);
 								return false;
 							}
 							plus.nativeUI.toast("注册成功");
@@ -230,13 +220,13 @@
 									autoShow: true
 								}
 							});
-						}, function(msg){
+						}, function(msg) {
 							registerButton.disabled = false;
 							registerButton.classList.remove("button-disabled");
 							plus.nativeUI.toast(msg);
 						})
 					}, false)
-					
+
 				});
 			}(mui, document));
 		</script>

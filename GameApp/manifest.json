@@ -190,7 +190,9 @@
 				"priority": 0
 			},
 			"html/room.html": {
-				"resources": [],
+				"resources": [
+					"images/house.png"
+				],
 				"refer": [
 					"html/room-detail.html"
 				],
@@ -204,7 +206,9 @@
 				"priority": 0
 			},
 			"html/sala.html": {
-				"resources": [],
+				"resources": [
+					"images/house.png"
+				],
 				"refer": [
 					"html/room-detail.html"
 				],

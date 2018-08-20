@@ -30,6 +30,7 @@ public class UserDetailInfo {
     /*wallets*/
     private Integer walletId;
     private Double balance;
+    private Date roomCardGetTime;
     private Date updateTime;
     private Integer version;
 }

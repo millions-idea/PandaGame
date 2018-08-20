@@ -8,14 +8,18 @@
 package com.panda.game.management.apiController;
 
 import com.panda.game.management.biz.DictionaryService;
+import com.panda.game.management.biz.GameRoomService;
 import com.panda.game.management.biz.SubareaService;
 import com.panda.game.management.entity.JsonArrayResult;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.Subareas;
+import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.resp.GroupInformation;
+import com.panda.game.management.facade.UserFacadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +32,9 @@ public class HomeController {
     private SubareaService subareaService;
     @Autowired
     private DictionaryService dictionaryService;
+    @Autowired
+    private GameRoomService gameRoomService;
+
 
     @GetMapping("/getLevelSubareas")
     public JsonArrayResult<Subareas> getLevelSubareas(){
@@ -46,5 +53,11 @@ public class HomeController {
     public JsonResult<GroupInformation> getGroupInformation(){
         GroupInformation groupInformation= dictionaryService.getGroupInformation();
         return new JsonResult<>().successful(groupInformation);
+    }
+
+    @PostMapping("/getRoomCard")
+    public JsonResult getRoomCard(Users users){
+        gameRoomService.getRoomCard(users);
+        return JsonResult.successful();
     }
 }

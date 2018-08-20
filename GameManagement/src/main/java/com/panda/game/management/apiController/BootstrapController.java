@@ -15,6 +15,7 @@ import com.panda.game.management.entity.Constant;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.resp.UserResp;
+import com.panda.game.management.facade.UserFacadeService;
 import com.panda.game.management.utils.MD5Util;
 import com.panda.game.management.utils.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class BootstrapController {
     private BadBoyService badBoyService;
     @Autowired
     private SmsService smsService;
+    @Autowired
+    private UserFacadeService userFacadeService;
 
     @PostMapping("/register")
     public JsonResult register(HttpServletRequest request, Users user, String smsCode){
@@ -54,9 +57,8 @@ public class BootstrapController {
         user.setIsEnable(1);
         user.setIsDelete(0);
         user.setUpdateDate(new Date());
-        userService.insert(user);
+        userFacadeService.register(user);
         badBoyService.addToRegisterBlackList(userIp);
-
         return JsonResult.successful();
     }
 

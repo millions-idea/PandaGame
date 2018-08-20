@@ -23,4 +23,9 @@ public interface Constant {
      * 标注为回收数据
      */
     String RECYCLE = "RECYCLE";
+
+    /**
+     * 系统账户id
+     */
+    Integer SYSTEM_ACCOUNTS_ID = 1;
 }

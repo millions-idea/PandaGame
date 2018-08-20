@@ -31,7 +31,7 @@
 				                	<span class="mui-badge mui-badge-danger   mui-badge-inverted">人气: {{item.personCount}}</span>
 				                </p>
 				            </div> 
-				           <span class="mui-badge mui-badge-warning mui-badge-badge" style="right: 70px;display: {{item.isOwner == null ? 'none': 'block'}};">拥有者</span>
+				           <span class="mui-badge mui-badge-warning mui-badge-badge" style="right: 70px;display: {{(item.isOwner == null || item.isOwner == 0) ? 'none': 'block'}};">拥有者</span>
 				           {{@item.statusHtml}} 
 				        </a>
 				    </li>
@@ -84,6 +84,7 @@
 					var currentWebView = plus.webview.currentWebview();
 					
 					currentWebView.addEventListener("show", function(){
+						console.log("刷新")
 						refresh();
 					})
 					
@@ -100,11 +101,11 @@
 				room.getRoomList({
 					"token": JSON.parse(localCache).token.toString()
 				}, function(data){
+					mui('#refreshContainer').pullRefresh().endPulldown();
+					
 					if(gDoc.getElementById("loading-text") != null)	gDoc.getElementById("loading-text").innerText = "您还没有创建或加入房间";
 		
-					
-					mui('#refreshContainer').pullRefresh().endPulldown();
-
+		
 					if(data == null || data.code != 200) return plus.nativeUI.toast("加载列表失败");
 					
 					for (var i = 0; i < data.data.length; i++) {
@@ -136,6 +137,11 @@
 
 					}
 					
+					if(data.data.length == 0) {
+						gDoc.getElementById("list").innerHTML = '<span class="loading" id="loading-text">您还没有创建或加入房间</span>';
+						return;
+					}
+					
 					var html = template("template", {
 						list: data.data
 					}); 
@@ -147,10 +153,7 @@
 						
 						roomItem.addEventListener("tap", function(){ 
 							var roomCode = this.getAttribute("data-code");
-							var name =this.getAttribute("data-name");
-						
-							console.log(roomCode + " - " + name);
-						
+							var name =this.getAttribute("data-name"); 
 							mui.openWindow({
 			                    url: "/html/room-detail.html",
 			                    id: "room-detail",
@@ -170,9 +173,10 @@
 					}
 					
 				}, function(){
+					mui('#refreshContainer').pullRefresh().endPulldown();
 					plus.nativeUI.toast("加载列表失败");
 					gDoc.getElementById("loading-text").innerText = "加载列表失败";
-					mui('#refreshContainer').pullRefresh().endPulldown();
+					
 					
 				})
 			}

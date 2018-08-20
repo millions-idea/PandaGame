@@ -8,19 +8,14 @@
 package com.panda.game.management.biz.impl;
 
 import com.panda.game.management.biz.GameRoomService;
-import com.panda.game.management.entity.db.GameMemberGroup;
-import com.panda.game.management.entity.db.GameRoom;
-import com.panda.game.management.entity.db.Subareas;
+import com.panda.game.management.entity.db.*;
 import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
 import com.panda.game.management.exception.MsgException;
-import com.panda.game.management.repository.GameMemberGroupMapper;
-import com.panda.game.management.repository.GameRoomMapper;
-import com.panda.game.management.repository.SubareaMapper;
+import com.panda.game.management.repository.*;
 import com.panda.game.management.utils.IdWorker;
 import com.panda.game.management.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -32,12 +27,17 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
     private final GameRoomMapper gameRoomMapper;
     private final SubareaMapper subareaMapper;
     private final GameMemberGroupMapper gameMemberGroupMapper;
+    private final SettlementMapper settlementMapper;
+    private final RoomCardMapper roomCardMapper;
+
 
     @Autowired
-    public GameRoomServiceImpl(GameRoomMapper gameRoomMapper, SubareaMapper subareaMapper, GameMemberGroupMapper gameMemberGroupMapper) {
+    public GameRoomServiceImpl(GameRoomMapper gameRoomMapper, SubareaMapper subareaMapper, GameMemberGroupMapper gameMemberGroupMapper, SettlementMapper settlementMapper, RoomCardMapper roomCardMapper) {
         this.gameRoomMapper = gameRoomMapper;
         this.subareaMapper = subareaMapper;
         this.gameMemberGroupMapper = gameMemberGroupMapper;
+        this.settlementMapper = settlementMapper;
+        this.roomCardMapper = roomCardMapper;
     }
 
     /**
@@ -114,10 +114,40 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
      * 解散房间 韦德 2018年8月20日01:05:48
      *
      * @param token
-     * @param gameRoom
+     * @param param
      */
     @Override
-    public void disband(String token, GameRoom gameRoom) {
+    @Transactional
+    public void disband(String token, GameRoom param) {
+        /*
+            1、判断房间内是否有别人加入
+            2、将房间status改为解散，前台不再显示
+            3、更新member的退出时间
+         */
+        Map<String, String> map = TokenUtil.validate(token);
+        if(map.isEmpty()) return;
+
+        String userId = map.get("userId");
+        if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
+
+        GameRoom gameRoom = gameRoomMapper.selectByRoomCode(param.getRoomCode());
+        if(gameRoom == null) throw new MsgException("房间不存在");
+
+        if(!gameRoom.getOwnerId().equals(Integer.valueOf(userId))) {
+            int count = gameMemberGroupMapper.deleteMember(Integer.valueOf(userId),param.getRoomCode());
+            if(count == 0) throw new MsgException("退出房间失败");
+            return;
+        }
+
+        List<GameMemberGroup> memberGroupList = gameMemberGroupMapper.selectByRoomCode(gameRoom.getRoomCode());
+        if(!(memberGroupList == null || memberGroupList.isEmpty() )) throw new MsgException("请等房间内的成员全部退出后再解散");
+
+        int count = gameMemberGroupMapper.updateMemberExit(gameRoom.getRoomCode());
+        if(count == 0) throw new MsgException("清空成员失败");
+
+        count = 0;
+        count = gameRoomMapper.updateStatusByRoomCode(gameRoom.getRoomCode(), 6);
+        if(count == 0) throw new MsgException("解散房间失败");
 
     }
 
@@ -125,11 +155,120 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
      * 申请结算 韦德 2018年8月20日01:07:26
      *
      * @param token
+     * @param roomCode
      * @param standings
      * @param beRouted
      */
     @Override
-    public void closeAccounts(String token, Double standings, Double beRouted) {
+    public void closeAccounts(String token, Long roomCode, Double standings, Double beRouted) {
+        Map<String, String> map = TokenUtil.validate(token);
+        if(map.isEmpty()) return;
 
+        String userId = map.get("userId");
+        if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
+
+        int count = gameMemberGroupMapper.updateConfirm(Integer.valueOf(userId), roomCode);
+        if(count == 0) throw new MsgException("更新结算状态失败");
+
+        Settlement settlement = new Settlement();
+        settlement.setUserId(Integer.valueOf(userId));
+        settlement.setAdd(standings);
+        settlement.setReduce(beRouted);
+        settlement.setRoomCode(roomCode);
+        settlement.setState(0);
+        settlement.setAddTime(new Date());
+        settlement.setUpdateTime(new Date());
+        count = settlementMapper.insert(settlement);
+        if(count == 0) throw new MsgException("申请结算失败");
+    }
+
+
+    /**
+     * 获取所有游戏房间 韦德 2018年8月20日21:20:09
+     *
+     * @return
+     */
+    @Override
+    public List<GameRoomDetailInfo> getAllRoomList() {
+        return gameRoomMapper.selectSalaRoomList();
+    }
+
+    /**
+     * 加入房间 韦德 2018年8月20日21:40:51
+     *
+     * @param token
+     * @param gameRoom
+     */
+    @Override
+    public boolean join(String token, GameRoom gameRoom) {
+        // 加载用户信息
+        Map<String, String> map = TokenUtil.validate(token);
+        if(map.isEmpty()) return false;
+
+        String userId = map.get("userId");
+        if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
+
+        GameRoom room = gameRoomMapper.selectByRoomCode(gameRoom.getRoomCode());
+        if(room == null) throw new MsgException("房间不存在");
+
+        if(room.getOwnerId().equals(Integer.valueOf(userId))) throw new MsgException("您是此房间的房主！");
+
+        // 加载游戏分区
+        Subareas subareas = subareaMapper.selectByPrimaryKey(room.getSubareaId());
+        if(subareas == null) throw new MsgException("游戏大区不存在");
+        int onLineCount = gameRoomMapper.selectRoomOnLineCount(gameRoom.getRoomCode());
+        onLineCount += 1;
+        if(onLineCount > subareas.getMaxPersonCount()) throw new MsgException("该房间人数已满！");
+        // 更改状态为已开始
+        if(onLineCount == subareas.getMaxPersonCount()){
+            gameRoomMapper.updateStatusByRoomCode(gameRoom.getRoomCode(), 2);
+        }
+
+        // 加入成员
+        GameMemberGroup gameMemberGroup = new GameMemberGroup();
+        gameMemberGroup.setRoomCode(gameRoom.getRoomCode());
+        gameMemberGroup.setUserId(Integer.valueOf(userId));
+        gameMemberGroup.setIsOwner(0);
+        gameMemberGroup.setIsConfirm(0);
+        gameMemberGroup.setAddTime(new Date());
+        int count = gameMemberGroupMapper.insert(gameMemberGroup);
+        if(count == 0) throw new MsgException("加入房间失败");
+        return true;
+    }
+
+    /**
+     * 领取房卡 韦德 2018年8月20日23:28:15
+     *
+     * @param token
+     * @param users
+     */
+    @Override
+    public void getRoomCard(String token, Users users) {
+        // 加载用户信息
+        Map<String, String> map = TokenUtil.validate(token);
+        if(map.isEmpty()) return;
+
+        String userId = map.get("userId");
+        if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
+
+        RoomCard roomCard = roomCardMapper.selectLast(Integer.valueOf(userId), users.getPandaId());
+        if(roomCard != null){
+            long nd = 1000 * 24 * 60 * 60;
+            long nh = 1000 * 60 * 60;
+            long nm = 1000 * 60;
+
+            Long currentTime = new Date().getTime();
+            Long addTime = roomCard.getAddTime().getTime();
+            // 获得两个时间的毫秒时间差异
+            Long diff = currentTime - addTime;
+            // 计算差多少天
+            long day = diff / nd;
+            // 计算差多少小时
+            long hour = diff % nd / nh;
+            // 计算差多少分钟
+            long min = diff % nd % nh / nm;
+
+            if(min >= 180) throw new MsgException("限隔180分钟领取一次~");
+        }
     }
 }

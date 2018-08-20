@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.panda.game.management.biz.UserService;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.resp.UserResp;
+import com.panda.game.management.facade.UserFacadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @Autowired
     private UserService userService;
+
 
     @GetMapping("/getUserInfo")
     @JsonView(UserResp.FinanceView.class)

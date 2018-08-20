@@ -38,6 +38,29 @@
 	
 	
 	/**
+	 * 获取用户房间列表
+	 * @param {Object} param
+	 * @param {Object} callback
+	 * @param {Object} errorCallback
+	 */
+	owner.getAllRoomList = function(param, callback, errorCallback){
+		callback = callback || $.noop; 
+		$.ajax(toUrl("api/room/getAllRoomList"), {
+			type: "get",
+			data: param,	
+			success: function(data){
+				console.log(JSON.stringify(data));
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+	}
+	
+	
+	
+	/**
 	 * 解散房间
 	 * @param {Object} param
 	 * @param {Object} callback
@@ -68,6 +91,28 @@
 	owner.closeAccounts = function(param, callback, errorCallback){
 		callback = callback || $.noop; 
 		$.ajax(toUrl("api/room/closeAccounts"), {
+			type: "post",
+			data: param,	
+			success: function(data){
+				console.log(JSON.stringify(data));
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+	}
+	
+	
+	/**
+	 * 加入房间
+	 * @param {Object} param
+	 * @param {Object} callback
+	 * @param {Object} errorCallback
+	 */
+	owner.joinRoom = function(param, callback, errorCallback){
+		callback = callback || $.noop; 
+		$.ajax(toUrl("api/room/join"), {
 			type: "post",
 			data: param,	
 			success: function(data){

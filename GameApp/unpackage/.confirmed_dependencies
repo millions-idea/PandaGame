@@ -57,6 +57,9 @@
 	"html/room.html": {
 		"refer": [
 			"html/room-detail.html"
+		],
+		"resources": [
+			"images/house.png"
 		]
 	},
 	"html/room-detail.html": {
@@ -67,6 +70,9 @@
 	"html/sala.html": {
 		"refer": [
 			"html/room-detail.html"
+		],
+		"resources": [
+			"images/house.png"
 		]
 	}
 }

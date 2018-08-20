@@ -9,6 +9,7 @@ package com.panda.game.management.biz.impl;
 
 import com.panda.game.management.biz.BadBoyService;
 import com.panda.game.management.exception.InfoException;
+import com.panda.game.management.exception.MsgException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class BadBodyServiceImpl implements BadBoyService {
     @Override
     public void isRegisterBlackList(String ip) {
         Object cacheIp = redisTemplate.opsForValue().get("short:register:ip");
-        if(cacheIp != null) throw new InfoException("明天再来吧");
+        if(cacheIp != null) throw new MsgException("明天再来吧");
     }
 
     /**

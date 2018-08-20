@@ -9,6 +9,7 @@ package com.panda.game.management.entity.db;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
@@ -28,4 +29,6 @@ public class Subareas {
     private String name;
     private String backgroundImage;
     private Date addTime;
+    @Column(name = "max_person_count")
+    private Integer maxPersonCount;
 }

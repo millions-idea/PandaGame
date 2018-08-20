@@ -31,5 +31,4 @@ public class GameRoom {
     private Integer isEnable;
     private Long roomCode;
     private Integer externalRoomId;
-
 }

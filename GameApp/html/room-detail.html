@@ -24,7 +24,7 @@
 		    <!-- 可选择菜单 -->
 		    <ul class="mui-table-view">
 		      <li class="mui-table-view-cell">
-		        <a id="toDisband" href="#">解散房间</a>
+		        <a id="toDisband" href="#">退出房间</a>
 		      </li>
 		      <li class="mui-table-view-cell">
 		        <a id="toCloseAccounts" href="#">去结算</a>
@@ -75,7 +75,9 @@
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/config.js"></script>
 		<script src="../js/app.js"></script> 
+		<script src="../js/room/index.js"></script> 
 		<script type="text/javascript">
+			var pages = window.config.pages;
 			
 			(function($, doc){
 				$.init({
@@ -94,8 +96,7 @@
 					// 绑定动态标题事件
 					var self = plus.webview.currentWebview(),
 						titleComponent = doc.getElementById("title"); 
-					self.addEventListener("show", function(){ 
-						console.log(JSON.stringify(self))
+					self.addEventListener("show", function(){  
 						titleComponent.innerHTML = self.title; 
 					})
 					
@@ -103,7 +104,8 @@
 					// 绑定选择菜单
 					var openMenu = doc.getElementById("openMenu"),
 						toDisband = doc.getElementById("toDisband"),
-						toCloseAccounts = doc.getElementById("toCloseAccounts");
+						toCloseAccounts = doc.getElementById("toCloseAccounts"),
+						roomCode = self.room_code;
 						
 						
 					openMenu.addEventListener("tap", function() {
@@ -111,9 +113,49 @@
 					});
 					
 					toDisband.addEventListener("tap", function(){
-					 	plus.nativeUI.confirm("您确定要解散此房间？", function(e){
+						
+					 	plus.nativeUI.confirm("您确定要退出此房间？", function(e){
 					 		if(e.index == 1){
-					 			plus.nativeUI.toast("您解散了房间")
+					 			$("#sheet").popover("toggle"); 
+					 			
+					 			var localCache = plus.storage.getItem('userInfo');
+								if(!(localCache != null && localCache.length > 0)) return false; 
+					 			room.disband({
+					 				"token": JSON.parse(localCache).token.toString(),
+					 				"roomCode": roomCode
+					 			}, function(data){
+									if(data == null || data.code == 500 || data.code == 300) return plus.nativeUI.toast("退出失败");
+					
+									if(data == null || data.code == 400) return plus.nativeUI.toast(data.msg);
+					
+					 				plus.nativeUI.toast("退出成功")
+					 				
+					 				$.openWindow({
+										url: 'room.html',
+										id: 'room',
+										preload: true,
+										show: {
+											aniShow: 'pop-in',
+											duration: 200
+										},
+										styles: {
+											popGesture: 'hide'
+										},
+										waiting: {
+											title: "正在加载...",
+											autoShow: true
+										}
+									});
+									
+									for (var i = 0 ; i < pages.length ; i ++) {
+										if (i != 2) { 
+											plus.webview.hide(pages[i].id, "fade-out", 200);
+										}
+									}
+					 				plus.webview.currentWebview().close();
+					 			}, function(){
+					 				plus.nativeUI.toast("退出失败")
+					 			});
 					 		}
 					 	}, "敏感操作", ["取消","确定"]);
 					})
@@ -128,7 +170,7 @@
 	                          title:'正在加载...'
 		                    },
 		                    extras:{
-								"room_code": self.roomCode
+								"room_code": roomCode
 						    },
 						    createNew:true
 		    

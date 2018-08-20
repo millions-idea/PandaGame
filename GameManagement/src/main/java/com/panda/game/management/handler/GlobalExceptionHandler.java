@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
     public JsonResult preException(HttpServletRequest request,
                                    MsgException exception) throws Exception {
         logger.error(String.format("普通异常消息: %s",exception.toString()));
-        return  new JsonResult().exceptionAsString(exception.getMsg() == null ? "错误" : exception.getMsg());
+        return  new JsonResult().normalExceptionAsString(exception.getMsg() == null ? "错误" : exception.getMsg());
     }
 
 
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
 
         // mysql异常 com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException: Duplicate entry '123456' for key 'uq_external_room_id'
         if(exception != null  && exception.getCause() != null  && exception.getMessage() != null  && exception.getCause().getMessage().contains("Duplicate entry")){
-            return  new JsonResult().exceptionAsString("已存在");
+            return  new JsonResult().normalExceptionAsString("已存在");
         }
 
         return new JsonResult().failingAsString("异常");

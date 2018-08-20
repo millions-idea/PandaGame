@@ -36,4 +36,12 @@ public interface UserMapper extends MyMapper<Users> {
      * @return
      */
     List<UserDetailInfo> selectInUid(@Param("userId") String userId);
+
+    @Select("SELECT t1.*,t2.* FROM tb_users t1 LEFT JOIN tb_wallets t2 ON t2.user_id = t1.user_id WHERE t1.user_id =#{userId}")
+    /**
+     * 查询交易主体信息 韦德 2018年8月16日13:33:09
+     * @param userId
+     * @return
+     */
+    UserDetailInfo selectUserDetail(@Param("userId") String userId);
 }

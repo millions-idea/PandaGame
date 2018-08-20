@@ -50,4 +50,11 @@ public interface UserService extends BaseService<Users> {
      * @param newPassword
      */
     boolean editPassword(String token, String password, String newPassword);
+
+
+    /**
+     * 插入数据 韦德 2018年8月20日15:40:56
+     * @param param
+     */
+    void register(Users param);
 }

@@ -10,31 +10,41 @@ package com.panda.game.management.biz.impl;
 import com.google.common.collect.ImmutableMap;
 import com.panda.game.management.biz.UserService;
 import com.panda.game.management.entity.db.Users;
+import com.panda.game.management.entity.db.Wallets;
+import com.panda.game.management.entity.dbExt.UserDetailInfo;
 import com.panda.game.management.entity.resp.UserResp;
 import com.panda.game.management.exception.InfoException;
 import com.panda.game.management.exception.MsgException;
+import com.panda.game.management.repository.PayMapper;
 import com.panda.game.management.repository.UserMapper;
+import com.panda.game.management.repository.WalletMapper;
 import com.panda.game.management.utils.MD5Util;
 import com.panda.game.management.utils.PropertyUtil;
 import com.panda.game.management.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl extends BaseServiceImpl<Users> implements UserService  {
     private final UserMapper userMapper;
+    private final WalletMapper walletMapper;
+    private final PayMapper payMapper;
 
     @Autowired
     private RedisTemplate redisTemplate;
 
     @Autowired
-    public UserServiceImpl(UserMapper userMapper) {
+    public UserServiceImpl(UserMapper userMapper, WalletMapper walletMapper, PayMapper payMapper) {
         this.userMapper = userMapper;
+        this.walletMapper = walletMapper;
+        this.payMapper = payMapper;
     }
 
     /**
@@ -44,10 +54,21 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements UserServi
      * @return
      */
     @Override
-    public int insert(Users param) {
-        int result = userMapper.insert(param);
-        if(result == 0) throw new InfoException("插入用户数据失败");
-        return result;
+    @Transactional
+    public void register(Users param) {
+        // 增加用户数据
+        int count = userMapper.insert(param);
+        if(count == 0) throw new MsgException("注册用户失败");
+
+        // 开通钱包
+        Wallets wallets = new Wallets();
+        wallets.setUserId(param.getUserId());
+        wallets.setBalance(0D);
+        wallets.setUpdateTime(new Date());
+        wallets.setVersion(0);
+        count = 0;
+        count = walletMapper.insert(wallets);
+        if(count == 0) throw new MsgException("开通钱包失败");
     }
 
     /**
@@ -67,8 +88,8 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements UserServi
         Users userInfo = userMapper.selectOne(condition);
 
         if(userInfo == null) return null;
-        if(userInfo.getIsEnable() == 0) throw new InfoException("您的账户已被管理员锁定");
-        if(userInfo.getIsDelete() == 1) throw new InfoException("您的账户已被管理员回收");
+        if(userInfo.getIsEnable() == 0) throw new MsgException("您的账户已被管理员锁定");
+        if(userInfo.getIsDelete() == 1) throw new MsgException("您的账户已被管理员回收");
 
         condition = new Users();
         condition.setUserId(userInfo.getUserId());
@@ -147,27 +168,26 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements UserServi
      */
     @Override
     public UserResp getUserDetailByToken(String token) {
+        // 根据token查询用户权限字段
         Map<String, String> map = TokenUtil.validate(token);
         if(map.isEmpty()) return null;
-
         String phone = map.get("phone");
         String userId = map.get("userId");
-
-        Users condition = new Users();
-        condition.setPhone(phone);
-        condition.setUserId(Integer.parseInt(userId));
-        Users userInfo = userMapper.selectOne(condition);
-
-        UserResp userResp = new UserResp();
-        PropertyUtil.clone(userInfo, userResp);
-        userResp.setToken(token);
-        userResp.setCanWithdrawAmount(999.99D);
-        userResp.setCanNotWithdrawAmount(58.65D);
-        userResp.setBalance(1024D);
 
         String key  = "token:" + MD5Util.encrypt16(phone + userId);
         Long expire = redisTemplate.getExpire(key);
         if(expire <= 0) throw new MsgException("登录令牌失效");
+
+        // 查询基础信息
+        UserDetailInfo userInfo = userMapper.selectUserDetail(userId);
+        UserResp userResp = new UserResp();
+        PropertyUtil.clone(userInfo, userResp);
+        userResp.setToken(token);
+
+        // 计算不可提现金额、可提现金额
+        Double notWithdrawAmount = payMapper.selectNotWithdrawAmount(Integer.valueOf(userId),  "新用户注册奖励");
+        userResp.setCanWithdrawAmount(userInfo.getBalance() - notWithdrawAmount);
+        userResp.setCanNotWithdrawAmount(notWithdrawAmount);
         return userResp;
     }
 

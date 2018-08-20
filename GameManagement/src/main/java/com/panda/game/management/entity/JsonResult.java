@@ -45,6 +45,10 @@ public class JsonResult<T> {
         return new JsonResult(300, JsonUtil.getJson(msg));
     }
 
+    public JsonResult normalExceptionAsString(T msg){
+        return new JsonResult(400, JsonUtil.getJson(msg));
+    }
+
     public JsonResult exception(T msg){
         return new JsonResult(300, msg);
     }

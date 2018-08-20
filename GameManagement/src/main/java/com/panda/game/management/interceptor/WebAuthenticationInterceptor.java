@@ -10,6 +10,7 @@ package com.panda.game.management.interceptor;
 import com.panda.game.management.annotaion.Sign;
 import com.panda.game.management.entity.Constant;
 import com.panda.game.management.exception.InfoException;
+import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.utils.Base64Utils;
 import com.panda.game.management.utils.RSAUtil;
 import com.panda.game.management.utils.RequestUtil;
@@ -55,9 +56,9 @@ public class WebAuthenticationInterceptor implements HandlerInterceptor {
                     System.err.println("系统验签解密结果:" + decrypt);
                     if(sign != null && decrypt.equals(url)) return true;
                 } catch (Exception e) {
-                    throw new InfoException(e, "验签失败");
+                    throw new MsgException(e, "验签失败");
                 }
-                throw new InfoException("验签失败");
+                throw new MsgException("验签失败");
             }
         }
         return true;

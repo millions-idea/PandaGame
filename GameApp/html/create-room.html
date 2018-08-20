@@ -69,6 +69,8 @@
 					var self = plus.webview.currentWebview();
 	                var subareaId = self.subareaId;
 	                 
+	                 
+	                console.log("subareaId: " + subareaId)
 				
 					// 获取房间类型
 					home.getSubareas({
@@ -109,12 +111,12 @@
 			                					"subareaId": id, 
 			                					"externalRoomId": popInput.value
 			                				}, function(data){
-			                					if(data == null || data.code == null || data.code == 500){
+			                					if(data == null || data.code == null || data.code == 500  || data.code == 300){
 													plus.nativeUI.toast("创建失败");
 													return false;
 												}
 			                					
-			                					if(data.code == 300){
+			                					if(data.code == 400){
 													plus.nativeUI.toast(data.msg);
 													return false;
 												}

@@ -38,6 +38,12 @@ public class RoomController {
         return new JsonArrayResult<>(list);
     }
 
+    @GetMapping("/getAllRoomList")
+    public JsonArrayResult<GameRoomDetailInfo> getAllRoomList(){
+        List<GameRoomDetailInfo> list = gameRoomService.getAllRoomList();
+        return new JsonArrayResult<>(list);
+    }
+
 
     @PostMapping("/disband")
     public JsonResult disband(String token, GameRoom gameRoom){
@@ -46,8 +52,14 @@ public class RoomController {
     }
 
     @PostMapping("/closeAccounts")
-    public JsonResult closeAccounts(String token, Double standings, Double beRouted){
-        gameRoomService.closeAccounts(token, standings, beRouted);
+    public JsonResult closeAccounts(String token, Long roomCode, Double standings, Double beRouted){
+        gameRoomService.closeAccounts(token, roomCode, standings, beRouted);
+        return JsonResult.successful();
+    }
+
+    @PostMapping("/join")
+    public JsonResult join(String token, GameRoom gameRoom){
+        gameRoomService.join(token, gameRoom);
         return JsonResult.successful();
     }
 }

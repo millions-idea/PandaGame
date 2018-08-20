@@ -8,6 +8,7 @@
 package com.panda.game.management.biz;
 
 import com.panda.game.management.entity.db.GameRoom;
+import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
 
 import java.util.List;
@@ -38,8 +39,28 @@ public interface GameRoomService extends BaseService<GameRoom> {
     /**
      * 申请结算 韦德 2018年8月20日01:07:26
      * @param token
+     * @param roomCode
      * @param standings
      * @param beRouted
      */
-    void closeAccounts(String token, Double standings, Double beRouted);
+    void closeAccounts(String token, Long roomCode, Double standings, Double beRouted) ;
+
+    /**
+     * 获取所有游戏房间 韦德 2018年8月20日21:20:09
+     * @return
+     */
+    List<GameRoomDetailInfo> getAllRoomList();
+
+    /**
+     * 加入房间 韦德 2018年8月20日21:40:51
+     * @param token
+     * @param gameRoom
+     */
+    boolean join(String token, GameRoom gameRoom);
+
+    /**
+     * 领取房卡 韦德 2018年8月20日23:28:15
+     * @param users
+     */
+    void getRoomCard(Users users);
 }
