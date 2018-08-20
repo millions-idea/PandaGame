@@ -31,4 +31,5 @@ public class Subareas {
     private Date addTime;
     @Column(name = "max_person_count")
     private Integer maxPersonCount;
+    private Double limitPrice;
 }

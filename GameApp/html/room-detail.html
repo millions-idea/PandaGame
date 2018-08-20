@@ -160,22 +160,23 @@
 					 	}, "敏感操作", ["取消","确定"]);
 					})
 					
-					toCloseAccounts.addEventListener("tap", function(){
+					toCloseAccounts.addEventListener("tap", function(){ 
 					 	mui.openWindow({
-		                    url: "/html/close-accounts.html",
-		                    id: "close-accunts",
+		                    url: "close-accounts.html",
+		                    id: "close-accounts",
 		                    preload: false,
 		                    waiting: {
 		                        autoShow: true,
 	                          title:'正在加载...'
 		                    },
 		                    extras:{
-								"room_code": roomCode
+								"room_code": roomCode,
+								"self": self
 						    },
 						    createNew:true
 		    
 		                });
-						$("#sheet").popover("toggle");  
+						$("#sheet").popover("toggle");
 						
 					})
 					

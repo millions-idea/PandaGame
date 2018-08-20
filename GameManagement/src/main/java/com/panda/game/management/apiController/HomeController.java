@@ -9,13 +9,18 @@ package com.panda.game.management.apiController;
 
 import com.panda.game.management.biz.DictionaryService;
 import com.panda.game.management.biz.GameRoomService;
+import com.panda.game.management.biz.PayService;
 import com.panda.game.management.biz.SubareaService;
+import com.panda.game.management.entity.Constant;
 import com.panda.game.management.entity.JsonArrayResult;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.Subareas;
 import com.panda.game.management.entity.db.Users;
+import com.panda.game.management.entity.param.PayParam;
 import com.panda.game.management.entity.resp.GroupInformation;
+import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.facade.UserFacadeService;
+import com.panda.game.management.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/home")
@@ -34,6 +40,8 @@ public class HomeController {
     private DictionaryService dictionaryService;
     @Autowired
     private GameRoomService gameRoomService;
+    @Autowired
+    private PayService payService;
 
 
     @GetMapping("/getLevelSubareas")
@@ -56,8 +64,25 @@ public class HomeController {
     }
 
     @PostMapping("/getRoomCard")
-    public JsonResult getRoomCard(Users users){
-        gameRoomService.getRoomCard(users);
+    public JsonResult getRoomCard(String token, Users users){
+        gameRoomService.getRoomCard(token, users);
+        return JsonResult.successful();
+    }
+
+    @PostMapping("/recharge")
+    public JsonResult recharge(String token, Double amount){
+        // 加载用户信息
+        Map<String, String> map = TokenUtil.validate(token);
+        if(map.isEmpty()) JsonResult.failing();
+        String userId = map.get("userId");
+        if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
+
+        // 转账
+        PayParam payParam = new PayParam();
+        payParam.setFromUid(Constant.SYSTEM_ACCOUNTS_ID);
+        payParam.setToUid(Integer.valueOf(userId));
+        payParam.setAmount(amount);
+        payService.transfer(payParam);
         return JsonResult.successful();
     }
 }

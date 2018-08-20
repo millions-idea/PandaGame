@@ -136,7 +136,13 @@
 					var customServiceButton = doc.getElementById("customServiceButton"),
 						updatePasswordButton = doc.getElementById("updatePasswordButton");
 						logoutButton = doc.getElementById("logoutButton");
-						
+					
+					// 刷新
+					plus.webview.currentWebview().addEventListener("show", function(){
+						console.log("刷新")
+						refreshUserInfo();
+					})
+					
 					// 修改密码
 					updatePasswordButton.addEventListener("tap", function(){
 						plus.webview.open('/html/update-password.html', 'new', {}, 'slide-in-right', 200);

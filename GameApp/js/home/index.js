@@ -98,4 +98,49 @@
 			}
 		})
 	}
+	
+	
+	/**
+	 * 领取房卡
+	 * @param {Object} param
+	 * @param {Object} callback
+	 * @param {Object} errorCallback
+	 */
+	owner.getRoomCard = function(param, callback, errorCallback){
+		callback = callback || $.noop; 
+		$.ajax(toUrl("api/home/getRoomCard"), {
+			type: "post",
+			data: param,	
+			success: function(data){
+				console.log(JSON.stringify(data));
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+	}
+	
+	
+	/**
+	 * 充值
+	 * @param {Object} param
+	 * @param {Object} callback
+	 * @param {Object} errorCallback
+	 */
+	owner.recharge = function(param, callback, errorCallback){
+		callback = callback || $.noop; 
+		$.ajax(toUrl("api/home/recharge"), {
+			type: "post",
+			data: param,	
+			success: function(data){
+				console.log(JSON.stringify(data));
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+	}
+		
 }(mui, window.home = {}));

@@ -68,7 +68,7 @@
 				
 				<!--finance begin-->
 				<div class="finance">
-					<div class="recharge">
+					<div class="recharge" id="recharge">
 						<span id="centerLeftAdTitle">免费房卡不够用？</span>
 						<p id="centerLeftAdDesc">充值金币特价房卡享不停</p>
 						<button>立刻充值</button>
@@ -92,7 +92,7 @@
 					<!--image end-->
 					
 					<!--content begin-->
-					<div class="content">
+					<div class="content" id="getRoomCard">
 						<span class="title" id="bottomAdTitle">免费领取熊猫麻将房卡</span>
 						<p id="bottomAdDesc">多种玩法，快来大战三百回合~</p>
 						<span class="mui-icon mui-icon-person icon"></span>
@@ -168,7 +168,40 @@
 					
 					// 禁止屏幕翻转
 					plus.screen.lockOrientation("portrait-primary"); 
-					  
+					
+					
+					doc.getElementById("recharge").addEventListener("tap", function(){
+						mui.openWindow({
+		                    url: "recharge.html",
+		                    id: "recharge",
+		                    preload: false,
+		                    waiting: {
+		                        autoShow: true,
+	                          title:'正在加载...'
+		                    },
+						    createNew:true
+		    
+		                });
+					})
+					 
+					doc.getElementById("getRoomCard").addEventListener("tap", function(){
+						var localCache = plus.storage.getItem('userInfo');
+						if(localCache != null && localCache.length > 0){
+							console.log("localCache: " + localCache)
+							home.getRoomCard({
+								"token": JSON.parse(localCache).token.toString(),
+								"pandaId": JSON.parse(localCache).pandaId.toString(),
+							}, function(data){
+								if(data == null || data.code == 500 || data.code == 300) return plus.nativeUI.toast("领取失败");
+								if(data.code == 400) return plus.nativeUI.toast(data.msg);
+
+								plus.nativeUI.toast("领取成功");
+							}, function(){
+								
+							})
+						}
+						
+					})
 					
 				})
 				

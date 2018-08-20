@@ -10,6 +10,7 @@ package com.panda.game.management.biz.impl;
 import com.panda.game.management.biz.GameRoomService;
 import com.panda.game.management.entity.db.*;
 import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
+import com.panda.game.management.entity.resp.GameRoomCallbackResp;
 import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.repository.*;
 import com.panda.game.management.utils.IdWorker;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @Service
 public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements GameRoomService {
@@ -29,15 +31,17 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
     private final GameMemberGroupMapper gameMemberGroupMapper;
     private final SettlementMapper settlementMapper;
     private final RoomCardMapper roomCardMapper;
+    private final WalletMapper walletMapper;
 
 
     @Autowired
-    public GameRoomServiceImpl(GameRoomMapper gameRoomMapper, SubareaMapper subareaMapper, GameMemberGroupMapper gameMemberGroupMapper, SettlementMapper settlementMapper, RoomCardMapper roomCardMapper) {
+    public GameRoomServiceImpl(GameRoomMapper gameRoomMapper, SubareaMapper subareaMapper, GameMemberGroupMapper gameMemberGroupMapper, SettlementMapper settlementMapper, RoomCardMapper roomCardMapper, WalletMapper walletMapper) {
         this.gameRoomMapper = gameRoomMapper;
         this.subareaMapper = subareaMapper;
         this.gameMemberGroupMapper = gameMemberGroupMapper;
         this.settlementMapper = settlementMapper;
         this.roomCardMapper = roomCardMapper;
+        this.walletMapper = walletMapper;
     }
 
     /**
@@ -56,9 +60,18 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
         String userId = map.get("userId");
         if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
 
-        // 加载游戏大区
+        // 加载游戏分区
         Subareas subareas = subareaMapper.selectByPrimaryKey(param.getSubareaId());
-        if(subareas == null || subareas.getIsRelation() == 1) throw new MsgException("游戏模式不存在");
+        if(subareas == null || subareas.getIsRelation() == 1) throw new MsgException("游戏分区不存在");
+
+        // 加载游戏大区
+        Subareas area = subareaMapper.selectByPrimaryKey(param.getParentAreaId());
+        if(area == null) throw new MsgException("游戏大区不存在");
+
+        Wallets wallets = walletMapper.selectByUid(Integer.valueOf(userId));
+        if(wallets == null) throw new MsgException("查询钱包数据异常");
+        Double balance = wallets.getBalance();
+        if(balance < area.getLimitPrice()) throw new MsgException("金币" + area.getLimitPrice().intValue() + "枚以上才可以创建哟~");
 
         // 创建房间
         param.setOwnerId(Integer.valueOf(userId));
@@ -136,6 +149,16 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
         if(!gameRoom.getOwnerId().equals(Integer.valueOf(userId))) {
             int count = gameMemberGroupMapper.deleteMember(Integer.valueOf(userId),param.getRoomCode());
             if(count == 0) throw new MsgException("退出房间失败");
+
+            // 加载游戏分区
+            Subareas subareas = subareaMapper.selectByPrimaryKey(gameRoom.getSubareaId());
+            if(subareas == null) throw new MsgException("游戏大区不存在");
+            int onLineCount = gameRoomMapper.selectRoomOnLineCount(gameRoom.getRoomCode());
+            onLineCount -= 1;
+            if(onLineCount < subareas.getMaxPersonCount()) {
+                count = gameRoomMapper.updateStatusByRoomCode(gameRoom.getRoomCode(), 0);
+                if(count == 0) throw new MsgException("更改显示状态失败");
+            }
             return;
         }
 
@@ -160,12 +183,20 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
      * @param beRouted
      */
     @Override
-    public void closeAccounts(String token, Long roomCode, Double standings, Double beRouted) {
+    @Transactional
+    public void closeAccounts(String token, Long roomCode, Double standings, Double beRouted, Consumer<GameRoomCallbackResp> lastPersonCallback) {
         Map<String, String> map = TokenUtil.validate(token);
         if(map.isEmpty()) return;
 
         String userId = map.get("userId");
         if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
+
+        GameRoom room = gameRoomMapper.selectByRoomCode(roomCode);
+        if(room == null) throw new MsgException("房间不存在");
+        if(room.getStatus() == 0) throw new MsgException("游戏未开始");
+
+        Subareas subareas = subareaMapper.selectByPrimaryKey(room.getParentAreaId());
+        if(subareas == null) throw new MsgException("游戏分区不存在");
 
         int count = gameMemberGroupMapper.updateConfirm(Integer.valueOf(userId), roomCode);
         if(count == 0) throw new MsgException("更新结算状态失败");
@@ -180,6 +211,14 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
         settlement.setUpdateTime(new Date());
         count = settlementMapper.insert(settlement);
         if(count == 0) throw new MsgException("申请结算失败");
+
+        List<GameMemberGroup> memberGroupList = gameMemberGroupMapper.selectNotSettlementByRoomCode(roomCode);
+        if(memberGroupList == null || memberGroupList.isEmpty()){
+            count = gameRoomMapper.updateStatusByRoomCode(roomCode,6);
+            if(count == 0) throw new MsgException("解散房间失败");
+            GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(room, subareas);
+            lastPersonCallback.accept(gameRoomCallbackResp);
+        }
     }
 
 
@@ -213,6 +252,17 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
 
         if(room.getOwnerId().equals(Integer.valueOf(userId))) throw new MsgException("您是此房间的房主！");
 
+
+        // 加载游戏大区
+        Subareas area = subareaMapper.selectByPrimaryKey(room.getParentAreaId());
+        if(area == null) throw new MsgException("游戏大区不存在");
+
+        // 加载钱包信息
+        Wallets wallets = walletMapper.selectByUid(Integer.valueOf(userId));
+        if(wallets == null) throw new MsgException("查询钱包数据异常");
+        Double balance = wallets.getBalance();
+        if(balance < area.getLimitPrice()) throw new MsgException("金币" + area.getLimitPrice().intValue() + "枚以上才可以加入哟~");
+
         // 加载游戏分区
         Subareas subareas = subareaMapper.selectByPrimaryKey(room.getSubareaId());
         if(subareas == null) throw new MsgException("游戏大区不存在");
@@ -221,7 +271,8 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
         if(onLineCount > subareas.getMaxPersonCount()) throw new MsgException("该房间人数已满！");
         // 更改状态为已开始
         if(onLineCount == subareas.getMaxPersonCount()){
-            gameRoomMapper.updateStatusByRoomCode(gameRoom.getRoomCode(), 2);
+            int count = gameRoomMapper.updateStatusByRoomCode(gameRoom.getRoomCode(), 2);
+            if(count == 0) throw new MsgException("更改显示状态失败");
         }
 
         // 加入成员
@@ -268,7 +319,22 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
             // 计算差多少分钟
             long min = diff % nd % nh / nm;
 
-            if(min >= 180) throw new MsgException("限隔180分钟领取一次~");
+            if(min < 180) throw new MsgException("限隔180分钟领取一次~");
         }
+
+
+        Wallets wallets = walletMapper.selectByUid(Integer.valueOf(userId));
+        if(wallets == null) throw new MsgException("查询钱包数据异常");
+        Double balance = wallets.getBalance();
+        if(balance < 100) throw new MsgException("金币100枚以上才可以领取哟~");
+
+        // TODO 这里要推送熊猫服务器才能决定此次是否成功
+        roomCard = new RoomCard();
+        roomCard.setUserId(Integer.valueOf(userId));
+        roomCard.setPandaId(users.getPandaId());
+        roomCard.setState(0);
+        roomCard.setAddTime(new Date());
+        int count = roomCardMapper.insert(roomCard);
+        if(count == 0) throw new MsgException("领取失败");
     }
 }

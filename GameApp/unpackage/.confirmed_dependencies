@@ -51,7 +51,8 @@
 	},
 	"html/home.html": {
 		"refer": [
-			"html/create-room.html"
+			"html/create-room.html",
+			"html/recharge.html"
 		]
 	},
 	"html/room.html": {

@@ -14,30 +14,21 @@
 	<body>
 		<header class="mui-bar mui-bar-nav my-title" >
 			<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" style="color: #fff;"></a>
-			<h1 class="mui-title my-title-color" id="title">结算</h1>
+			<h1 class="mui-title my-title-color" id="title">充值中心</h1>
 		</header>
 		
 		<div class="mui-content">
 		 	<div class="form-placeholder-50"></div>
 			
-			
-			<!--password begin-->
-			<div class="form-item form-item-full">
-				<input type="text" class="form-input" id="standings" maxlength="16" placeholder="请输入战绩" value="632"/>
-			</div>
-			<!--password end-->
-			
-			
 
 			<div class="form-item form-item-full">
-				<input type="text" class="form-input" id="beRouted" maxlength="16" placeholder="请输入败绩" value="556"/>
+				<input type="number" class="form-input" id="amount" maxlength="16" placeholder="请输入充值金额" value=""/>
 			</div>
-
 			
 			
 			<div class="form-placeholder-20"></div>
 			<div class="form-item">
-				<button id='toCloseAccountsButton' class="mui-btn mui-btn-block mui-btn-orange">结&nbsp;&nbsp;算</button>
+				<button id='rechargeButton' class="mui-btn mui-btn-block mui-btn-orange">模拟充值</button>
 			</div>
 
 		</div>
@@ -46,7 +37,7 @@
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/config.js"></script>
 		<script src="../js/app.js"></script> 
-		<script src="../js/room/index.js"></script> 
+		<script src="../js/home/index.js"></script> 
 		<script type="text/javascript">
 			var pages = window.config.pages;
 			 
@@ -67,39 +58,34 @@
 					var self = plus.webview.currentWebview();
 					var beforeSelf = self.self;
 					var roomCode = self.room_code;
-					
-					console.log("beforeSelf" +beforeSelf)
-					
-					var toCloseAccountsButton = doc.getElementById("toCloseAccountsButton"),
-						standings = doc.getElementById("standings"),
-						beRouted = doc.getElementById("beRouted");
+					 
+					var rechargeButton = doc.getElementById("rechargeButton"),
+						amountInput = doc.getElementById("amount");
 						
-					toCloseAccountsButton.addEventListener("tap", function(){
+					rechargeButton.addEventListener("tap", function(){
 						var localCache = plus.storage.getItem('userInfo');
 						if(localCache != null && localCache.length > 0){
 							var param = {
 								"token": JSON.parse(localCache).token.toString(),
-								"roomCode": parseInt(roomCode),
-								"standings": parseFloat(standings.value),
-								"beRouted": parseFloat(beRouted.value)
+								"amount": parseFloat(amountInput.value) 
 							};
 							
-							room.closeAccounts(param, function(data){
+							home.recharge(param, function(data){
 								if(data.code == 500 || data.code == 300){
-									plus.nativeUI.toast("申请失败"); 
+									plus.nativeUI.toast("充值失败"); 
 									return false;
 								}
 								
 								if(data.code == 400){ 
-									if(data.msg == "已存在") data.msg = "请不要重复申请";
 									plus.nativeUI.toast(data.msg);
 									return false;
 								}
 								
-								plus.nativeUI.toast("申请成功");
+								plus.nativeUI.toast("充值成功");
+								
 								$.openWindow({
-									url: 'room.html',
-									id: 'room',
+									url: 'my.html',
+									id: 'my',
 									preload: true,
 									show: {
 										aniShow: 'pop-in',
@@ -115,17 +101,15 @@
 								});
 								
 								for (var i = 0 ; i < pages.length ; i ++) {
-									if (i != 2) { 
+									if (i != 3) { 
 										plus.webview.hide(pages[i].id, "fade-out", 200);
 									}
 								}
 								
-								
-								plus.webview.getWebviewById("room-detail").close();
 								plus.webview.currentWebview().close();
 								
 							}, function(){
-								plus.nativeUI.toast("申请失败");
+								plus.nativeUI.toast("充值失败");
 							});
 						}
 						

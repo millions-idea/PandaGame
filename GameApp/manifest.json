@@ -185,7 +185,8 @@
 			"html/home.html": {
 				"resources": [],
 				"refer": [
-					"html/create-room.html"
+					"html/create-room.html",
+					"html/recharge.html"
 				],
 				"priority": 0
 			},

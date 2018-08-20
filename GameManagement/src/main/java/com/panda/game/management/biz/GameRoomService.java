@@ -10,8 +10,10 @@ package com.panda.game.management.biz;
 import com.panda.game.management.entity.db.GameRoom;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
+import com.panda.game.management.entity.resp.GameRoomCallbackResp;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public interface GameRoomService extends BaseService<GameRoom> {
     /**
@@ -42,8 +44,9 @@ public interface GameRoomService extends BaseService<GameRoom> {
      * @param roomCode
      * @param standings
      * @param beRouted
+     * @param lastPersonCallback
      */
-    void closeAccounts(String token, Long roomCode, Double standings, Double beRouted) ;
+    void closeAccounts(String token, Long roomCode, Double standings, Double beRouted, Consumer<GameRoomCallbackResp> lastPersonCallback);
 
     /**
      * 获取所有游戏房间 韦德 2018年8月20日21:20:09
@@ -60,7 +63,8 @@ public interface GameRoomService extends BaseService<GameRoom> {
 
     /**
      * 领取房卡 韦德 2018年8月20日23:28:15
+     * @param token
      * @param users
      */
-    void getRoomCard(Users users);
+    void getRoomCard(String token, Users users);
 }

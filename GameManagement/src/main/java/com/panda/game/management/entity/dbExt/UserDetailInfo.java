@@ -24,6 +24,7 @@ public class UserDetailInfo {
     private Date addDate;
     private Date updateDate;
     private String ip;
+    private String pandaId;
     private Integer isEnable;
     private Integer isDelete;
 

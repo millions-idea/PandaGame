@@ -167,6 +167,19 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements PayService 
     }
 
     /**
+     * 批量转账 韦德 2018年8月21日01:53:25
+     *
+     * @param payParams
+     */
+    @Override
+    @Transactional
+    public void batchTransfer(List<PayParam> payParams) {
+       payParams.forEach(payParam -> {
+           this.transfer(payParam);
+       });
+    }
+
+    /**
      * 查询交易主体信息 韦德 2018年8月16日13:33:09
      * @param payParam
      * @return [0]=fromUser [1]=toUser

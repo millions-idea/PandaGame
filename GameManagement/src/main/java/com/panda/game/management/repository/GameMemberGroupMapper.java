@@ -23,6 +23,14 @@ public interface GameMemberGroupMapper extends MyMapper<GameMemberGroup> {
      */
     List<GameMemberGroup> selectByRoomCode(@Param("roomCode") Long roomCode);
 
+    @Select("SELECT * FROM tb_game_member_group WHERE room_code = #{roomCode} AND is_confirm = 0")
+    /**
+     * 根据房间号查询未结算成员列表 韦德 2018年8月20日10:36:25
+     * @param roomCode
+     * @return
+     */
+    List<GameMemberGroup> selectNotSettlementByRoomCode(@Param("roomCode") Long roomCode);
+
     @Update("UPDATE tb_game_member_group SET exit_time=NOW() WHERE room_code=#{roomCode}")
     /**
      * 退出房间 韦德 2018年8月20日10:53:27
@@ -37,7 +45,7 @@ public interface GameMemberGroupMapper extends MyMapper<GameMemberGroup> {
      */
     int updateConfirm(@Param("userId")  Integer userId, @Param("roomCode")  Long roomCode);
 
-    @Delete("DELETE FROM tb_game_member_group WHERE user_id=#{userId} AND room_code=#{roomCode} AND status = 0")
+    @Delete("DELETE FROM tb_game_member_group WHERE user_id=#{userId} AND room_code=#{roomCode}")
     /**
      * 删除成员 韦德 2018年8月20日23:18:42
      * @param userId
@@ -45,4 +53,12 @@ public interface GameMemberGroupMapper extends MyMapper<GameMemberGroup> {
      * @return
      */
     int deleteMember(@Param("userId")  Integer userId, @Param("roomCode")  Long roomCode);
+
+    @Select("SELECT * FROM tb_game_member_group WHERE room_code = #{roomCode}")
+    /**
+     * 查询指定房间内的成员列表 韦德 2018年8月21日01:40:42
+     * @param roomCode
+     * @return
+     */
+    List<GameMemberGroup> getListByRoom(@Param("roomCode") Long roomCode);
 }

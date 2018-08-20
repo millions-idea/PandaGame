@@ -31,6 +31,9 @@ public class UserResp {
     private String phone;
     @JsonView(SecurityView.class)
     private String token;
+    @JsonView(SecurityView.class)
+    private String pandaId;
+
 
     @JsonView(FinanceView.class)
     private Double balance;
@@ -38,8 +41,6 @@ public class UserResp {
     private Double canWithdrawAmount;
     @JsonView(FinanceView.class)
     private Double canNotWithdrawAmount;
-    @JsonView(FinanceView.class)
-    private Integer roomCard;
 
     @JsonView(SecurityView.class)
     public String getPhone() {

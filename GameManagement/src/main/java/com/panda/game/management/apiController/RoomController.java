@@ -12,6 +12,7 @@ import com.panda.game.management.entity.JsonArrayResult;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.GameRoom;
 import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
+import com.panda.game.management.facade.GameRoomFacadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,8 @@ import java.util.List;
 public class RoomController {
     @Autowired
     private GameRoomService gameRoomService;
+    @Autowired
+    private GameRoomFacadeService gameRoomFacadeService;
 
     @PostMapping("/create")
     public JsonResult create(String token, GameRoom gameRoom){
@@ -53,7 +56,7 @@ public class RoomController {
 
     @PostMapping("/closeAccounts")
     public JsonResult closeAccounts(String token, Long roomCode, Double standings, Double beRouted){
-        gameRoomService.closeAccounts(token, roomCode, standings, beRouted);
+        gameRoomFacadeService.closeAccounts(token, roomCode, standings, beRouted);
         return JsonResult.successful();
     }
 
