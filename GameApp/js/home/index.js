@@ -142,5 +142,48 @@
 			}
 		})
 	}
+	
+	
+	/**
+	 * 提现
+	 * @param {Object} param
+	 * @param {Object} callback
+	 * @param {Object} errorCallback
+	 */
+	owner.withdraw = function(param, callback, errorCallback){
+		callback = callback || $.noop; 
+		$.ajax(toUrl("api/home/withdraw"), {
+			type: "post",
+			data: param,	
+			success: function(data){
+				console.log(JSON.stringify(data));
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+	}
+	
+	/**
+	 * 获取可用余额
+	 * @param {Object} param
+	 * @param {Object} callback
+	 * @param {Object} errorCallback
+	 */
+	owner.getWithdrawAmount = function(param, callback, errorCallback){
+		callback = callback || $.noop; 
+		$.ajax(toUrl("api/home/getWithdrawAmount"), {
+			type: "get",
+			data: param,	
+			success: function(data){
+				console.log(JSON.stringify(data));
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+	}
 		
 }(mui, window.home = {}));

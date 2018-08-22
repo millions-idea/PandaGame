@@ -260,5 +260,12 @@
 		}
 		items[index].classList.add("mui-active");
 	}
+	
+	owner:getUserGlobalInfo = function(){
+		return {
+			userId: 1
+		};
+	}
+	
 		
 }(mui, window.app = {}));

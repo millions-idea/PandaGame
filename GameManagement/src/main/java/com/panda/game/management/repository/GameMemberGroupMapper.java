@@ -61,4 +61,12 @@ public interface GameMemberGroupMapper extends MyMapper<GameMemberGroup> {
      * @return
      */
     List<GameMemberGroup> getListByRoom(@Param("roomCode") Long roomCode);
+
+    @Select("SELECT * FROM tb_game_member_group WHERE user_id = #{userId} AND is_confirm = 0 AND exit_time IS NULL")
+    /**
+     * 查询未结束的游戏房间 韦德 2018年8月21日17:34:15
+     * @param userId
+     * @return
+     */
+    List<GameMemberGroup> selectByUid(@Param("userId") Integer userId);
 }

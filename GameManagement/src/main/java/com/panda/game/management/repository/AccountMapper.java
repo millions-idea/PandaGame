@@ -17,9 +17,12 @@ import java.util.List;
 @Mapper
 public interface AccountMapper extends MyMapper<Accounts> {
     @Insert("<script>" +
-            "INSERT INTO `tb_accounts` (`accounts_id`,`pay_id`, `trade_account_id`, `trade_account_name`, `accounts_type`, `amount`, `before_balance`, `after_balance`, `add_time`, `remark`) VALUES " +
+            "INSERT INTO `tb_accounts` (`accounts_id`,`pay_id`, `trade_account_id`, `trade_account_name`, `accounts_type`, `amount`, `before_balance`, `after_balance`, `add_time`, `remark`, `currency`) VALUES " +
             "<foreach collection='list' item='item' separator=','>" +
-            "(#{item.accountsId},#{item.payId}, #{item.tradeAccountId}, #{item.tradeAccountName}, #{item.accountsType}, #{item.amount}, (SELECT balance FROM tb_wallets WHERE user_id = #{item.tradeAccountId}),(SELECT CASE WHEN #{item.accountsType} = 1 THEN  balance + #{item.amount}  ELSE balance - #{item.amount}  END AS balance FROM tb_wallets WHERE user_id = #{item.tradeAccountId}), NOW(), #{item.remark})" +
+            "(#{item.accountsId},#{item.payId}, #{item.tradeAccountId}, #{item.tradeAccountName}, #{item.accountsType}, #{item.amount}" +
+            ",(SELECT CASE WHEN #{item.accountsType} = 1 THEN  balance - #{item.amount}  ELSE balance + #{item.amount}  END AS balance FROM tb_wallets WHERE user_id = #{item.tradeAccountId})" +
+            ",(SELECT balance FROM tb_wallets WHERE user_id = #{item.tradeAccountId})" +
+            ", NOW(), #{item.remark}, #{item.currency})" +
             "</foreach>" +
             "</script>")
     /**

@@ -337,4 +337,15 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
         int count = roomCardMapper.insert(roomCard);
         if(count == 0) throw new MsgException("领取失败");
     }
+
+    /**
+     * 根据分区匹配房间 韦德 2018年8月21日17:11:02
+     *
+     * @param subareasId
+     * @return
+     */
+    @Override
+    public GameRoomDetailInfo getLimitRoom(String subareasId) {
+        return gameRoomMapper.getLimitRoom(subareasId);
+    }
 }

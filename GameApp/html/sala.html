@@ -23,9 +23,22 @@
 					<div class="runnerImage">
 						<!--image begin-->
 				    	<div class="mui-slider">
-						  <div class="mui-slider-group" id="runnerImage">
-						    <div class="mui-slider-item"><a href="#"><img src="../images/find_room.png"/></a></div>
+						  <div class="mui-slider-group" >
+						    <div class="mui-slider-item"><a href="javascript:void(0)" id="getLimitRoom"><img src="../images/find_room.png"/></a></div>
 						  </div>
+						  <div class="area" id="area">
+							<span >系统正在加载,请稍后……</span>
+								<!--<input name="checkbox"  type="checkbox" checked>0.1元体验区
+								<input name="checkbox" type="checkbox" checked>1元体验区
+								<input name="checkbox"  type="checkbox" checked>2元体验区
+								<input name="checkbox"  type="checkbox" checked>5元体验区-->
+							
+						  </div>
+						  <script id="areaTemplate" type="text/html">
+							{{each list as item index}}
+								<input name="checkbox" value="{{item.subareaId}}" type="checkbox" class="{{index == 2 ? 'break' : ''}}" checked>{{item.limitPrice}}区
+							{{/each}}
+						</script>
 						</div>
 				    	<!--image end-->
 					</div> 
@@ -71,6 +84,7 @@
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/config.js"></script>
 		<script src="../js/app.js"></script>
+		<script src="../js/home/index.js"></script>
 		<script src="../js/room/index.js"></script>
 		
 		<script type="text/javascript">
@@ -117,12 +131,105 @@
 			})(mui, document);
 			
 			function refresh(callback){
+				home.getLevelSubareas({}, function(data){
+					if(data == null || data.code != 200) return plus.nativeUI.toast("加载游戏分区失败");
+					var html = template("areaTemplate", {
+						list: data.data
+					}); 
+					gDoc.getElementById("area").innerHTML = html;
+					
+					
+					
+					gDoc.getElementById("getLimitRoom").addEventListener("tap", function(){
+						var checkList = gDoc.getElementsByName("checkbox");
+						var idJoin = "";
+						
+						for (var i = 0; i < checkList.length; i++) {
+							
+							if(checkList[i].checked != null && checkList[i].checked == true){
+								idJoin += checkList[i].value;
+								if((i+1) < checkList.length) idJoin += ",";
+							}
+							
+						}
+						if(idJoin == "") idJoin = "0";
+						
+						room.getLimitRoom({"subareasId": idJoin}, function(data){
+							
+							if(data.code == 500 || data.code == 300){
+								plus.nativeUI.toast("匹配失败"); 
+								return false;
+							}
+							
+							if(data.code == 400){ 
+								plus.nativeUI.toast(data.msg);
+								return false;
+							}
+							
+							plus.nativeUI.toast("匹配成功");
+							
+							var roomCode = data.msg.roomCode;
+							var name = data.msg.name;
+						
+						
+							// 加入房间
+							plus.nativeUI.confirm("确定要加入【" +roomCode + " - " + name+"】房间吗？", function(e){
+								if(e.index == 0){
+									var localCache = plus.storage.getItem('userInfo');
+									if(localCache != null && localCache.length > 0){
+										room.joinRoom({
+											"token": JSON.parse(localCache).token.toString(),
+											"roomCode": roomCode
+										}, function(data){
+											if(data == null || data.code == null || data.code == 500  || data.code == 300){
+												plus.nativeUI.toast("加入房间失败");
+												return false;
+											}
+		                					
+		                					if(data.code == 400){
+		                						if(data.msg == "已存在") data.msg = "您已是此房间的成员";
+												plus.nativeUI.toast(data.msg);
+												return false;
+											}
+		                					
+											plus.nativeUI.toast("加入成功");
+											
+											mui.openWindow({
+							                    url: "/html/room-detail.html",
+							                    id: "room-detail",
+							                    preload: false,
+							                    waiting: {
+							                        autoShow: true,
+						                          title:'正在加载...'
+							                    },
+							                    extras:{
+							                    	"title": roomCode + " - " + name,
+													"room_code": roomCode
+											    },
+											    createNew:true
+							    
+							                });
+										}, function(){
+											
+										});
+									}
+									
+								}
+							}, ["取消", "确定"])
+						
+						
+						}, function(){
+							
+						})
+					})
+				}, function(){});
+				
+				
 				var localCache = plus.storage.getItem('userInfo');
 				if(!(localCache != null && localCache.length > 0)) return false; 
 				room.getAllRoomList({}, function(data){
 					if(gDoc.getElementById("loading-text") != null)	gDoc.getElementById("loading-text").innerText = "暂时还没有游戏房间";
-		
-					
+
 					mui('#refreshContainer').pullRefresh().endPulldown();
 
 					if(data == null || data.code != 200) return plus.nativeUI.toast("加载列表失败");

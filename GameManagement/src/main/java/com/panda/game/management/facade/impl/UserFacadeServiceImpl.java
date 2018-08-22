@@ -43,7 +43,8 @@ public class UserFacadeServiceImpl implements UserFacadeService {
         payParam.setAmount(5D);
         payParam.setToUid(param.getUserId());
         payParam.setRemark("新用户注册奖励");
-        payService.transfer(payParam);
+        payParam.setCurrency(1);
+        payService.recharge(payParam);
 
         return true;
     }

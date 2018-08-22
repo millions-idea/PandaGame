@@ -10,7 +10,6 @@ body {
 
 
 
-ï»¿/*å›¾ç‰‡æ°”æ³¡*/
 .friend_lists {
 	margin: 0 50px 0px 10px;
 	position: relative;
@@ -18,8 +17,8 @@ body {
 
 .friend_lists .header_img {
 	position: absolute;
-	top: 90px;
-	left: 5px;
+	/* top: 90px; */
+	/*left: 5px;*/
 }
 
 .me_lists {
@@ -39,7 +38,7 @@ body {
 }
 
 
-/*èƒŒæ™¯æ°”æ³¡*/
+/*Ã¨Æ’Å’Ã¦â„¢Â¯Ã¦Â°â€Ã¦Â³Â¡*/
 .msg-left-white {
 	background-color: #FFFFFF;
 	font-size: 16px;

@@ -22,4 +22,5 @@ public class PayParam {
     private Double amount;
     private String remark;
     private long systemRecordId;
+    private Integer currency = 0;
 }

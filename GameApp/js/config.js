@@ -1,8 +1,9 @@
 (function(){
 	
 	window.config = {
-		title: "宜乐",
-		api: "http://8d696q.natappfree.cc/",
+		title: "宜乐对战",
+		api: "http://zf3u22.natappfree.cc/",
+		wss: "ws://192.168.1.103:8088/ws",
 		pages: [{
 			id: "home",
 			url: "html/home.html",

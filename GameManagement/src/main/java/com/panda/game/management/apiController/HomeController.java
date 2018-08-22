@@ -7,18 +7,17 @@
  */
 package com.panda.game.management.apiController;
 
-import com.panda.game.management.biz.DictionaryService;
-import com.panda.game.management.biz.GameRoomService;
-import com.panda.game.management.biz.PayService;
-import com.panda.game.management.biz.SubareaService;
+import com.panda.game.management.biz.*;
 import com.panda.game.management.entity.Constant;
 import com.panda.game.management.entity.JsonArrayResult;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.Subareas;
 import com.panda.game.management.entity.db.Users;
+import com.panda.game.management.entity.db.Withdraw;
 import com.panda.game.management.entity.param.PayParam;
 import com.panda.game.management.entity.resp.GroupInformation;
 import com.panda.game.management.exception.MsgException;
+import com.panda.game.management.facade.FinanceFacadeService;
 import com.panda.game.management.facade.UserFacadeService;
 import com.panda.game.management.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +41,16 @@ public class HomeController {
     private GameRoomService gameRoomService;
     @Autowired
     private PayService payService;
-
+    @Autowired
+    private WithdrawService withdrawService;
+    @Autowired
+    private FinanceFacadeService financeFacadeService;
 
     @GetMapping("/getLevelSubareas")
     public JsonArrayResult<Subareas> getLevelSubareas(){
         List<Subareas> list = subareaService.getLevelSubareas();
         return new JsonArrayResult<>(list);
     }
-
 
     @GetMapping("/getSubareas")
     public JsonArrayResult<Subareas> getSubareas(Integer subareaId){
@@ -84,5 +85,24 @@ public class HomeController {
         payParam.setAmount(amount);
         payService.transfer(payParam);
         return JsonResult.successful();
+    }
+
+    @PostMapping("/withdraw")
+    public JsonResult withdraw(String token, Double amount){
+        financeFacadeService.addWithdraw(token, amount);
+        return JsonResult.successful();
+    }
+
+    @GetMapping("/getWithdrawAmount")
+    public JsonResult<Double> getWithdrawAmount(String token){
+        // 加载用户信息
+        Map<String, String> map = TokenUtil.validate(token);
+        if(map.isEmpty()) JsonResult.failing();
+        String userId = map.get("userId");
+        if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
+
+        // 查询可用余额
+        Double withdrawAmount = payService.getWithdrawAmount(Integer.valueOf(userId));
+        return new JsonResult().successful(withdrawAmount);
     }
 }

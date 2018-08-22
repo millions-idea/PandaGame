@@ -7444,7 +7444,7 @@ Function.prototype.bind = Function.prototype.bind || function(to) {
     }());
 
     var createInput = function(placeholder) {
-        return '<div class="' + CLASS_POPUP_INPUT + '"><input type="text" autofocus placeholder="' + (placeholder || '') + '"/></div>';
+        return '<div class="' + CLASS_POPUP_INPUT + '"><input type="number" maxLength="6" oninput="if(value.length>6)value=value.slice(0,6)" style="font-size:18px; height:30px; line-height:30px; text-align:center; " autofocus placeholder="' + (placeholder || '') + '"/></div>';
     };
     var createInner = function(message, title, extra) {
         return '<div class="' + CLASS_POPUP_INNER + '"><div class="' + CLASS_POPUP_TITLE + '">' + title + '</div><div class="' + CLASS_POPUP_TEXT + '">' + message.replace(/\r\n/g, "<br/>").replace(/\n/g, "<br/>") + '</div>' + (extra || '') + '</div>';

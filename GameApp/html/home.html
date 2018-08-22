@@ -74,7 +74,7 @@
 						<button>立刻充值</button>
 					</div>
 					
-					<div class="withdraw">
+					<div class="withdraw" id="withdraw">
 						<span id="centerRightAdTitle">赢了游戏来领钱啦~</span>
 						<p id="centerRightAdDesc">秒结算！真金白银带回家</p>
 						<button>我要提现</button>
@@ -183,11 +183,26 @@
 		    
 		                });
 					})
+					
+					
+					
+					doc.getElementById("withdraw").addEventListener("tap", function(){
+						mui.openWindow({
+		                    url: "withdraw.html",
+		                    id: "withdraw",
+		                    preload: false,
+		                    waiting: {
+		                        autoShow: true,
+	                          title:'正在加载...'
+		                    },
+						    createNew:true
+		    
+		                });
+					})
 					 
 					doc.getElementById("getRoomCard").addEventListener("tap", function(){
 						var localCache = plus.storage.getItem('userInfo');
 						if(localCache != null && localCache.length > 0){
-							console.log("localCache: " + localCache)
 							home.getRoomCard({
 								"token": JSON.parse(localCache).token.toString(),
 								"pandaId": JSON.parse(localCache).pandaId.toString(),
@@ -197,7 +212,7 @@
 
 								plus.nativeUI.toast("领取成功");
 							}, function(){
-								
+								plus.nativeUI.toast("领取失败");
 							})
 						}
 						

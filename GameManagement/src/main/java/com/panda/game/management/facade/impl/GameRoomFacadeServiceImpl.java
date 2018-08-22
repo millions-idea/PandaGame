@@ -53,13 +53,17 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
 
             List<PayParam> payParams = new ArrayList<>();
             memberList.forEach(member -> {
+                Double price = gameRoomCallbackResp.getSubareas().getLimitPrice();
                 PayParam payParam = new PayParam();
+                // 优先扣减不可用余额
+                Double notWithdrawAmount = payService.getNotWithdrawAmount(member.getUserId());
+                if(notWithdrawAmount > price) payParam.setCurrency(1);
                 payParam.setFromUid(member.getUserId());
-                payParam.setAmount(gameRoomCallbackResp.getSubareas().getLimitPrice());
+                payParam.setAmount(price);
                 payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
                 payParams.add(payParam);
             });
-            payService.batchTransfer(payParams);
+            payService.batchConsume(payParams);
         });
     }
 }

@@ -67,4 +67,12 @@ public interface GameRoomMapper extends MyMapper<GameRoom> {
      * @return
      */
     int selectRoomOnLineCount(@Param("roomCode") Long roomCode);
+
+    @Select("SELECT * FROM tb_game_room WHERE `status` = 0 AND is_enable = 1 AND parent_area_id IN(${subareasId}) LIMIT 1;")
+    /**
+     * 根据分区匹配合适的房间 韦德 2018年8月21日17:11:31
+     * @param subareasId
+     * @return
+     */
+    GameRoomDetailInfo getLimitRoom(@Param("subareasId") String subareasId);
 }

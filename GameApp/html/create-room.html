@@ -45,7 +45,7 @@
 		</div>
 		
 		
-		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.js"></script>
 		<script src="../js/config.js"></script>
 		<script src="../js/app.js"></script>
 		<script src="../js/home/index.js"></script>
@@ -98,6 +98,8 @@
 		                		
 		                		$.prompt("请输入<span style='color:red'>熊猫麻将</span>房间号码</br>", "", "请输入房间号码", ['取消','确定'], function(e){
 		                			var popInput = document.querySelector('.mui-popup-input input');
+
+		                			
 		                			if(e.index == 1){
 		                				if(popInput.value.length != 6){
 		                					plus.nativeUI.toast("房间号码应为6位数字")
@@ -125,7 +127,7 @@
 			                					$.openWindow({
 													url: 'room.html',
 													id: 'room',
-													preload: true,
+													preload: false,
 													show: {
 														aniShow: 'pop-in',
 														duration: 200

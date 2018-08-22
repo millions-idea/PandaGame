@@ -67,4 +67,11 @@ public interface GameRoomService extends BaseService<GameRoom> {
      * @param users
      */
     void getRoomCard(String token, Users users);
+
+    /**
+     * 根据分区匹配房间 韦德 2018年8月21日17:11:02
+     * @param subareasId
+     * @return
+     */
+    GameRoomDetailInfo getLimitRoom(String subareasId);
 }

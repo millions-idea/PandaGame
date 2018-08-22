@@ -47,7 +47,6 @@ public class RoomController {
         return new JsonArrayResult<>(list);
     }
 
-
     @PostMapping("/disband")
     public JsonResult disband(String token, GameRoom gameRoom){
         gameRoomService.disband(token, gameRoom);
@@ -64,5 +63,13 @@ public class RoomController {
     public JsonResult join(String token, GameRoom gameRoom){
         gameRoomService.join(token, gameRoom);
         return JsonResult.successful();
+    }
+
+
+    @GetMapping("/getLimitRoom")
+    public JsonResult<GameRoomDetailInfo> getLimitRoom(String subareasId){
+        GameRoomDetailInfo model =  gameRoomService.getLimitRoom(subareasId);
+        if(model == null) return new JsonResult<>().normalExceptionAsString("没有匹配到合适的房间");
+        return new JsonResult<>().successful(model);
     }
 }

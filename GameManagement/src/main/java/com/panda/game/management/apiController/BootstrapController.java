@@ -41,14 +41,16 @@ public class BootstrapController {
 
     @PostMapping("/register")
     public JsonResult register(HttpServletRequest request, Users user, String smsCode){
+        if(user.getPandaId().isEmpty()) return new JsonResult().normalExceptionAsString("熊猫麻将ID是必填项");
+
         // 1、检查是否在黑名单中
         String userIp = RequestUtil.getIp(request);
         badBoyService.isRegisterBlackList(userIp);
 
         // 2、校验手机短信
         String currentMessage = smsService.getCurrentMessage(user.getPhone());
-        if(currentMessage == null || currentMessage == Constant.RECYCLE) return new JsonResult().exceptionAsString("验证码无效");
-        if(!currentMessage.equalsIgnoreCase(smsCode)) return new JsonResult().exceptionAsString("验证码错误");
+        if(currentMessage == null || currentMessage == Constant.RECYCLE) return new JsonResult().normalExceptionAsString("验证码无效");
+        if(!currentMessage.equalsIgnoreCase(smsCode)) return new JsonResult().normalExceptionAsString("验证码错误");
         smsService.setRecycle(user.getPhone());
 
         // 3、添加用户数据
@@ -56,6 +58,7 @@ public class BootstrapController {
         user.setPassword(MD5Util.md5(user.getPhone() + user.getPassword()));
         user.setIsEnable(1);
         user.setIsDelete(0);
+        user.setAddDate(new Date());
         user.setUpdateDate(new Date());
         userFacadeService.register(user);
         badBoyService.addToRegisterBlackList(userIp);
@@ -64,14 +67,14 @@ public class BootstrapController {
 
     @GetMapping("/getSmsCode")
     public JsonResult getSmsCode(HttpServletRequest request, String phone){
-        if(phone.length() < 11) return new JsonResult().exceptionAsString("手机号最短需要11位数字");
+        if(phone.length() < 11) return new JsonResult().normalExceptionAsString("手机号最短需要11位数字");
 
         // 1、检查是否在黑名单中
         String userIp = RequestUtil.getIp(request);
         badBoyService.isRegisterBlackList(userIp);
 
         // 2、是否超过日限
-        if( smsService.isOutMaxRange(phone)) return new JsonResult().exceptionAsString("操作频繁");
+        if( smsService.isOutMaxRange(phone)) return new JsonResult().normalExceptionAsString("操作频繁");
 
         // 3、发送手机短信验证码
         smsService.sendMessage(phone, "1234");
@@ -84,7 +87,7 @@ public class BootstrapController {
         String userIp = RequestUtil.getIp(request);
         user.setIp(userIp);
         UserResp userResp = userService.loginAndQuery(user, smsCode);
-        if(userResp == null) return new JsonResult().exceptionAsString("登录失败");
+        if(userResp == null) return new JsonResult().normalExceptionAsString("登录失败");
         return new JsonResult<UserResp>().successful(userResp);
     }
 

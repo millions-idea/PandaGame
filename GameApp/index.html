@@ -73,6 +73,9 @@
 				};
 				 
 				 
+				// 监听网络状态变化
+				netChangeSwitch();
+				 
 				// 初始化webView列表
 				var currentWebView = plus.webview.currentWebview();
 				// 动态创建webView对象
@@ -102,7 +105,25 @@
 			});
 		}(mui, document));
 		
-		 
+		
+		/**
+		 * 监听网络状态变化 韦德 2018年8月22日20:49:37
+		 */
+		function netChangeSwitch(){
+			document.addEventListener("netchange", function(){
+				// 网络状态变化判断
+				var connectionState = plus.networkinfo.getCurrentType();
+				if(connectionState != 0 && connectionState != 1){
+					// 重新打开网络连接
+					
+
+				}else{
+					// 关闭网络连接
+					mui.alert("请打开网络连接");
+				}
+			})
+		}
+		
 		
 		/**
 		 * 初始化所有的webView 韦德 2018年8月12日18:05:38
@@ -175,6 +196,12 @@
 		function showCallback(id){
 			if(id == "room"){
 				app.toBar(2, gDoc);
+			}else if(id == "my"){
+				app.toBar(3, gDoc);
+			}else if(id == "sala"){
+				app.toBar(1, gDoc);
+			}else if(id == "home"){
+				app.toBar(0, gDoc);
 			}
 		}
 	</script>

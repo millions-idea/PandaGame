@@ -15,7 +15,7 @@
 			<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" style="color: #fff; position: relative; top:12px"></a>
 			<h1 class="mui-title my-title-color" id="title">...</h1>
 			<h1 class="top-down-title">
-				<span style="font-size:16px" class="mui-icon mui-icon-person"></span>&nbsp;<span id="personCount" style="font-size:12px">0</span>
+				<span style="font-size:16px" class="mui-icon mui-icon-person"></span>&nbsp;<span id="personCount" style="font-size:12px" >0</span>
 			</h1>
 			<a id="openMenu" class="mui-icon mui-icon-right-nav mui-pull-right" style="color: white;position: relative;top: 8px;right:5px">…</a>
 		</header>
@@ -59,6 +59,25 @@
 					</div>
 				</div>
 
+				<div class="friend_lists">
+					<div class="header_img">
+						<img src="../images/if_unknown_403017.png" width="40px" height="40px" />
+					</div>
+					<div class="msg-wrapper right">
+						<p class="msg-left-white">晚上过来吃饭？</p>
+					</div>
+				</div>
+
+				<div class="me_lists">
+					<div class="header_img">
+						<img src="../images/if_unknown_403017.png" width="40px" height="40px" />
+					</div>
+					<div class="msg-wrapper left">
+						<p class="msg-right-green">好的，没问题！时间地点？</p>
+					</div>
+				</div>
+
+
 			</div>
 		</div>
 		
@@ -78,113 +97,248 @@
 		<script src="../js/room/index.js"></script> 
 		<script type="text/javascript">
 			var pages = window.config.pages;
+			var firends;
+			var $ = mui;
+			var doc = document;
 			
-			(function($, doc){
-				$.init({
-					statusBarStyle: "light",
-					statusBarBackground: '#fe5a2f'
+			
+			$.init({
+				statusBarStyle: "light",
+				statusBarBackground: '#fe5a2f'
+			});
+			
+			$.plusReady(function(){
+				// 设置顶部状态栏样式
+				plus.navigator.setStatusBarStyle("light");
+				plus.navigator.setStatusBarBackground("#FE532A");
+				
+				// 禁止屏幕翻转
+				plus.screen.lockOrientation("portrait-primary");
+				
+				// 绑定动态标题事件
+				var self = plus.webview.currentWebview(),
+					titleComponent = doc.getElementById("title"); 
+				self.addEventListener("show", function(){  
+					titleComponent.innerHTML = self.title; 
+				})
+				
+				// 获取上一个页面传入的值
+				friends = self.friends;
+				friends = JSON.parse('[{"id":1, "username": "15253133391"}]');
+				doc.getElementById("personCount").innerHTML = "" + friends.length;
+				
+				
+				// 绑定选择菜单
+				var openMenu = doc.getElementById("openMenu"),
+					toDisband = doc.getElementById("toDisband"),
+					toCloseAccounts = doc.getElementById("toCloseAccounts"),
+					roomCode = self.room_code;
+					
+					
+				openMenu.addEventListener("tap", function() {
+					$("#sheet").popover("toggle");  
 				});
 				
-				$.plusReady(function(){
-					// 设置顶部状态栏样式
-					plus.navigator.setStatusBarStyle("light");
-					plus.navigator.setStatusBarBackground("#FE532A");
+				toDisband.addEventListener("tap", function(){
 					
-					// 禁止屏幕翻转
-					plus.screen.lockOrientation("portrait-primary");
-					
-					// 绑定动态标题事件
-					var self = plus.webview.currentWebview(),
-						titleComponent = doc.getElementById("title"); 
-					self.addEventListener("show", function(){  
-						titleComponent.innerHTML = self.title; 
-					})
-					
-					
-					// 绑定选择菜单
-					var openMenu = doc.getElementById("openMenu"),
-						toDisband = doc.getElementById("toDisband"),
-						toCloseAccounts = doc.getElementById("toCloseAccounts"),
-						roomCode = self.room_code;
-						
-						
-					openMenu.addEventListener("tap", function() {
-						$("#sheet").popover("toggle");  
-					});
-					
-					toDisband.addEventListener("tap", function(){
-						
-					 	plus.nativeUI.confirm("您确定要退出此房间？", function(e){
-					 		if(e.index == 1){
-					 			$("#sheet").popover("toggle"); 
-					 			
-					 			var localCache = plus.storage.getItem('userInfo');
-								if(!(localCache != null && localCache.length > 0)) return false; 
-					 			room.disband({
-					 				"token": JSON.parse(localCache).token.toString(),
-					 				"roomCode": roomCode
-					 			}, function(data){
-									if(data == null || data.code == 500 || data.code == 300) return plus.nativeUI.toast("退出失败");
-					
-									if(data == null || data.code == 400) return plus.nativeUI.toast(data.msg);
-					
-					 				plus.nativeUI.toast("退出成功")
-					 				
-					 				$.openWindow({
-										url: 'room.html',
-										id: 'room',
-										preload: true,
-										show: {
-											aniShow: 'pop-in',
-											duration: 200
-										},
-										styles: {
-											popGesture: 'hide'
-										},
-										waiting: {
-											title: "正在加载...",
-											autoShow: true
-										}
-									});
-									
-									for (var i = 0 ; i < pages.length ; i ++) {
-										if (i != 2) { 
-											plus.webview.hide(pages[i].id, "fade-out", 200);
-										}
+				 	plus.nativeUI.confirm("您确定要退出此房间？", function(e){
+				 		if(e.index == 1){
+				 			$("#sheet").popover("toggle"); 
+				 			
+				 			var localCache = plus.storage.getItem('userInfo');
+							if(!(localCache != null && localCache.length > 0)) return false; 
+				 			room.disband({
+				 				"token": JSON.parse(localCache).token.toString(),
+				 				"roomCode": roomCode
+				 			}, function(data){
+								if(data == null || data.code == 500 || data.code == 300) return plus.nativeUI.toast("退出失败");
+				
+								if(data == null || data.code == 400) return plus.nativeUI.toast(data.msg);
+				
+				 				plus.nativeUI.toast("退出成功")
+				 				
+				 				$.openWindow({
+									url: 'room.html',
+									id: 'room',
+									preload: true,
+									show: {
+										aniShow: 'pop-in',
+										duration: 200
+									},
+									styles: {
+										popGesture: 'hide'
+									},
+									waiting: {
+										title: "正在加载...",
+										autoShow: true
 									}
-					 				plus.webview.currentWebview().close();
-					 			}, function(){
-					 				plus.nativeUI.toast("退出失败")
-					 			});
-					 		}
-					 	}, "敏感操作", ["取消","确定"]);
-					})
+								});
+								
+								for (var i = 0 ; i < pages.length ; i ++) {
+									if (i != 2) { 
+										plus.webview.hide(pages[i].id, "fade-out", 200);
+									}
+								}
+				 				plus.webview.currentWebview().close();
+				 			}, function(){
+				 				plus.nativeUI.toast("退出失败")
+				 			});
+				 		}
+				 	}, "敏感操作", ["取消","确定"]);
+				})
+				
+				toCloseAccounts.addEventListener("tap", function(){ 
+				 	mui.openWindow({
+	                    url: "close-accounts.html",
+	                    id: "close-accounts",
+	                    preload: false,
+	                    waiting: {
+	                        autoShow: true,
+                          title:'正在加载...'
+	                    },
+	                    extras:{
+							"room_code": roomCode,
+							"self": self
+					    },
+					    createNew:true
+	    
+	                });
+					$("#sheet").popover("toggle");
 					
-					toCloseAccounts.addEventListener("tap", function(){ 
-					 	mui.openWindow({
-		                    url: "close-accounts.html",
-		                    id: "close-accounts",
-		                    preload: false,
-		                    waiting: {
-		                        autoShow: true,
-	                          title:'正在加载...'
-		                    },
-		                    extras:{
-								"room_code": roomCode,
-								"self": self
-						    },
-						    createNew:true
-		    
-		                });
-						$("#sheet").popover("toggle");
-						
-					})
-					
+				})
+				
+				
+				
+				var areaMsgList = document.getElementById("msg");
+				// 设置聊天记录进入页面的时候自动滚动到最后一条
+				areaMsgList.scrollTop = areaMsgList.scrollHeight + areaMsgList.offsetHeight;
+				
+				// 获取dom控件
+				var msg_text = document.getElementById("msg-text");
+				var send = document.getElementById("send");
+				
+				// 监听用户输入，使得send按钮变色
+				msg_text.addEventListener("input", function(){
+					var msg_text_val = msg_text.value;
+					if (msg_text_val.length > 0) {
+						send.setAttribute("class", "mui-btn-green");
+					} else {
+						send.setAttribute("class", "mui-btn-gray");
+					}
 				});
+				
+				// 对当前的窗口监听resize事件
+				window.addEventListener("resize", function(){
+					resizeScreen();
+					document.getElementById("msg-outter").style.paddingBottom = "50px";
+				});
+				
+				
+				// 发送消息按钮的事件绑定
+				send.addEventListener("tap", function(){
+					
+					// 发送之前判断网络的状态
+					var connectionStatus = plus.networkinfo.getCurrentType();
+					if (connectionStatus == 0 || connectionStatus == 1) {
+						app.showToast("请打开网络连接...", "error");
+						return;
+					}
+					
+					// 获取消息内容
+					var msg_text_val = msg_text.value;
+					
+					// 判断消息内容，如果长度等于0，则return
+					if (msg_text_val.length === 0) {
+						return;
+					}
+					
+					// 发送消息, 渲染消息的html到msg div之下
+					sendMsg(msg_text_val);
+					// 情况消息文本框中的内容
+					msg_text.value = "";
+					// 发送消息完毕之后，把发送按钮的颜色改为灰白色
+					send.setAttribute("class", "mui-btn-gray");
+					receiveMsg("模拟接受消息~~~~~~");
+					
+					// 构建ChatMsg
+					//var chatMsg = new app.ChatMsg(me.id, friendUserId, msg_text_val, null);
+					
+					// 调用websocket 发送消息到netty后端
+					var wsWebview = plus.webview.getWebviewById("room");
+					//wsWebview.evalJS("CHAT.chat('" + JSON.stringify(dataContent) + "')");
+					wsWebview.evalJS("CHAT.chat('" + msg_text_val + "')");
+					
+					// 保存聊天历史记录到本地缓存
+					//app.saveUserChatHistory(me.id, friendUserId, msg_text_val, 1);
+					//app.saveUserChatSnapshot(me.id, friendUserId, msg_text_val, true);
+					// receiveMsg("模拟接受消息~~~~~~");
+				});
+				
+				
+			});
 
-			})(mui, document)
+			
+			
+			/**
+			 * 接收消息
+			 * @param {Object} msg
+			 */
+			function receiveMsg(msg) {
+				var msgHtml = '<div class="friend_lists">' +
+									'<div class="header_img">' +
+										'<img src="../images/if_unknown_403017.png" width="40px" height="40px" />' +
+									'</div>' +
+									'<div class="msg-wrapper right">' +
+										'<p class="msg-left-white">' + msg + '</p>' +
+									'</div>' +
+							  '</div>'; 
+				
+				var msg_list = document.getElementById("msg");
+				msg_list.insertAdjacentHTML("beforeend", msgHtml);
+				
+				playReceiveMsgSound();
+			}
+			
+			/**
+			 * 发送消息，渲染html
+			 * @param {Object} msg
+			 */
+			function sendMsg(msg){
+			 	var str  = '<div class="me_lists">' +
+								'<div class="header_img">' +
+									'<img src="../images/if_unknown_403017.png" width="40px" height="40px" />' + 
+								'</div>' + 
+								'<div class="msg-wrapper left">' +
+									'<p class="msg-right-green">' + msg + '</p>'
+								'</div>' + 
+							'</div>';
+							
+				var list = document.getElementById("msg");
+				list.insertAdjacentHTML("beforeend",str);
+				
+				
+				playSendMsgSound();
+			 }
 			 
-			  
+			 
+			 // 播放发送消息的铃声
+			function playSendMsgSound() {
+				var audioPlayer = plus.audio.createPlayer("/mp3/send.mp3");
+				audioPlayer.play();
+			}
+			
+			// 播放接受消息的铃声
+			function playReceiveMsgSound() {
+				var audioPlayer = plus.audio.createPlayer("/mp3/msn.mp3");
+				audioPlayer.play();
+			}
+			
+			// 重新调整聊天窗口
+			function resizeScreen() {
+				var areaMsgList = document.getElementById("msg");
+				// 设置聊天记录进入页面的时候自动滚动到最后一条
+				areaMsgList.scrollTop = areaMsgList.scrollHeight + areaMsgList.offsetHeight;
+			};
 		</script>
 	</body>
 

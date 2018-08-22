@@ -31,7 +31,7 @@ public class BadBodyServiceImpl implements BadBoyService {
     @Override
     public void isRegisterBlackList(String ip) {
         Object cacheIp = redisTemplate.opsForValue().get("short:register:ip");
-        if(cacheIp != null) throw new MsgException("明天再来吧");
+        if(cacheIp != null && String.valueOf(cacheIp).equalsIgnoreCase(ip)) throw new MsgException("明天再来吧");
     }
 
     /**

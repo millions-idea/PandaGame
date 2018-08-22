@@ -27,6 +27,7 @@ public class Accounts {
     private Integer tradeAccountId;
     private String tradeAccountName;
     private Integer accountsType;
+    private Integer currency;
     private Double amount;
     private Double beforeBalance;
     private Double afterBalance;
