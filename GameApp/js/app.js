@@ -262,10 +262,8 @@
 	}
 	
 	owner:getUserGlobalInfo = function(){
-		return {
-			userId: 1
-		};
-	}
-	
+		var json = plus.storage.getItem('userInfo');
+		return JSON.parse(json);
+	} 
 		
 }(mui, window.app = {}));
