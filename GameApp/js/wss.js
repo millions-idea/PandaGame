@@ -9,14 +9,16 @@ window.wss = {
 	PULL_FRIEND:5,	// 重新拉取好友
 	
 	/**
-	 * 和后端的 ChatMsg 聊天模型对象保持一致
+	 * 设置聊天模型
 	 * @param {Object} senderId
+	 * @param {Object} roomCode
 	 * @param {Object} receiverId
 	 * @param {Object} msg
 	 * @param {Object} msgId
 	 */
-	ChatMsg: function(senderId, receiverId, msg, msgId){
+	ChatMsg: function(senderId, roomCode, receiverId, msg, msgId){
 		this.senderId = senderId;
+		this.roomCode = roomCode;
 		this.receiverId = receiverId;
 		this.msg = msg;
 		this.msgId = msgId;

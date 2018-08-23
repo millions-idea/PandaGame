@@ -1,6 +1,7 @@
 package com.panda.game.management;
 
 import com.panda.game.management.config.WebLogAspectConfiguration;
+import com.panda.game.management.utils.SpringApplicationContext;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -21,5 +22,10 @@ public class ManagementApplication {
 	@Bean
 	public WebLogAspectConfiguration geWebLogAspectConfiguration(){
 		return new WebLogAspectConfiguration(true);
+	}
+
+	@Bean
+	public SpringApplicationContext getSpringApplicationContext() {
+		return new SpringApplicationContext();
 	}
 }
