@@ -147,132 +147,155 @@
 					gDoc.getElementById("list").innerHTML = html; 
 					
 					var roomItems = gDoc.getElementsByName("item");
+					
 					for (var i = 0; i < roomItems.length; i++) {
 						var roomItem = roomItems[i];
 						
-						roomItem.addEventListener("tap", function(){ 
+						
+						roomItem.addEventListener("tap", function(e){
+							e.stopPropagation();
+							
 							var roomCode = this.getAttribute("data-code");
 							var name =this.getAttribute("data-name"); 
+										
+							// 构建聊天业务CHAT
+							/*if(window.CHAT != null) {
+								console.log("主动关闭wss连接");
+								if(window.CHAT.socket != null) window.CHAT.socket.close()
+							}
+							*/
 							
-						
-						// 构建聊天业务CHAT
-						
-						if(window.CHAT != null) {
-							console.log("主动关闭wss连接");
-							window.CHAT.socket.close()
-						}
-						
-						window.CHAT = {
-							socket: null,
-							init: function() {
-								console.log("初始化wss");
-								if (window.WebSocket) {
+							var reChatHand,
+								activeHand;
+							
+							window.CHAT = {
+								socket: null,
+								init: function() {
+									console.log("初始化wss");
+									if (window.WebSocket) {
+										
+										// 如果当前的状态已经连接，那就不需要重复初始化websocket
+										if (CHAT.socket != null 
+											&& CHAT.socket != undefined 
+											&& CHAT.socket.readyState == WebSocket.OPEN) {
+												console.log("wss已连接");
+											return false;
+										}
+										
+										console.log("创建wss连接");
+										
+										CHAT.socket = new WebSocket(config.wss);
+										CHAT.socket.onopen = CHAT.wsopen,
+										CHAT.socket.onclose = CHAT.wsclose,
+										CHAT.socket.onerror = CHAT.wserror,
+										CHAT.socket.onmessage = CHAT.wsmessage;
+									} else {
+										mui.alert("手机设备过旧，请升级手机设备...");
+									}
+								},
+								close: function(){
+									CHAT.socket.close();
+								},
+								chat: function(msg) {
+									console.log("发送消息：" + msg);
 									
-									// 如果当前的状态已经连接，那就不需要重复初始化websocket
+									// 如果当前websocket的状态是已打开，则直接发送， 否则重连
 									if (CHAT.socket != null 
-										&& CHAT.socket != undefined 
-										&& CHAT.socket.readyState == WebSocket.OPEN) {
-										return false;
+											&& CHAT.socket != undefined  
+											&& CHAT.socket.readyState == WebSocket.OPEN) {
+											console.log("直连websocket：" + msg);
+			
+											CHAT.socket.send(msg);
+									} else {
+										// 重连websocket
+										console.log("重连websocket：" + msg);
+										
+										clearInterval(reChatHand);
+										reChatHand = setTimeout("CHAT.initAndRetry('" + msg + "')", 30000);
+									}
+								},
+								initAndRetry: function(msg) {
+									console.log("重新发送消息：" + msg);
+									CHAT.init();
+									CHAT.socket.send(msg);
+								},
+								reChat: function(msg) {
+									console.log("重新发送消息：" + msg);
+									CHAT.socket.send(msg);
+								},
+								wsopen: function() {
+									console.log("websocket连接已建立...");
+									var me = JSON.parse(plus.storage.getItem('userInfo'));
+									// 构建ChatMsg
+									var chatMsg = new wss.ChatMsg(me.userId, roomCode, null, null);
+									// 构建DataContent
+									var dataContent = new wss.DataContent(wss.CONNECT, chatMsg, null);
+									// 发送websocket
+									CHAT.chat(JSON.stringify(dataContent));
+									
+									console.log("发送socket数据包:" + JSON.stringify(dataContent));
+									
+									
+									// 定时发送心跳
+									clearInterval(activeHand);
+									activeHand = setInterval("CHAT.keepalive()", 30000);
+								},
+								wsmessage: function(e) {
+									console.log("收到消息：" + e.data);
+									
+									var data = JSON.parse(e.data);
+									var msg = data.chatMsg.msg;
+									console.log(data.chatMsg.msg)
+									
+									var chatWebview = plus.webview.getWebviewById("room-detail-" + roomCode);
+									
+									if(chatWebview != null){
+										chatWebview.evalJS("receiveMsg('" + msg + "')");
+							 			chatWebview.evalJS("resizeScreen()");
 									}
 									
-									CHAT.socket = new WebSocket(config.wss);
-									CHAT.socket.onopen = CHAT.wsopen,
-									CHAT.socket.onclose = CHAT.wsclose,
-									CHAT.socket.onerror = CHAT.wserror,
-									CHAT.socket.onmessage = CHAT.wsmessage;
-								} else {
-									mui.alert("手机设备过旧，请升级手机设备...");
+							 		
+								},
+								wsclose: function() {
+									console.log("连接关闭...");
+								},
+								wserror: function() {
+									console.log("发生错误...");
+								},
+								keepalive: function() {
+									// 构建对象
+									var dataContent = new wss.DataContent(wss.KEEPALIVE, null, null);
+									// 发送心跳
+									console.log("发送心跳" +JSON.stringify(dataContent))
+									CHAT.chat(JSON.stringify(dataContent));
 								}
-							},
-							chat: function(msg) {
-								// 如果当前websocket的状态是已打开，则直接发送， 否则重连
-								if (CHAT.socket != null 
-										&& CHAT.socket != undefined  
-										&& CHAT.socket.readyState == WebSocket.OPEN) {
-										CHAT.socket.send(msg);
-								} else {
-									// 重连websocket
-									CHAT.init();
-									setTimeout("CHAT.reChat('" + msg + "')", "1000");
-								}
-								// 渲染快照列表进行展示
-								//loadingChatSnapshot();
-							},
-							reChat: function(msg) {
-								console.log("消息重新发送...");
-								CHAT.socket.send(msg);
-							},
-							wsopen: function() {
-								console.log("websocket连接已建立...");
-								var me = JSON.parse(plus.storage.getItem('userInfo'));
-								// 构建ChatMsg
-								var chatMsg = new wss.ChatMsg(me.userId, roomCode, null, null);
-								// 构建DataContent
-								var dataContent = new wss.DataContent(wss.CONNECT, chatMsg, null);
-								// 发送websocket
-								CHAT.chat(JSON.stringify(dataContent));
-								
-								console.log("发送socket数据包:" + JSON.stringify(dataContent));
-								
-								// 每次连接之后，获取用户的未读未签收消息列表
-								//fetchUnReadMsg();
-								
-								// 定时发送心跳
-								//setInterval("CHAT.keepalive()", 10000);
-							},
-							wsmessage: function(e) {
-								console.log("接受到消息：" + e.data);
-								var chatWebview = plus.webview.getWebviewById("room-detail-" + roomCode);
-						 		chatWebview.evalJS("receiveMsg('" + e.data + "')");
-						 		
-							},
-							wsclose: function() {
-								console.log("连接关闭...");
-							},
-							wserror: function() {
-								console.log("发生错误...");
-							},
-							/*signMsgList: function(unSignedMsgIds) {
-								// 构建批量签收对象的模型
-								var dataContentSign = new app.DataContent(app.SIGNED,
-																		  null,
-																		  unSignedMsgIds);
-								// 发送批量签收的请求
-								CHAT.chat(JSON.stringify(dataContentSign));
-							},
-							keepalive: function() {
-								// 构建对象
-								var dataContent = new app.DataContent(app.KEEPALIVE, null, null);
-								// 发送心跳
-								CHAT.chat(JSON.stringify(dataContent));
-								
-								// 定时执行函数
-								fetchUnReadMsg();
-								fetchContactList();
-							}*/
-						};
-						 
-						console.log("初始化netty");
-						CHAT.init();
+							};
 							
 							
-						mui.openWindow({
-		                    url: "/html/room-detail.html",
-		                    id: "room-detail-" + roomCode,
-		                    preload: false,
-		                    waiting: {
-		                        autoShow: true,
-	                          title:'正在加载...'
-		                    },
-		                    extras:{
-		                    	"title": roomCode + " - " + name,
-								"room_code": roomCode
-						    },
-						    createNew:true
-		    
-		                });
-						}, false)
+							CHAT.init();
+							
+							mui.openWindow({
+				                url: "/html/room-detail.html",
+				                id: "room-detail-" + roomCode,
+				                preload: false,
+				                waiting: {
+				                    autoShow: true,
+				                  title:'正在加载...'
+				                },
+				                extras:{
+				                	"title": roomCode + " - " + name,
+									"room_code": roomCode
+							    },
+							    createNew:true
+				
+				           }); 
+							
+							
+						});
+						 	 
 					}
+					
+					
 					
 				}, function(){
 					mui('#refreshContainer').pullRefresh().endPulldown();
@@ -282,6 +305,7 @@
 					
 				})
 			}
+			 
 		</script>
 	</body>
 

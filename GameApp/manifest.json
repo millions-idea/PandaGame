@@ -147,7 +147,11 @@
 			},
 			"login.html": {
 				"resources": [
-					"images/登录注册页头部背景.png"
+					"images/登录注册页头部背景.png",
+					"css/login.css",
+					"css/ui.css",
+					"css/mui.min.css",
+					"css/animate.min.css"
 				],
 				"refer": [
 					"main.html",
@@ -221,7 +225,6 @@
 			"resources": [
 				"js/mui.min.js",
 				"fonts/mui.ttf",
-				"css/mui.min.css",
 				"css/style.css",
 				"js/mui.js",
 				"css/mui.css"

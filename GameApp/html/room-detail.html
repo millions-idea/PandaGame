@@ -55,7 +55,7 @@
 						<img src="../images/if_unknown_403017.png" width="40px" height="40px" />
 					</div>
 					<div class="msg-wrapper left">
-						<p class="msg-right-green">好的，没问题！时间地点？</p>
+						<p class="msg-right-green">好的，没问题！时间地点？好的，没问题！时间地点？好的，没问题！时间地点？好的，没问题！时间地点？好的，没问题！时间地点？好的，没问题！时间地点？</p>
 					</div>
 				</div>
 
@@ -64,7 +64,7 @@
 						<img src="../images/if_unknown_403017.png" width="40px" height="40px" />
 					</div>
 					<div class="msg-wrapper right">
-						<p class="msg-left-white">晚上过来吃饭？</p>
+						<p class="msg-left-white">晚上过来吃饭？晚上过来吃饭？晚上过来吃饭？晚上过来吃饭？晚上过来吃饭？晚上过来吃饭？晚上过来吃饭？晚上过来吃饭？晚上过来吃饭？</p>
 					</div>
 				</div>
 
@@ -105,7 +105,13 @@
 			
 			$.init({
 				statusBarStyle: "light",
-				statusBarBackground: '#fe5a2f'
+				statusBarBackground: '#fe5a2f',
+				beforeback: function(){
+					console.log("离开房间")
+					var wssView = plus.webview.getWebviewById("room");
+					//wssView.evalJS("CHAT.close()");
+					return true;
+				}
 			});
 			
 			$.plusReady(function(){
@@ -234,14 +240,15 @@
 					document.getElementById("msg-outter").style.paddingBottom = "50px";
 				});
 				
-				
+				 
 				// 发送消息按钮的事件绑定
 				send.addEventListener("tap", function(){
 					
 					// 发送之前判断网络的状态
 					var connectionStatus = plus.networkinfo.getCurrentType();
+					console.log("connectionStatus" + connectionStatus);
 					if (connectionStatus == 0 || connectionStatus == 1) {
-						app.showToast("请打开网络连接...", "error");
+						plus.nativeUI.toast("请打开网络连接");
 						return;
 					}
 					
@@ -262,16 +269,17 @@
 					
 					// 构建ChatMsg
 					var me = JSON.parse(plus.storage.getItem('userInfo')); 
-					var chatMsg = new wss.ChatMsg(me.userId, roomCode, msg_text_val, null);
+					var chatMsg = new wss.ChatMsg(me.userId, roomCode, null, msg_text_val, null);
 					
 					// 构建DataContent
 					var dataContent = new wss.DataContent(wss.CHAT, chatMsg, null);
 					
 					// 调用websocket 发送消息到netty后端
 					console.log("调用发送接口:" + JSON.stringify(dataContent))
-					
+					console.log(window.CHAT)
 					var wssView = plus.webview.getWebviewById("room");
-					wssView.evalJS("CHAT.chat('" + JSON.stringify(dataContent) + "')");
+					var msg = JSON.stringify(dataContent);
+					wssView.evalJS("CHAT.chat('" + msg + "')");
 					
 					
 					// 保存聊天历史记录到本地缓存

@@ -17,6 +17,8 @@ public class UserChannelRel {
 	private static HashMap<String, List<ChatMember>> manager = new HashMap<>();
 
 	public static void put(String senderId, List<ChatMember> members) {
+		List<ChatMember> chatMemberList = manager.get(senderId);
+		if(chatMemberList != null && !chatMemberList.isEmpty()) manager.remove(senderId);
 		manager.put(senderId, members);
 	}
 	

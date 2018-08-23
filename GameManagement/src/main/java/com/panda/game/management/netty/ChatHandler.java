@@ -1,11 +1,10 @@
 package com.panda.game.management.netty;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
+import com.google.common.base.Joiner;
 import com.panda.game.management.biz.GameMemberGroupService;
 import com.panda.game.management.biz.impl.GameMemberGroupServiceImpl;
 import com.panda.game.management.entity.db.GameMemberGroup;
-import com.panda.game.management.entity.resp.ChatMemberResp;
 import com.panda.game.management.utils.JsonUtil;
 import com.panda.game.management.utils.SpringApplicationContext;
 import io.netty.channel.Channel;
@@ -17,7 +16,6 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +29,7 @@ import  com.panda.game.management.entity.enums.*;
 public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
 
 	// 用于记录和管理所有客户端的channle
-	private static ChannelGroup users =
+	public static ChannelGroup users =
 			new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 	
 	@Override
@@ -57,29 +55,24 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 			GameMemberGroupService gameMemberGroupService = (GameMemberGroupService) SpringApplicationContext.getBean(GameMemberGroupServiceImpl.class);
 			List<GameMemberGroup> memberGroupList = gameMemberGroupService.getListByRoom(Long.valueOf(roomCode));
 
-			// 强制关闭连接并清除记录
-			if(memberGroupList == null || memberGroupList.isEmpty()) {
-				ctx.channel().close();
-				users.remove(ctx.channel());
-			}
-
 			// 插入本地缓存列表
 			GameMemberGroup gameMemberGroup = memberGroupList.stream().filter(m -> m.getRoomCode().equals(Long.valueOf(roomCode))).findFirst().get();
-			if(gameMemberGroup == null){
-				ctx.channel().close();
-				users.remove(ctx.channel());
-			}
+
 
 			ChatMember chatMember = new ChatMember(senderId, roomCode, memberGroupList, currentChannel);
 			chatMembers.add(chatMember);
 
 			List<ChatMember> chatMemberList = UserChannelRel.get(roomCode);
-			if(chatMemberList == null || chatMemberList.isEmpty()) {
+
+            if(chatMemberList == null || chatMemberList.isEmpty()) {
 				UserChannelRel.put(roomCode, chatMembers);
 			}else{
-				chatMemberList.add(chatMember);
+                insertReplace(chatMemberList, chatMember);
 				UserChannelRel.put(roomCode, chatMemberList);
 			}
+
+			if(chatMemberList != null && chatMemberList.size() > 0)
+			    System.out.println("在线用户ID：" + Joiner.on(",").join(chatMemberList.stream().map(item->item.getSenderId()).collect(Collectors.toList())));
 
 			// 打印会话频道列表
 			UserChannelRel.output();
@@ -100,22 +93,24 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 			// 发送消息
 			// 从全局用户Channel关系中获取接受方的channel
 			list.forEach(item -> {
-				System.out.println(String.format("向%s用户推送消息", item.getSenderId()));
-				Channel receiverChannel = item.getChannel();
-				if (receiverChannel == null) {
-					// TODO channel为空代表用户离线，推送消息（JPush，个推，小米推送）
-				} else {
-					// 当receiverChannel不为空的时候，从ChannelGroup去查找对应的channel是否存在
-					Channel findChannel = users.find(receiverChannel.id());
-					if (findChannel != null) {
-						// 用户在线
-						receiverChannel.writeAndFlush(
-								new TextWebSocketFrame(
-										JsonUtil.getJson(dataContentMsg)));
-					} else {
-						// 用户离线 TODO 推送消息
-					}
-				}
+			    if(!senderId.equalsIgnoreCase(item.getSenderId())) {
+                    System.out.println(String.format("向%s用户推送消息", item.getSenderId()));
+                    Channel receiverChannel = item.getChannel();
+                    if (receiverChannel == null) {
+                        // TODO channel为空代表用户离线，推送消息（JPush，个推，小米推送）
+                    } else {
+                        // 当receiverChannel不为空的时候，从ChannelGroup去查找对应的channel是否存在
+                        Channel findChannel = users.find(receiverChannel.id());
+                        if (findChannel != null) {
+                            // 用户在线
+                            receiverChannel.writeAndFlush(
+                                    new TextWebSocketFrame(
+                                            JsonUtil.getJsonNotEscape(dataContentMsg)));
+                        } else {
+                            // 用户离线 TODO 推送消息
+                        }
+                    }
+                }
 			});
 		} else if (action == MsgActionEnum.KEEPALIVE.type) {
 			//  2.4  心跳类型的消息
@@ -124,7 +119,37 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 		
 	}
 
-	/**
+    /**
+     * 添加或替换
+     * @param chatMemberList
+     * @param chatMember
+     */
+    private void insertReplace(List<ChatMember> chatMemberList, ChatMember chatMember) {
+
+        // 筛选重复的会话id
+        List<ChatMember> list = chatMemberList.stream().filter(m -> m.getRoomCode().equalsIgnoreCase(chatMember.getRoomCode())
+                && m.getSenderId().equalsIgnoreCase(chatMember.getSenderId())).collect(Collectors.toList());
+        ChatMember already =  null;
+        if(list != null && !list.isEmpty() && list.size() > 0) already = list.get(0);
+        // 重新设置新的会话id，并刷入缓存集合中
+        if(already != null) {
+            already.setChannel(chatMember.getChannel());
+            ChatMember finalAlready = already;
+            chatMemberList.forEach(m -> {
+                if(m.getRoomCode().equalsIgnoreCase(chatMember.getRoomCode())
+                        && m.getSenderId().equalsIgnoreCase(chatMember.getSenderId())){
+                    m.setChannel(finalAlready.getChannel());
+                }
+            });
+        } else {
+            // 添加会话id到缓冲集合
+            chatMemberList.add(chatMember);
+        }
+
+        System.err.println("添加或替换：" + Joiner.on(",").join(chatMemberList.stream().map(item->item.getSenderId()).collect(Collectors.toList())));
+    }
+
+    /**
 	 * 当客户端连接服务端之后（打开连接）
 	 * 获取客户端的channle，并且放到ChannelGroup中去进行管理
 	 */
@@ -151,6 +176,24 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 							+ ctx.channel().id().asShortText());
 	}
 
+
+    /**
+     * 删除重复的channel对象
+     * @param chatMemberList
+     * @param targetSenderId
+     */
+	private void removeAlready(List<ChatMember> chatMemberList, String targetSenderId){
+        List<ChatMember> newChatMemberList = new ArrayList<>();
+        newChatMemberList.addAll(chatMemberList);
+        for (int i = 0; i < chatMemberList.size(); i++) {
+            ChatMember item = chatMemberList.get(i);
+            String senderId = item.getSenderId();
+            if(senderId.equalsIgnoreCase(targetSenderId)){
+                newChatMemberList.remove(i);
+            }
+        }
+        chatMemberList = newChatMemberList;
+    }
 	
 	
 }

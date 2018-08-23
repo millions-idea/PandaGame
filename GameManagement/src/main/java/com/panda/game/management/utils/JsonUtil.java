@@ -19,6 +19,10 @@ public class JsonUtil {
         return str.replace("\"", "");
     }
 
+    public static String getJsonNotEscape(Object obj){
+        return JSON.toJSONString(obj);
+    }
+
     public static <T> List<T> getModelAsList(String jsonString, Class<T> clazz){
         return JSON.parseArray(jsonString, clazz);
     }
