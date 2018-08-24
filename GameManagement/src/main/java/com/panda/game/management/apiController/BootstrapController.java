@@ -48,10 +48,10 @@ public class BootstrapController {
         badBoyService.isRegisterBlackList(userIp);
 
         // 2、校验手机短信
-        String currentMessage = smsService.getCurrentMessage(user.getPhone());
+        /*String currentMessage = smsService.getCurrentMessage(user.getPhone());
         if(currentMessage == null || currentMessage == Constant.RECYCLE) return new JsonResult().normalExceptionAsString("验证码无效");
         if(!currentMessage.equalsIgnoreCase(smsCode)) return new JsonResult().normalExceptionAsString("验证码错误");
-        smsService.setRecycle(user.getPhone());
+        smsService.setRecycle(user.getPhone());*/
 
         // 3、添加用户数据
         user.setIp(userIp);

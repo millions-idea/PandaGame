@@ -145,4 +145,27 @@
 			}
 		})
 	}
+	
+	
+	/**
+	 * 获取房间内人数
+	 * @param {Object} param
+	 * @param {Object} callback
+	 * @param {Object} errorCallback
+	 */
+	owner.getPersonCount = function(param, callback, errorCallback){
+		callback = callback || $.noop; 
+		$.ajax(toUrl("api/room/getPersonCount"), {
+			type: "get",
+			data: param,	
+			success: function(data){
+				console.log(JSON.stringify(data));
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+	}
+	
 }(mui, window.room = {}));

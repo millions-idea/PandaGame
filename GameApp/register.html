@@ -25,32 +25,32 @@
 
 			<!--username begin-->
 			<div class="form-item form-item-full">
-				<input type="text" class="form-input" id="phone" maxlength="11" placeholder="请输入手机号" value="" />
+				<input type="number" class="form-input" id="phone" maxlength="11"  oninput="if(value.length>11)value=value.slice(0,11)" placeholder="请输入手机号" value="17854141391" />
 			</div>
 			<!--username end-->
 
 			<!--password begin-->
 			<div class="form-item form-item-full">
-				<input type="text" class="form-input" id="password" maxlength="16" placeholder="请输入密码" value="" />
+				<input type="text" class="form-input" id="password" maxlength="16" placeholder="请输入密码" value="123456" />
 			</div>
 			<!--password end-->
 
 			<!--password begin-->
 			<div class="form-item form-item-full">
-				<input type="text" class="form-input" id="password2" maxlength="16" placeholder="请重复输入密码" value="" />
+				<input type="text" class="form-input" id="password2" maxlength="16" placeholder="请重复输入密码" value="123456" />
 			</div>
 			<!--password end-->
 
 			<!--validate begin-->
-			<div class="form-item form-item-full">
+			<!--<div class="form-item form-item-full">
 				<input type="text" class="form-input form-input-half" id="smsCode" maxlength="4" placeholder="请输入验证码" value="1234" />
 				<a class="form-link-button" href="javascript:void(0)" id="smsCodeButton">获取短信验证码</a>
-			</div>
+			</div>-->
 			<!--validate end-->
 			
 			<!--password begin-->
 			<div class="form-item form-item-full">
-				<input type="text" class="form-input" id="pandaId" maxlength="16" placeholder="请输入熊猫麻将ID" value="" />
+				<input type="number" class="form-input" id="pandaId" maxlength="11"  maxlength="11"  oninput="if(value.length>11)value=value.slice(0,11)"  placeholder="请输入熊猫麻将ID" value="123456" />
 			</div>
 			<!--password end-->
 
@@ -87,9 +87,9 @@
 					// 设置顶部状态栏样式
 					plus.navigator.setStatusBarStyle("light");
 					plus.navigator.setStatusBarBackground("#FE532A");
+					
 					// 禁止屏幕翻转
 					plus.screen.lockOrientation("portrait-primary");
-					''
 
 					var toLoginButton = doc.getElementById('toLogin'),
 						phoneInput = doc.getElementById("phone"),
@@ -105,7 +105,7 @@
 						$.openWindow({
 							url: 'login.html',
 							id: 'login',
-							preload: true,
+							preload: false,
 							show: {
 								aniShow: 'pop-in',
 								duration: 200
@@ -123,7 +123,7 @@
 					/**
 					 * 获取短信验证码
 					 */
-					smsCodeButton.addEventListener("tap", function() {
+					/*smsCodeButton.addEventListener("tap", function() {
 						smsCodeButton.disabled = true;
 						smsCodeButton.classList.add("disabled");
 						smsCodeButton.innerText = "重新获取短信";
@@ -178,12 +178,14 @@
 							plus.nativeUI.toast(msg);
 						})
 
-					}, false);
+					}, false);*/
 
 					/**
 					 * 注册
 					 */
 					registerButton.addEventListener("tap", function() {
+						document.activeElement.blur();
+						
 						registerButton.disabled = true;
 						registerButton.classList.add("button-disabled");
 
@@ -192,7 +194,7 @@
 							password: passwordInput.value,
 							password2: password2Input.value,
 							pandaId: pandaIdInput.value,
-							smsCode: smsCodeInput.value,
+							/*smsCode: smsCodeInput.value,*/
 						}, function(data) {
 							console.log(JSON.stringify(data))
 
@@ -215,7 +217,7 @@
 							$.openWindow({
 								url: 'login.html',
 								id: 'login',
-								preload: true,
+								preload: false,
 								show: {
 									aniShow: 'pop-in',
 									duration: 200
@@ -226,6 +228,9 @@
 								waiting: {
 									title: "正在加载...",
 									autoShow: true
+								},
+								extras: {
+									"phone": phoneInput.value
 								}
 							});
 						}, function(msg) {

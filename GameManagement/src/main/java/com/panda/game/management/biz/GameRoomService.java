@@ -34,9 +34,10 @@ public interface GameRoomService extends BaseService<GameRoom> {
     /**
      * 解散房间 韦德 2018年8月20日01:05:48
      * @param token
-     * @param gameRoom
+     * @param param
      */
-    void disband(String token, GameRoom gameRoom);
+    void disband(String token, GameRoom param);
+
 
     /**
      * 申请结算 韦德 2018年8月20日01:07:26
@@ -74,4 +75,10 @@ public interface GameRoomService extends BaseService<GameRoom> {
      * @return
      */
     GameRoomDetailInfo getLimitRoom(String subareasId);
+
+    /**
+     * 查询房间人数 韦德 2018年8月24日15:48:45
+     * @param roomCode
+     */
+    Integer getPersonCount(String roomCode);
 }

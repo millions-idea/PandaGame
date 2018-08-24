@@ -158,12 +158,8 @@
 							var roomCode = this.getAttribute("data-code");
 							var name =this.getAttribute("data-name"); 
 										
-							// 构建聊天业务CHAT
-							/*if(window.CHAT != null) {
-								console.log("主动关闭wss连接");
-								if(window.CHAT.socket != null) window.CHAT.socket.close()
-							}
-							*/
+							// 构建聊天业务CHAT 
+							
 							
 							var reChatHand,
 								activeHand;
@@ -194,7 +190,9 @@
 									}
 								},
 								close: function(){
-									CHAT.socket.close();
+									if(activeHand != null) clearInterval(activeHand);
+									if(CHAT != null && CHAT.socket != null) CHAT.socket.close();
+									console.log("主动关闭心跳和连接")
 								},
 								chat: function(msg) {
 									console.log("发送消息：" + msg);
@@ -250,7 +248,13 @@
 									var chatWebview = plus.webview.getWebviewById("room-detail-" + roomCode);
 									
 									if(chatWebview != null){
-										chatWebview.evalJS("receiveMsg('" + msg + "')");
+										if(msg.indexOf("系统消息") != -1){
+											msg =  msg.replace("系统消息","");
+											console.log("推送系统消息：" + msg);
+											chatWebview.evalJS("recvMessageFromRoom('" + msg + "')");
+										}else{
+											chatWebview.evalJS("receiveMsg('" + msg + "')");
+										}
 							 			chatWebview.evalJS("resizeScreen()");
 									}
 									

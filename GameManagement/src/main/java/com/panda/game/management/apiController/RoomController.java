@@ -65,11 +65,16 @@ public class RoomController {
         return JsonResult.successful();
     }
 
-
     @GetMapping("/getLimitRoom")
     public JsonResult<GameRoomDetailInfo> getLimitRoom(String subareasId){
         GameRoomDetailInfo model =  gameRoomService.getLimitRoom(subareasId);
         if(model == null) return new JsonResult<>().normalExceptionAsString("没有匹配到合适的房间");
         return new JsonResult<>().successful(model);
+    }
+
+    @GetMapping("/getPersonCount")
+    public JsonResult<Integer> getPersonCount(String roomCode){
+        Integer count = gameRoomService.getPersonCount(roomCode);
+        return new JsonResult<>().successful(count);
     }
 }

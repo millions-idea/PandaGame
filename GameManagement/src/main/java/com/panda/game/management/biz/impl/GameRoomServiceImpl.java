@@ -60,6 +60,10 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
         String userId = map.get("userId");
         if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
 
+        // 每位用户只能同时创建1个房间
+        int playingCount = gameMemberGroupMapper.selectPlayingCount(Integer.valueOf(userId));
+        if(playingCount >= 1) throw new MsgException("存在未结束的游戏，创建新房间失败！");
+
         // 加载游戏分区
         Subareas subareas = subareaMapper.selectByPrimaryKey(param.getSubareaId());
         if(subareas == null || subareas.getIsRelation() == 1) throw new MsgException("游戏分区不存在");
@@ -146,7 +150,14 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
         GameRoom gameRoom = gameRoomMapper.selectByRoomCode(param.getRoomCode());
         if(gameRoom == null) throw new MsgException("房间不存在");
 
+        // 普通成员退出房间
         if(!gameRoom.getOwnerId().equals(Integer.valueOf(userId))) {
+            // 如果游戏房间正处于游戏中，此时用户想要退出房间，必须要结算后才能退出去
+            if(gameRoom.getStatus() == 2){
+                int isConfirm = gameMemberGroupMapper.selectConfirm(Integer.valueOf(userId), param.getRoomCode());
+                if(isConfirm <= 0) throw new MsgException("正在游戏中，请结算后再退出房间！");
+            }
+
             int count = gameMemberGroupMapper.deleteMember(Integer.valueOf(userId),param.getRoomCode());
             if(count == 0) throw new MsgException("退出房间失败");
 
@@ -173,6 +184,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
         if(count == 0) throw new MsgException("解散房间失败");
 
     }
+
 
     /**
      * 申请结算 韦德 2018年8月20日01:07:26
@@ -347,5 +359,15 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
     @Override
     public GameRoomDetailInfo getLimitRoom(String subareasId) {
         return gameRoomMapper.getLimitRoom(subareasId);
+    }
+
+    /**
+     * 查询房间人数 韦德 2018年8月24日15:48:45
+     *
+     * @param roomCode
+     */
+    @Override
+    public Integer getPersonCount(String roomCode) {
+        return gameMemberGroupMapper.selectPersonCount(roomCode);
     }
 }

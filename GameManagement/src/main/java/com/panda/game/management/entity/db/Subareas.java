@@ -32,4 +32,5 @@ public class Subareas {
     @Column(name = "max_person_count")
     private Integer maxPersonCount;
     private Double limitPrice;
+    private Double reducePrice;
 }

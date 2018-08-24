@@ -83,10 +83,24 @@
 						registerButton = doc.getElementById('registerButton'),
 						phoneInput = doc.getElementById('phone'),
 						passwordInput = doc.getElementById('password');
-					  
+					 
+					
 					
 					// 检查用户是否已登录
 					isLogin($);
+					
+					var self = plus.webview.currentWebview();
+					self.addEventListener("show", function(){
+						console.log("注册页返回的信息" + JSON.stringify(self))
+						if(self.phone != null){
+							phoneInput.value = self.phone;
+						}
+						
+						var userInfo = plus.storage.getItem('userInfo');
+						if(userInfo != null){
+							phoneInput.value = JSON.parse(userInfo).phone;
+						}
+					})
 					
 					/**
 					 * 注册

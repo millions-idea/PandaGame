@@ -53,7 +53,7 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
 
             List<PayParam> payParams = new ArrayList<>();
             memberList.forEach(member -> {
-                Double price = gameRoomCallbackResp.getSubareas().getLimitPrice();
+                Double price = gameRoomCallbackResp.getSubareas().getReducePrice();
                 PayParam payParam = new PayParam();
                 // 优先扣减不可用余额
                 Double notWithdrawAmount = payService.getNotWithdrawAmount(member.getUserId());

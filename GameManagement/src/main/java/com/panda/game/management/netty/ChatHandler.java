@@ -5,6 +5,7 @@ import com.google.common.base.Joiner;
 import com.panda.game.management.biz.GameMemberGroupService;
 import com.panda.game.management.biz.impl.GameMemberGroupServiceImpl;
 import com.panda.game.management.entity.db.GameMemberGroup;
+import com.panda.game.management.utils.DateUtil;
 import com.panda.game.management.utils.JsonUtil;
 import com.panda.game.management.utils.SpringApplicationContext;
 import io.netty.channel.Channel;
@@ -16,6 +17,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,8 +86,13 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 			String roomCode = chatMsg.getRoomCode();
 			List<ChatMember> list = UserChannelRel.get(roomCode);
 
-			List<GameMemberGroup> receiveList = list.get(0).getReceiveList();
-			System.out.println(String.format("收到聊天消息，发送者ID：%s，房间：%s，接收者列表：%s，消息内容：%s", senderId, roomCode, JSON.toJSON(receiveList), msgText));
+			if(list != null && list.size() > 0){
+				List<GameMemberGroup> receiveList = list.get(0).getReceiveList();
+				System.out.println(String.format("收到聊天消息，发送者ID：%s，房间：%s，接收者列表：%s，消息内容：%s", senderId, roomCode, JSON.toJSON(receiveList), msgText));
+			}else{
+				System.err.println("查询房间成员列表失败");
+				return;
+			}
 
 			DataContent dataContentMsg = new DataContent();
 			dataContentMsg.setChatMsg(chatMsg);
@@ -114,7 +121,7 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 			});
 		} else if (action == MsgActionEnum.KEEPALIVE.type) {
 			//  2.4  心跳类型的消息
-			System.out.println("收到来自channel为[" + currentChannel + "]的心跳包...");
+			System.out.println(DateUtil.getCurrentDate() + " 收到来自channel为[" + currentChannel + "]的心跳包...");
 		}
 		
 	}

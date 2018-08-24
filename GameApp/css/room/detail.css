@@ -11,7 +11,7 @@ body {
 
 
 .friend_lists {
-	margin: 0 50px 0px 10px;
+	margin: 0 40px 0px 10px;
 	position: relative;
 }
 
@@ -195,7 +195,7 @@ footer {
 }
 
 .mui-bar-nav~.mui-content{
-	padding-top: 88px !important;
+	padding-top: 120px !important;
 }
 
 .top-down-title{
@@ -217,4 +217,35 @@ footer {
     margin: 0;
     text-overflow: ellipsis;
 }
-  
+
+.header-text{
+	position: fixed;
+	top: 60px;
+	background: #fffed3;
+	display: block;
+	color: red;
+	font-size: 12px;
+	padding: 10px;
+	z-index: 2;
+	width: 100%;
+	line-height: 35px;
+}
+
+.header-text span{
+	position:relative;
+	top: 4px;
+}
+
+.header-text button{
+	position:relative;
+	float:right;
+	top: 4px;
+	background-color: #fe5a2f !important;
+	border: 1px solid #fe5a2f !important;
+	/* box-shadow: 3px 5px 20px 0px #ffb150; */
+	/* height: 50px; */
+	/* line-height: 50px; */
+	/* padding: 0px !important; */
+	border-radius: 5px;
+	color: #fffed3;
+}

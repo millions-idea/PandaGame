@@ -69,4 +69,30 @@ public interface GameMemberGroupMapper extends MyMapper<GameMemberGroup> {
      * @return
      */
     List<GameMemberGroup> selectByUid(@Param("userId") Integer userId);
+
+    @Select("SELECT COUNT(*) FROM tb_game_member_group WHERE room_code = #{roomCode} AND is_confirm = 0")
+    /**
+     * 查询房间人数
+     * @param roomCode
+     * @return
+     */
+    int selectPersonCount(@Param("roomCode") String roomCode);
+
+    @Select("SELECT COUNT(*) FROM tb_game_room WHERE owner_id = #{userId} AND `status` != 6 AND is_enable = 1")
+    /**
+     * 查询正在游戏中的房间数量 韦德 2018年8月24日22:45:38
+     * @param userId
+     * @return
+     */
+    int selectPlayingCount(@Param("userId") Integer userId);
+
+    @Select("SELECT COUNT(*) FROM tb_game_member_group WHERE user_id = #{userId} AND room_code = #{roomCode} AND is_confirm = 1")
+    /**
+     * 是否结算 韦德 2018年8月25日01:28:55
+     * @param userId
+     * @param roomCode
+     * @return
+     */
+    int selectConfirm(@Param("userId") Integer userId, @Param("roomCode") Long roomCode);
+
 }

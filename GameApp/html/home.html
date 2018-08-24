@@ -186,6 +186,9 @@
 					
 					
 					
+					/**
+					 * 申请提现
+					 */
 					doc.getElementById("withdraw").addEventListener("tap", function(){
 						mui.openWindow({
 		                    url: "withdraw.html",
@@ -200,20 +203,31 @@
 		                });
 					})
 					 
+					 /**
+					  * 领取房卡
+					  */
 					doc.getElementById("getRoomCard").addEventListener("tap", function(){
 						var localCache = plus.storage.getItem('userInfo');
 						if(localCache != null && localCache.length > 0){
-							home.getRoomCard({
-								"token": JSON.parse(localCache).token.toString(),
-								"pandaId": JSON.parse(localCache).pandaId.toString(),
-							}, function(data){
-								if(data == null || data.code == 500 || data.code == 300) return plus.nativeUI.toast("领取失败");
-								if(data.code == 400) return plus.nativeUI.toast(data.msg);
-
-								plus.nativeUI.toast("领取成功");
-							}, function(){
-								plus.nativeUI.toast("领取失败");
+							console.log(localCache)
+							mui.confirm("确定为熊猫麻将ID为：" + JSON.parse(localCache).pandaId + "\r\n账户领取30张房卡吗？(金币>100)", "免费房卡", ["确定", "取消"], function(e){
+								if(e.index == 0){
+									
+										home.getRoomCard({
+											"token": JSON.parse(localCache).token.toString(),
+											"pandaId": JSON.parse(localCache).pandaId.toString(),
+										}, function(data){
+											if(data == null || data.code == 500 || data.code == 300) return plus.nativeUI.toast("领取失败");
+											if(data.code == 400) return plus.nativeUI.toast(data.msg);
+			
+											plus.nativeUI.toast("领取成功");
+										}, function(){
+											plus.nativeUI.toast("领取失败");
+										}) 
+								}
 							})
+						}else{
+							plus.nativeUI.toast("请重新登录");
 						}
 						
 					})

@@ -207,7 +207,8 @@
 			"html/room-detail.html": {
 				"resources": [],
 				"refer": [
-					"html/close-accounts.html"
+					"html/close-accounts.html",
+					"html/custom-service.html"
 				],
 				"priority": 0
 			},
@@ -215,6 +216,13 @@
 				"resources": [
 					"images/house.png"
 				],
+				"refer": [
+					"html/room-detail.html"
+				],
+				"priority": 0
+			},
+			"html/create-room.html": {
+				"resources": [],
 				"refer": [
 					"html/room-detail.html"
 				],

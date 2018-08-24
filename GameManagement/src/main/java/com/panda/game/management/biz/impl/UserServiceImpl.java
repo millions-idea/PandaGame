@@ -9,6 +9,7 @@ package com.panda.game.management.biz.impl;
 
 import com.google.common.collect.ImmutableMap;
 import com.panda.game.management.biz.UserService;
+import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.db.Wallets;
 import com.panda.game.management.entity.dbExt.UserDetailInfo;
@@ -57,7 +58,18 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements UserServi
     @Transactional
     public void register(Users param) {
         // 增加用户数据
-        int count = userMapper.insert(param);
+        int count = 0;
+        try{
+            count = userMapper.insert(param);
+        }catch (Exception e){
+            if(e != null  && e.getCause() != null  && e.getMessage() != null  && e.getCause().getMessage().contains("Duplicate entry")){
+                String msg = "对不起，您注册的账户已存在！";
+                if(e.getCause().getMessage().contains("uq_panda")){
+                    msg = "对不起，您输入的熊猫id已存在！";
+                }
+                throw new MsgException(msg);
+            }
+        }
         if(count == 0) throw new MsgException("注册用户失败");
 
         // 开通钱包

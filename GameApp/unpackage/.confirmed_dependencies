@@ -70,7 +70,8 @@
 	},
 	"html/room-detail.html": {
 		"refer": [
-			"html/close-accounts.html"
+			"html/close-accounts.html",
+			"html/custom-service.html"
 		]
 	},
 	"html/sala.html": {
@@ -79,6 +80,11 @@
 		],
 		"resources": [
 			"images/house.png"
+		]
+	},
+	"html/create-room.html": {
+		"refer": [
+			"html/room-detail.html"
 		]
 	}
 }

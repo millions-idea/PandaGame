@@ -55,7 +55,7 @@
 
 .list{
 	position: relative;
-	top: 150px;
+	/* top: 150px; */
 }
 
 .area{
@@ -68,6 +68,6 @@
 #check {margin: 20px auto;}
 #check .input_check {position: absolute;width: 20px;height: 20px;visibility: hidden;background: #E92333;}
 #check span {position: relative;}
-#check .input_check+label {display: inline-block;width: 20px;height: 20px;background: url('入驻申请页面3/入驻申请页面/images/gou.png') no-repeat;background-position: -31px -3px;border: 1px solid skyblue;}
+#check .input_check+label {display: inline-block;width: 20px;height: 20px;background: url('å…¥é©»ç”³è¯·é¡µé¢3/å…¥é©»ç”³è¯·é¡µé¢/images/gou.png') no-repeat;background-position: -31px -3px;border: 1px solid skyblue;}
 #check .input_check:checked+label {background-position: -7px -4px;}
  
