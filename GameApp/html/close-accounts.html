@@ -21,25 +21,43 @@
 		 	<div class="form-placeholder-50"></div>
 			
 			
-			<!--password begin-->
-			<div class="form-item form-item-full">
-				<input type="text" class="form-input" id="standings" maxlength="16" placeholder="请输入战绩" value="632"/>
+			<div id="typeSelector" class="typeSelector">
+				<input type="hidden" id="type" value=""/>
+				<span style="
+					    display: block;
+					    line-height: 90px;
+					    text-align: center;
+					    width: 85%;
+					    margin: 0 auto;
+					    color: #c8c8c8;
+					    font-size: 21px;
+					">请选择您本局游戏的结果</span>
+				
+				<span name="typeSelector" class="standings" tabindex="0">
+					大获全胜
+				</span>
+				<div class="form-placeholder-30"></div>
+				<span name="typeSelector" class="beRouted" tabindex="1">
+					惨烈失败
+				</span>
 			</div>
-			<!--password end-->
 			
 			
-
-			<div class="form-item form-item-full">
-				<input type="text" class="form-input" id="beRouted" maxlength="16" placeholder="请输入败绩" value="556"/>
-			</div>
-
-			
-			
-			<div class="form-placeholder-20"></div>
-			<div class="form-item">
-				<button id='toCloseAccountsButton' class="mui-btn mui-btn-block mui-btn-orange">结&nbsp;&nbsp;算</button>
-			</div>
-
+			<!--content begin-->
+				<div id="content" style="display: none;">
+						
+					<!--grade begin-->
+					<div class="form-item form-item-full">
+						<input type="number" class="form-input" id="grade" maxlength="8" placeholder="请输入战绩" value="632"/>
+					</div>
+					<!--grade end-->
+					
+					<div class="form-placeholder-20"></div>
+					<div class="form-item">
+						<button id='toCloseAccountsButton' class="mui-btn mui-btn-block mui-btn-orange">结&nbsp;&nbsp;算</button>
+					</div>
+				</div>
+			<!--content end-->
 		</div>
 		
 		
@@ -53,7 +71,7 @@
 			(function($, doc){
 				$.init({
 					statusBarStyle: "light",
-					statusBarBackground: '#fe5a2f'
+					statusBarBackground: '#FE532A'
 				});
 				
 				$.plusReady(function(){
@@ -68,23 +86,43 @@
 					var beforeSelf = self.self;
 					var roomCode = self.room_code;
 					
-					console.log("beforeSelf" +beforeSelf)
+					// 选择结果
+					var typeSelectorList = doc.getElementsByName("typeSelector");
+					for (var i = 0; i < typeSelectorList.length; i++) {
+						typeSelectorList[i].addEventListener("tap", function(){
+							var tabindex = this.getAttribute("tabindex");
+							doc.getElementById("type").value = tabindex;
+							doc.getElementById("typeSelector").style.display="none"
+							doc.getElementById("content").style.display="block"
+						})
+					}
 					
 					var toCloseAccountsButton = doc.getElementById("toCloseAccountsButton"),
-						standings = doc.getElementById("standings"),
-						beRouted = doc.getElementById("beRouted");
+						grade = doc.getElementById("grade");
 						
 					toCloseAccountsButton.addEventListener("tap", function(){
+						toCloseAccountsButton.disabled = true;
+						toCloseAccountsButton.classList.add("disabled");
+						document.activeElement.blur();
+						
+						var type = doc.getElementById("type").value;
+						var gradeValue = grade.value;
+						if(type == 1) gradeValue = gradeValue - (gradeValue * 2)
+						
+						console.log("成绩:" + parseFloat(gradeValue))
+						
 						var localCache = plus.storage.getItem('userInfo');
 						if(localCache != null && localCache.length > 0){
 							var param = {
 								"token": JSON.parse(localCache).token.toString(),
 								"roomCode": parseInt(roomCode),
-								"standings": parseFloat(standings.value),
-								"beRouted": parseFloat(beRouted.value)
+								"grade": parseFloat(gradeValue)
 							};
 							
 							room.closeAccounts(param, function(data){
+								toCloseAccountsButton.disabled = false;
+								toCloseAccountsButton.classList.remove("disabled");
+						
 								if(data.code == 500 || data.code == 300){
 									plus.nativeUI.toast("申请失败"); 
 									return false;
@@ -121,10 +159,12 @@
 								}
 								
 								
-								plus.webview.getWebviewById("room-detail").close();
+								plus.webview.getWebviewById("room-detail-" + roomCode).close();
 								plus.webview.currentWebview().close();
 								
 							}, function(){
+								toCloseAccountsButton.disabled = false;
+								toCloseAccountsButton.classList.remove("disabled");
 								plus.nativeUI.toast("申请失败");
 							});
 						}

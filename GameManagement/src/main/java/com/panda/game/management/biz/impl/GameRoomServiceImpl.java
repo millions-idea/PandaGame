@@ -191,12 +191,11 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
      *
      * @param token
      * @param roomCode
-     * @param standings
-     * @param beRouted
+     * @param grade
      */
     @Override
     @Transactional
-    public void closeAccounts(String token, Long roomCode, Double standings, Double beRouted, Consumer<GameRoomCallbackResp> lastPersonCallback) {
+    public void closeAccounts(String token, Long roomCode, Double grade, Consumer<GameRoomCallbackResp> lastPersonCallback) {
         Map<String, String> map = TokenUtil.validate(token);
         if(map.isEmpty()) return;
 
@@ -215,8 +214,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements Ga
 
         Settlement settlement = new Settlement();
         settlement.setUserId(Integer.valueOf(userId));
-        settlement.setAdd(standings);
-        settlement.setReduce(beRouted);
+        settlement.setGrade(grade);
         settlement.setRoomCode(roomCode);
         settlement.setState(0);
         settlement.setAddTime(new Date());

@@ -21,13 +21,13 @@
 			</ul>
 			<script id="template" type="text/html">
 				{{each list as item index}}
-					<li name="room-item"  class="mui-table-view-cell mui-media" data-code="{{item.roomCode}}" data-name="{{item.name}}">
-				        <a href="javascript:;" name="item" data-code="{{item.roomCode}}"  data-name="{{item.name}}">
+					<li name="room-item"  class="mui-table-view-cell mui-media" data-code="{{item.roomCode}}" data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
+				        <a href="javascript:;" name="item" data-code="{{item.roomCode}}"  data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
 				            <img class="mui-media-object mui-pull-left" src="../images/house.png">
 				            <div class="mui-media-body">
 		                		{{item.name}}
 				                <p class='mui-ellipsis info'>
-				                	<span class="mui-badge mui-badge-success mui-badge-inverted my-badge-success">房间ID: {{item.roomCode}}</span>
+				                	<span class="mui-badge mui-badge-success mui-badge-inverted my-badge-success">频道ID: {{item.roomCode}}</span>
 				                	<span class="mui-badge mui-badge-danger   mui-badge-inverted">人气: {{item.personCount}}</span>
 				                </p>
 				            </div> 
@@ -151,150 +151,15 @@
 					for (var i = 0; i < roomItems.length; i++) {
 						var roomItem = roomItems[i];
 						
-						
 						roomItem.addEventListener("tap", function(e){
 							e.stopPropagation();
 							
 							var roomCode = this.getAttribute("data-code");
 							var name =this.getAttribute("data-name"); 
+							var externalRoomId =this.getAttribute("data-externalRoomId"); 
 										
-							// 构建聊天业务CHAT 
-							
-							
-							var reChatHand,
-								activeHand;
-							
-							window.CHAT = {
-								socket: null,
-								init: function() {
-									console.log("初始化wss");
-									if (window.WebSocket) {
-										
-										// 如果当前的状态已经连接，那就不需要重复初始化websocket
-										if (CHAT.socket != null 
-											&& CHAT.socket != undefined 
-											&& CHAT.socket.readyState == WebSocket.OPEN) {
-												console.log("wss已连接");
-											return false;
-										}
-										
-										console.log("创建wss连接");
-										
-										CHAT.socket = new WebSocket(config.wss);
-										CHAT.socket.onopen = CHAT.wsopen,
-										CHAT.socket.onclose = CHAT.wsclose,
-										CHAT.socket.onerror = CHAT.wserror,
-										CHAT.socket.onmessage = CHAT.wsmessage;
-									} else {
-										mui.alert("手机设备过旧，请升级手机设备...");
-									}
-								},
-								close: function(){
-									if(activeHand != null) clearInterval(activeHand);
-									if(CHAT != null && CHAT.socket != null) CHAT.socket.close();
-									console.log("主动关闭心跳和连接")
-								},
-								chat: function(msg) {
-									console.log("发送消息：" + msg);
-									
-									// 如果当前websocket的状态是已打开，则直接发送， 否则重连
-									if (CHAT.socket != null 
-											&& CHAT.socket != undefined  
-											&& CHAT.socket.readyState == WebSocket.OPEN) {
-											console.log("直连websocket：" + msg);
-			
-											CHAT.socket.send(msg);
-									} else {
-										// 重连websocket
-										console.log("重连websocket：" + msg);
-										
-										clearInterval(reChatHand);
-										reChatHand = setTimeout("CHAT.initAndRetry('" + msg + "')", 30000);
-									}
-								},
-								initAndRetry: function(msg) {
-									console.log("重新发送消息：" + msg);
-									CHAT.init();
-									CHAT.socket.send(msg);
-								},
-								reChat: function(msg) {
-									console.log("重新发送消息：" + msg);
-									CHAT.socket.send(msg);
-								},
-								wsopen: function() {
-									console.log("websocket连接已建立...");
-									var me = JSON.parse(plus.storage.getItem('userInfo'));
-									// 构建ChatMsg
-									var chatMsg = new wss.ChatMsg(me.userId, roomCode, null, null);
-									// 构建DataContent
-									var dataContent = new wss.DataContent(wss.CONNECT, chatMsg, null);
-									// 发送websocket
-									CHAT.chat(JSON.stringify(dataContent));
-									
-									console.log("发送socket数据包:" + JSON.stringify(dataContent));
-									
-									
-									// 定时发送心跳
-									clearInterval(activeHand);
-									activeHand = setInterval("CHAT.keepalive()", 30000);
-								},
-								wsmessage: function(e) {
-									console.log("收到消息：" + e.data);
-									
-									var data = JSON.parse(e.data);
-									var msg = data.chatMsg.msg;
-									console.log(data.chatMsg.msg)
-									
-									var chatWebview = plus.webview.getWebviewById("room-detail-" + roomCode);
-									
-									if(chatWebview != null){
-										if(msg.indexOf("系统消息") != -1){
-											msg =  msg.replace("系统消息","");
-											console.log("推送系统消息：" + msg);
-											chatWebview.evalJS("recvMessageFromRoom('" + msg + "')");
-										}else{
-											chatWebview.evalJS("receiveMsg('" + msg + "')");
-										}
-							 			chatWebview.evalJS("resizeScreen()");
-									}
-									
-							 		
-								},
-								wsclose: function() {
-									console.log("连接关闭...");
-								},
-								wserror: function() {
-									console.log("发生错误...");
-								},
-								keepalive: function() {
-									// 构建对象
-									var dataContent = new wss.DataContent(wss.KEEPALIVE, null, null);
-									// 发送心跳
-									console.log("发送心跳" +JSON.stringify(dataContent))
-									CHAT.chat(JSON.stringify(dataContent));
-								}
-							};
-							
-							
-							CHAT.init();
-							
-							mui.openWindow({
-				                url: "/html/room-detail.html",
-				                id: "room-detail-" + roomCode,
-				                preload: false,
-				                waiting: {
-				                    autoShow: true,
-				                  title:'正在加载...'
-				                },
-				                extras:{
-				                	"title": roomCode + " - " + name,
-									"room_code": roomCode
-							    },
-							    createNew:true
-				
-				           }); 
-							
-							
+							// 构建聊天业务CHAT
+							wss.initRoom(roomCode, externalRoomId, name); 
 						});
 						 	 
 					}

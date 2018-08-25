@@ -14,8 +14,7 @@ public interface GameRoomFacadeService {
      * 结算 韦德 2018年8月21日01:02:27
      * @param token
      * @param roomCode
-     * @param standings
-     * @param beRouted
+     * @param grade
      */
-    void  closeAccounts(String token, Long roomCode, Double standings, Double beRouted);
+    void  closeAccounts(String token, Long roomCode, Double grade);
 }

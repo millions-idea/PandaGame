@@ -51,6 +51,7 @@
 		<script src="../js/mui.js"></script>
 		<script src="../js/config.js"></script>
 		<script src="../js/app.js"></script>
+		<script src="../js/wss.js"></script>
 		<script src="../js/home/index.js"></script>
 		<script src="../js/room/index.js"></script>
 
@@ -129,23 +130,10 @@
 													return false;
 												}
 			                					
-												plus.nativeUI.toast("加入成功");
-												
-												mui.openWindow({
-								                    url: "/html/room-detail.html",
-								                    id: "room-detail",
-								                    preload: false,
-								                    waiting: {
-								                        autoShow: true,
-							                          title:'正在加载...'
-								                    },
-								                    extras:{
-								                    	"title": roomCode + " - " + name,
-														"room_code": roomCode
-												    },
-												    createNew:true
-								    
-								                });
+															
+												// 构建聊天业务CHAT
+												wss.initRoom(roomCode, name); 
+			                					
 											}, function(){
 												
 											});
@@ -178,7 +166,7 @@
 
 		                			
 		                			if(e.index == 1){
-		                				if(popInput.value.length != 6){
+		                				if(.length != 6){
 		                					plus.nativeUI.toast("房间号码应为6位数字")
 		                					return false;
 		                				}
@@ -201,6 +189,8 @@
 												}
 			                					
 												plus.nativeUI.toast("创建成功");
+												 
+												
 			                					$.openWindow({
 													url: 'room.html',
 													id: 'room',

@@ -134,3 +134,24 @@ body{
     color: #FE532A !important;
     background-color: #FE532A !important;
 }
+
+
+.loading{
+	text-align: center;
+	display: block;
+	position: relative;
+	top: 140px;
+	line-height: 50px;
+	color:#6a6a6a
+}
+
+
+
+.mui-bar-nav~.mui-content {
+    padding-top: 0px
+}
+
+
+.content ul{
+	padding: 20px;
+}

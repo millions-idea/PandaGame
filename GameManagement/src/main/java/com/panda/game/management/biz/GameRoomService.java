@@ -43,11 +43,10 @@ public interface GameRoomService extends BaseService<GameRoom> {
      * 申请结算 韦德 2018年8月20日01:07:26
      * @param token
      * @param roomCode
-     * @param standings
-     * @param beRouted
+     * @param grade
      * @param lastPersonCallback
      */
-    void closeAccounts(String token, Long roomCode, Double standings, Double beRouted, Consumer<GameRoomCallbackResp> lastPersonCallback);
+    void closeAccounts(String token, Long roomCode, Double grade, Consumer<GameRoomCallbackResp> lastPersonCallback);
 
     /**
      * 获取所有游戏房间 韦德 2018年8月20日21:20:09

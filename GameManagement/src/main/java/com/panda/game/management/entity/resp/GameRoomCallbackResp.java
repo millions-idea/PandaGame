@@ -8,6 +8,7 @@
 package com.panda.game.management.entity.resp;
 
 import com.panda.game.management.entity.db.GameRoom;
+import com.panda.game.management.entity.db.Settlement;
 import com.panda.game.management.entity.db.Subareas;
 import lombok.*;
 

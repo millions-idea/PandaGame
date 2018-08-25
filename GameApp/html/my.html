@@ -150,7 +150,17 @@
 					
 					// 联系客服
 					customServiceButton.addEventListener("tap", function(){
-						plus.webview.open('/html/custom-service.html', 'new', {}, 'slide-in-right', 200);
+						mui.openWindow({
+		                    url: "/html/custom-service.html",
+		                    id: "custom-service",
+		                    preload: false,
+		                    waiting: {
+		                        autoShow: true,
+	                          title:'正在加载...'
+		                    },
+						    createNew:true
+		    
+		                });
 					}, false)
 					
 					// 注销登录

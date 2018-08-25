@@ -47,7 +47,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
     @Override
     public GroupInformation getGroupInformation() {
         GroupInformation groupInformation = new GroupInformation();
-        //List<Dictionary> list = dictionaryMapper.selectByKey("home.group.info");
         List<Dictionary> list = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("home.group.info")).collect(Collectors.toList());
         List<String> runnerAds = list.stream().filter(d -> d.getKey().contains("top.runner"))
                 .map(d -> d.getValue()).collect(Collectors.toList());
@@ -77,6 +76,8 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
         String bottomQcode = list.stream().filter(d -> d.getKey().contains("home.group.info.center.bottom-ad.qcode")).findFirst().get().getValue();
         groupInformation.setCenterBottomAdQCode(bottomQcode);
 
+        String consumeServiceHtml = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("my.consume.service.html")).findFirst().get().getValue();
+        groupInformation.setConsumeServiceHtml(consumeServiceHtml);
         return groupInformation;
     }
 }

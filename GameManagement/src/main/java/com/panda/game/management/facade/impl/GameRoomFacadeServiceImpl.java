@@ -36,14 +36,13 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
      *
      * @param token
      * @param roomCode
-     * @param standings
-     * @param beRouted
+     * @param grade
      */
     @Override
     @Transactional
-    public void closeAccounts(String token, Long roomCode, Double standings, Double beRouted) {
+    public void closeAccounts(String token, Long roomCode, Double grade) {
         // 结算
-        gameRoomService.closeAccounts(token, roomCode, standings, beRouted, (gameRoomCallbackResp) -> {
+        gameRoomService.closeAccounts(token, roomCode, grade, (gameRoomCallbackResp) -> {
             if(gameRoomCallbackResp == null || gameRoomCallbackResp.getGameRoom() == null || gameRoomCallbackResp.getSubareas() == null)
                 throw new InfoException("回调参数有误");
 

@@ -25,9 +25,7 @@ public class Settlement {
     private Integer settlementId;
     private Integer userId;
     private Long roomCode;
-    @Column(name = "`add`")
-    private Double add;
-    private Double reduce;
+    private Double grade;
     private Integer state;
     private Date addTime;
     private Date updateTime;

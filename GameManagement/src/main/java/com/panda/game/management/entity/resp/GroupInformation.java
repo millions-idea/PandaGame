@@ -26,4 +26,5 @@ public class GroupInformation {
     private String centerBottomAdTitle;
     private String centerBottomAdDesc;
     private String centerBottomAdQCode;
+    private String consumeServiceHtml;
 }

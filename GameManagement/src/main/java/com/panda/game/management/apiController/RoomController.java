@@ -54,8 +54,8 @@ public class RoomController {
     }
 
     @PostMapping("/closeAccounts")
-    public JsonResult closeAccounts(String token, Long roomCode, Double standings, Double beRouted){
-        gameRoomFacadeService.closeAccounts(token, roomCode, standings, beRouted);
+    public JsonResult closeAccounts(String token, Long roomCode, Double grade){
+        gameRoomFacadeService.closeAccounts(token, roomCode, grade);
         return JsonResult.successful();
     }
 

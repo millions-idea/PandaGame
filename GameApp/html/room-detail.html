@@ -68,6 +68,7 @@
 			var $ = mui;
 			var doc = document;
 			var roomCode;
+			var externalRoomId;
 			var timerCountHand;
 			
 			$.init({
@@ -86,13 +87,25 @@
 				
 				// 绑定动态标题事件
 				var self = plus.webview.currentWebview(),
-					titleComponent = doc.getElementById("title"); 
-				self.addEventListener("show", function(){  
-					titleComponent.innerHTML = self.title; 
-				})
-				
+					titleComponent = doc.getElementById("title");
+					
+					
 				// 获取上一个页面传入的值 
 				roomCode = self.room_code;
+				externalRoomId = self.externalRoomId;
+				
+				
+				self.addEventListener("show", function(){  
+					titleComponent.innerHTML = self.title;
+					if(externalRoomId != null && externalRoomId.length > 0) {
+						recvMessageFromRoom("熊猫麻将房间号：" + externalRoomId);
+					}else{
+						recvMessageFromRoom("获取熊猫麻将房间号失败，请退出重进！" );
+					}
+					
+				})
+				
+				
 				if(timerCountHand!=null) clearInterval(timerCountHand);
 				timerCountHand = setTimeout(getPersonCount, 100000);
 				getPersonCount();
@@ -167,7 +180,7 @@
 				
 				toCloseAccounts.addEventListener("tap", function(){ 
 					plus.nativeUI.confirm("请您选择结算方式", function(e){
-						if(e.index == 0){
+						if(e.index == 1){
 							mui.openWindow({
 			                    url: "close-accounts.html",
 			                    id: "close-accounts",
@@ -183,7 +196,7 @@
 							    createNew:true
 			    
 			                });
-						}else{
+						}else if(e.index == 2){
 							mui.openWindow({
 			                    url: "custom-service.html",
 			                    id: "custom-service",
@@ -197,7 +210,7 @@
 			                });
 						}
 						
-					}, "结算", ["正常结算","超时结算"]) 
+					}, "结算", ["取消","正常结算","超时结算"]) 
 				})
 				
 				
