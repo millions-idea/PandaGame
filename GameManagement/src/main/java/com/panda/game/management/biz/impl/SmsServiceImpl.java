@@ -7,9 +7,8 @@
  */
 package com.panda.game.management.biz.impl;
 
-import com.panda.game.management.biz.SmsService;
+import com.panda.game.management.biz.ISmsService;
 import com.panda.game.management.entity.Constant;
-import com.panda.game.management.exception.InfoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class SmsServiceImpl implements SmsService{
+public class SmsServiceImpl implements ISmsService {
     @Autowired
     private RedisTemplate redisTemplate;
 

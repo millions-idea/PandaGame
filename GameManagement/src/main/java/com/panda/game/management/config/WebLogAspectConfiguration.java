@@ -7,9 +7,7 @@
  */
 package com.panda.game.management.config;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.panda.game.management.annotaion.AspectLog;
-import com.panda.game.management.biz.ExceptionService;
 import com.panda.game.management.entity.db.Exceptions;
 import com.panda.game.management.utils.JsonUtil;
 import com.panda.game.management.utils.RequestUtil;
@@ -25,7 +23,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * 全站日志切面配置类
@@ -38,7 +35,7 @@ public class WebLogAspectConfiguration {
     private HttpServletRequest request = null;
 
     @Autowired
-    private ExceptionService exceptionService;
+    private com.panda.game.management.biz.IExceptionService IExceptionService;
 
     /**
      * 控制是否上报数据库
@@ -109,7 +106,7 @@ public class WebLogAspectConfiguration {
         if(isUpload){
             Exceptions exceptions = new Exceptions();
             exceptions.setBody(body);
-            exceptionService.asyncInsert(exceptions);
+            IExceptionService.asyncInsert(exceptions);
         }
         return true;
     }

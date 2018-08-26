@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>人工充值</title>
+    <link rel="stylesheet" th:href="@{/frame/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/frame/static/css/style.css}">
+    <link rel="icon" th:href="@{/frame/static/image/code.png}">
+    <style>
+        .my-view{
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<th:block layout:fragment="current_page">
+    <a><cite>人工充值</cite></a>
+</th:block>
+
+<th:block layout:fragment="body">
+
+    <div class="layui-form layui-form-pane my-view layui-row layui-col-md5" xmlns:th="http://www.thymeleaf.org">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+
+            <div class="layui-input-inline">
+                <input type="text" id="username" autocomplete="off"
+                       name="username"  placeholder="请输入用户名" lay-verify="required" class="layui-input" value="">
+            </div>
+            <div class="layui-form-mid layui-word-aux" style="color: red !important;">* 确定充值前请仔细检查用户名</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">充值金额</label>
+
+            <div class="layui-input-block">
+                <input type="text" id="amount" autocomplete="off"
+                       name="amount" placeholder="￥" lay-verify="required" class="layui-input" value="" style="width: 190px">
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <button lay-submit lay-filter="my-form" class="layui-btn layui-btn layui-btn-warm" style="float: left;width: 300px">充值</button>
+        </div>
+    </div>
+
+</th:block>
+<th:block layout:fragment="free_footer">
+    <script type="text/javascript" th:src="@{/frame/layui/layui.js}"></script>
+    <script type="text/javascript" th:src="@{/js/index.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jsencrypt.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/base64.js}"></script>
+    <script type="text/javascript" th:src="@{/js/finance/recharge.js}"></script>
+
+    <script>
+        layui.use(['form'], function(){
+            var form = layui.form,
+                layer = layui.layer;
+
+            // 表单提交验证
+            form.on('submit(my-form)',function(data){
+                var username = $('#username').val(),
+                    amount = $('#amount').val();
+                service.recharge({
+                    username: username,
+                    amount: amount,
+                    sign: service.getSign("username=" + username + "&amount=" + amount)
+                }, function (data) {
+                    if(!isNaN(data.error) || data.code != 0) {
+                        layer.msg("充值失败");
+                        return;
+                    }
+                    layer.closeAll();
+                    layer.msg("充值成功");
+                })
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            });
+            form.render();
+        });
+
+    </script>
+
+</th:block>
+</body>
+</html>

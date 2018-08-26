@@ -14,6 +14,7 @@ public class JsonArrayResult<T> extends JsonResult{
 
     public JsonArrayResult(List<T> data) {
         super.setCode(200);
+        super.setMsg("success");
         if(data == null || data.isEmpty()){
             this.data = new ArrayList<>();
         }else{

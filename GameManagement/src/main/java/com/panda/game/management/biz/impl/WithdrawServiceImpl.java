@@ -7,7 +7,7 @@
  */
 package com.panda.game.management.biz.impl;
 
-import com.panda.game.management.biz.WithdrawService;
+import com.panda.game.management.biz.IWithdrawService;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.GameMemberGroup;
 import com.panda.game.management.entity.db.Withdraw;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class WithdrawServiceImpl extends BaseServiceImpl<Withdraw> implements WithdrawService {
+public class WithdrawServiceImpl extends BaseServiceImpl<Withdraw> implements IWithdrawService {
     private final WithdrawMapper withdrawMapper;
     private final UserMapper userMapper;
     private final PayMapper payMapper;

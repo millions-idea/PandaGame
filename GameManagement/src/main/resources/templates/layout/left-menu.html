@@ -1,0 +1,22 @@
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="left-menu">
+    <div class="layui-side my-side">
+        <div class="layui-side-scroll">
+            <!-- 左侧主菜单添加选项卡监听 -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="side-main">
+                <li class="layui-nav-item  layui-nav-itemed">
+                    <a href="javascript:;"><i class="layui-icon">&#xe620;</i>基础运营</a>
+                    <dl class="layui-nav-child">
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;"><i class="layui-icon">&#xe628;</i>网站建设</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;" href-url="#"><i class="layui-icon">&#xe621;</i>配置</a></dd>
+                    </dl>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+
+</th:block>

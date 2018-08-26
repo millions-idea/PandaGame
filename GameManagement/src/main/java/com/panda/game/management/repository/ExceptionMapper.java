@@ -7,7 +7,6 @@
  */
 package com.panda.game.management.repository;
 
-import com.panda.game.management.biz.ExceptionService;
 import com.panda.game.management.entity.db.Exceptions;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;

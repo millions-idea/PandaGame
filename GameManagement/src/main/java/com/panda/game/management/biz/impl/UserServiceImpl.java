@@ -8,8 +8,7 @@
 package com.panda.game.management.biz.impl;
 
 import com.google.common.collect.ImmutableMap;
-import com.panda.game.management.biz.UserService;
-import com.panda.game.management.entity.JsonResult;
+import com.panda.game.management.biz.IUserService;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.db.Wallets;
 import com.panda.game.management.entity.dbExt.UserDetailInfo;
@@ -33,7 +32,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class UserServiceImpl extends BaseServiceImpl<Users> implements UserService  {
+public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserService {
     private final UserMapper userMapper;
     private final WalletMapper walletMapper;
     private final PayMapper payMapper;
@@ -115,6 +114,32 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements UserServi
         userResp.setToken(token);
         renewalToken(token , userInfo.getPhone(), userInfo.getUserId());
         return userResp;
+    }
+
+    /**
+     * 登录验证 韦德 2018年8月26日17:18:58
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    public Users login(Users user) {
+        Users condition = new Users();
+        condition.setPhone(user.getPhone());
+        condition.setIsDelete(0);
+        condition.setIsEnable(1);
+        Users userInfo = userMapper.selectOne(condition);
+
+        if(userInfo == null) return null;
+        if(userInfo.getIsEnable() == 0) throw new MsgException("您的账户已被管理员锁定");
+        if(userInfo.getIsDelete() == 1) throw new MsgException("您的账户已被管理员回收");
+
+        condition = new Users();
+        condition.setUserId(userInfo.getUserId());
+        condition.setIp(user.getIp());
+        userMapper.updateOne(condition);
+
+        return userInfo;
     }
 
     /**

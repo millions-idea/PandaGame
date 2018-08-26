@@ -11,6 +11,7 @@ import com.panda.game.management.entity.db.Accounts;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -31,4 +32,22 @@ public interface AccountMapper extends MyMapper<Accounts> {
      * @return
      */
     int insertList(@Param("list") List<Accounts> list);
+
+    @Select("SELECT t1.*,t2.phone FROM tb_accounts t1 LEFT JOIN tb_users t2 ON t1.trade_account_id = t2.user_id " +
+            "WHERE ${condition} ORDER BY add_date DESC LIMIT #{page},${limit}")
+    /**
+     * 查询分页 韦德 2018年8月27日00:39:38
+     * @param page
+     * @param limit
+     * @param trade_type
+     * @param trade_date_begin
+     * @param trade_date_end
+     * @param where
+     * @return
+     */
+    List<Accounts> selectLimit(@Param("page") Integer page, @Param("limit") String limit
+            , @Param("accountsType") Integer accountsType
+            , @Param("beginTime") String trade_date_begin
+            , @Param("endTime") String trade_date_end
+            , @Param("condition")  String condition);
 }

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <!--样式 begin-->
+    <th:block th:replace="layout/header :: header" />
+    <!--样式 end-->
+</head>
+<body>
+
+<!-- layout admin -->
+<div class="layui-layout layui-layout-admin"> <!-- 添加skin-1类可手动修改主题为纯白，添加skin-2类可手动修改主题为蓝白 -->
+    <!-- header -->
+    <div class="layui-header my-header">
+        <a href="/">
+            <div class="my-header-logo" th:text="${title}"></div>
+        </a>
+
+        <!-- 顶部左侧添加选项卡监听 -->
+        <ul class="layui-nav" lay-filter="side-top-left"></ul>
+
+        <!-- 顶部右侧添加选项卡监听 -->
+        <ul class="layui-nav my-header-user-nav" lay-filter="side-top-right">
+            <li class="layui-nav-item"><a href="/logout">注销登录</a></li>
+        </ul>
+
+    </div>
+
+    <!--左侧菜单 begin-->
+    <th:block th:replace="layout/left-menu :: left-menu" />
+    <!--左侧菜单 end-->
+
+
+    <!-- 内容主体 begin -->
+    <div class="layui-body my-body">
+        <div class="my-breadcrumb">
+            <span class="layui-breadcrumb" lay-filter="breadcrumb" style="visibility: visible;">
+              <a href="/myAdmin/systemIndex">首页</a><span lay-separator="">/</span>
+                <th:block layout:fragment="current_page" />
+             </span>
+        </div>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show my-content">
+                <th:block layout:fragment="body"/>
+            </div>
+        </div>
+    </div>
+    <!-- 内容主体 end -->
+
+
+    <!-- 页脚 begin -->
+    <th:block th:replace="layout/footer :: footer" />
+    <!-- 页脚 end -->
+
+</div>
+<!--通用页脚 begin-->
+<th:block th:replace="shared/footer :: footer" />
+<th:block layout:fragment="free_footer" />
+<!--通用页脚 end-->
+</body>
+</html>

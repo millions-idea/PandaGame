@@ -7,7 +7,7 @@
  */
 package com.panda.game.management.biz.impl;
 
-import com.panda.game.management.biz.GameMemberGroupService;
+import com.panda.game.management.biz.IGameMemberGroupService;
 import com.panda.game.management.entity.db.GameMemberGroup;
 import com.panda.game.management.repository.GameMemberGroupMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class GameMemberGroupServiceImpl extends BaseServiceImpl<GameMemberGroup> implements GameMemberGroupService {
+public class GameMemberGroupServiceImpl extends BaseServiceImpl<GameMemberGroup> implements IGameMemberGroupService {
     private final GameMemberGroupMapper gameMemberGroupMapper;
 
     @Autowired

@@ -2,7 +2,7 @@ package com.panda.game.management.netty;
 
 import com.alibaba.fastjson.JSON;
 import com.google.common.base.Joiner;
-import com.panda.game.management.biz.GameMemberGroupService;
+import com.panda.game.management.biz.IGameMemberGroupService;
 import com.panda.game.management.biz.impl.GameMemberGroupServiceImpl;
 import com.panda.game.management.entity.db.GameMemberGroup;
 import com.panda.game.management.utils.DateUtil;
@@ -17,7 +17,6 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,8 +53,8 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 			String roomCode = dataContent.getChatMsg().getRoomCode();
 
 			// 动态查询成员信息列表
-			GameMemberGroupService gameMemberGroupService = (GameMemberGroupService) SpringApplicationContext.getBean(GameMemberGroupServiceImpl.class);
-			List<GameMemberGroup> memberGroupList = gameMemberGroupService.getListByRoom(Long.valueOf(roomCode));
+			IGameMemberGroupService IGameMemberGroupService = (com.panda.game.management.biz.IGameMemberGroupService) SpringApplicationContext.getBean(GameMemberGroupServiceImpl.class);
+			List<GameMemberGroup> memberGroupList = IGameMemberGroupService.getListByRoom(Long.valueOf(roomCode));
 
 			// 插入本地缓存列表
 			GameMemberGroup gameMemberGroup = memberGroupList.stream().filter(m -> m.getRoomCode().equals(Long.valueOf(roomCode))).findFirst().get();

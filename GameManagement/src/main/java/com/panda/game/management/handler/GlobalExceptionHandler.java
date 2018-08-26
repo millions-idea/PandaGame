@@ -12,6 +12,7 @@ import com.panda.game.management.exception.InfoException;
 import com.panda.game.management.exception.MsgException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,6 +39,13 @@ public class GlobalExceptionHandler {
                                    MsgException exception) throws Exception {
         logger.error(String.format("普通异常消息: %s",exception.toString()));
         return  new JsonResult().normalExceptionAsString(exception.getMsg() == null ? "错误" : exception.getMsg());
+    }
+
+    @ExceptionHandler(value = UsernameNotFoundException.class)
+    public JsonResult preException(HttpServletRequest request,
+                                   UsernameNotFoundException exception) throws Exception {
+        logger.error(String.format("security异常消息: %s",exception.toString()));
+        return  new JsonResult().normalExceptionAsString(exception.getMessage() == null ? "登陆失败" : exception.getMessage());
     }
 
 

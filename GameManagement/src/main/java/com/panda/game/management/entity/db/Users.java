@@ -34,4 +34,5 @@ public class Users {
     private String pandaId;
     private Integer isEnable;
     private Integer isDelete;
+    private Integer level;
 }

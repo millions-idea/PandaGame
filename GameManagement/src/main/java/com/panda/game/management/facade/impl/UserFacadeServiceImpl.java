@@ -7,8 +7,6 @@
  */
 package com.panda.game.management.facade.impl;
 
-import com.panda.game.management.biz.PayService;
-import com.panda.game.management.biz.UserService;
 import com.panda.game.management.entity.Constant;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.param.PayParam;
@@ -20,10 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserFacadeServiceImpl implements UserFacadeService {
     @Autowired
-    private UserService userService;
+    private com.panda.game.management.biz.IUserService IUserService;
 
     @Autowired
-    private PayService payService;
+    private com.panda.game.management.biz.IPayService IPayService;
 
     /**
      * 注册用户 韦德 2018年8月20日15:39:37
@@ -35,7 +33,7 @@ public class UserFacadeServiceImpl implements UserFacadeService {
     @Transactional
     public boolean register(Users param) {
         // 注册用户、开通钱包
-        userService.register(param);
+        IUserService.register(param);
 
         // 赠送5枚金币
         PayParam payParam = new PayParam();
@@ -44,7 +42,7 @@ public class UserFacadeServiceImpl implements UserFacadeService {
         payParam.setToUid(param.getUserId());
         payParam.setRemark("新用户注册奖励");
         payParam.setCurrency(1);
-        payService.recharge(payParam);
+        IPayService.recharge(payParam);
 
         return true;
     }

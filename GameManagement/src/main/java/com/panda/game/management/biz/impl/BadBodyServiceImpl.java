@@ -7,8 +7,7 @@
  */
 package com.panda.game.management.biz.impl;
 
-import com.panda.game.management.biz.BadBoyService;
-import com.panda.game.management.exception.InfoException;
+import com.panda.game.management.biz.IBadBoyService;
 import com.panda.game.management.exception.MsgException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class BadBodyServiceImpl implements BadBoyService {
+public class BadBodyServiceImpl implements IBadBoyService {
 
     @Autowired
     private RedisTemplate redisTemplate;

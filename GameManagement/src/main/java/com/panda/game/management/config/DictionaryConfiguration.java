@@ -7,11 +7,9 @@
  */
 package com.panda.game.management.config;
 
-import com.panda.game.management.biz.DictionaryService;
 import com.panda.game.management.entity.DataDictionary;
 import com.panda.game.management.entity.db.Dictionary;
 import com.panda.game.management.exception.InfoException;
-import com.panda.game.management.utils.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,11 +21,11 @@ import java.util.Map;
 @Configuration
 public class DictionaryConfiguration {
     @Autowired
-    private DictionaryService dictionaryService;
+    private com.panda.game.management.biz.IDictionaryService IDictionaryService;
 
     @Bean
     public List<Dictionary> loadDictionary(){
-        List<Dictionary> list = dictionaryService.getList();
+        List<Dictionary> list = IDictionaryService.getList();
         if(list == null || list.isEmpty()) throw new InfoException("");
         return list;
     }

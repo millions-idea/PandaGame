@@ -7,7 +7,6 @@
  */
 package com.panda.game.management.facade;
 
-import com.panda.game.management.biz.PayService;
 import com.panda.game.management.entity.db.Withdraw;
 
 public interface FinanceFacadeService {

@@ -7,7 +7,7 @@
  */
 package com.panda.game.management.biz.impl;
 
-import com.panda.game.management.biz.GameRoomService;
+import com.panda.game.management.biz.IGameRoomService;
 import com.panda.game.management.entity.db.*;
 import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
 import com.panda.game.management.entity.resp.GameRoomCallbackResp;
@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @Service
-public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements GameRoomService {
+public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IGameRoomService {
     private final GameRoomMapper gameRoomMapper;
     private final SubareaMapper subareaMapper;
     private final GameMemberGroupMapper gameMemberGroupMapper;

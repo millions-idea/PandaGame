@@ -8,7 +8,7 @@
 package com.panda.game.management.biz.impl;
 
 import com.panda.game.management.annotaion.AspectLog;
-import com.panda.game.management.biz.PayService;
+import com.panda.game.management.biz.IPayService;
 import com.panda.game.management.entity.Constant;
 import com.panda.game.management.entity.DataDictionary;
 import com.panda.game.management.entity.db.Accounts;
@@ -17,6 +17,7 @@ import com.panda.game.management.entity.dbExt.UserDetailInfo;
 import com.panda.game.management.entity.param.PayParam;
 import com.panda.game.management.exception.InfoException;
 import com.panda.game.management.repository.*;
+import com.panda.game.management.repository.utils.ConditionUtil;
 import com.panda.game.management.utils.IdWorker;
 import com.panda.game.management.utils.JsonUtil;
 import org.slf4j.Logger;
@@ -28,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
-public class PayServiceImpl extends BaseServiceImpl<Pays> implements PayService {
+public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService {
     private final PayMapper payMapper;
     private final WalletMapper walletMapper;
     private final AccountMapper accountMapper;
@@ -55,69 +56,6 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements PayService 
     @Transactional
     @AspectLog(description = "AB转账")
     public void transfer(PayParam payParam) {
-        // 高并发环境下的重试机制
-       /* long start =  System.currentTimeMillis();
-        while (true){
-            // 获取循环当前时间
-            long end = System.currentTimeMillis();
-            // 当前时间已经超过最大间隔，返回失败
-            if (end - start > 3000) {
-                throw new InfoException("交易超时");
-            }
-            try {
-                // 查询交易主体信息
-                List<UserDetailInfo> userDetailInfoList = this.getUsersInfo(payParam);
-                UserDetailInfo fromUserInfo = userDetailInfoList.stream().filter(u -> u.getUserId().equals(payParam.getFromUid())).findFirst().get();
-                UserDetailInfo toUserInfo =userDetailInfoList.stream().filter(u -> u.getUserId().equals(payParam.getToUid())).findFirst().get();
-
-                if(fromUserInfo.getBalance() <= 0) throw new InfoException("甲方钱包余额不足");
-                if(toUserInfo.getBalance() <= 0) throw new InfoException("甲方钱包余额不足");
-
-                // 生成交易流水账单
-                Pays pays = null;
-                try {
-                    pays = extractRechargePayModel(userDetailInfoList, payParam);
-                } catch (Exception e) {
-                    logger.error("生成交易流水异常：" + JsonUtil.getJson(e));
-                    throw new InfoException("生成交易流水异常");
-                }
-                int count = payMapper.insert(pays);
-                if(count == 0) throw new InfoException("生成交易流水失败");
-
-
-                // 变更钱包余额
-                count = 0;
-                count = walletMapper.reduceBalance(fromUserInfo.getUserId(), payParam.getAmount(),fromUserInfo.getVersion());
-                if(count == 0) throw new InfoException("甲方账户扣款失败");
-
-                count = 0;
-                count = walletMapper.addBalance(toUserInfo.getUserId(), payParam.getAmount(), toUserInfo.getVersion());
-                if(count == 0) throw new InfoException("乙方账户加款失败");
-
-
-                // 生成往来账目单
-                List<Accounts> accountsList = new ArrayList<>();
-                PayParam newPayParam = payParam;
-                try {
-                    accountsList.add(extractAccountModel(payParam, fromUserInfo, 2));
-                    newPayParam.setFromUid(payParam.getToUid());
-                    accountsList.add(extractAccountModel(payParam, toUserInfo, 1));
-                } catch (Exception e) {
-                    logger.error("生成往来账异常：" + JsonUtil.getJson(e));
-                    throw new InfoException("生成往来账异常");
-                }
-                count = 0;
-                count = accountMapper.insertList(accountsList);
-                if(count == 0) throw new InfoException("生成往来账失败");
-
-                System.out.println("交易成功");
-                break;
-            }catch (InfoException e){
-                logger.error(e.getMsg());
-            }
-        }*/
-
-
         // 查询交易主体信息
         List<UserDetailInfo> userDetailInfoList = this.getUsersInfo(payParam);
         UserDetailInfo fromUserInfo = userDetailInfoList.stream().filter(u -> u.getUserId().equals(payParam.getFromUid())).findFirst().get();
@@ -304,6 +242,62 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements PayService 
     @Override
     public Double getWithdrawAmount(Integer userId) {
         return payMapper.selectWithdrawAmount(userId, "新用户注册奖励");
+    }
+
+    /**
+     * 分页加载财务会计账目数据列表 韦德 2018年8月27日00:20:54
+     *
+     * @param page
+     * @param limit
+     * @param condition
+     * @param trade_type
+     * @param trade_date_begin
+     * @param trade_date_end
+     * @return
+     */
+    @Override
+    public List<Accounts> getAccountsLimit(Integer page, String limit, String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
+        // 计算分页位置
+        page = ConditionUtil.extractPageIndex(page, limit);
+
+        // 查询模糊条件
+        String where = " 1=1";
+        if(condition != null) {
+            where += " AND (" + ConditionUtil.like("accounts_id", condition, true, "t1");
+            where += " OR " + ConditionUtil.like("pay_id", condition, true, "t1");
+            where += " OR " + ConditionUtil.like("phone", condition, true, "t2");
+            if (condition.split("-").length == 2){
+                where += " OR " + ConditionUtil.like("add_date", condition, true, "t1");
+            }
+            where += " OR " + ConditionUtil.like("accounts_type", condition, true, "t1");
+            where += " OR " + ConditionUtil.like("remark", condition, true, "t1") + ")";
+        }
+
+        // 查询全部数据或者只有一类数据
+        where = extractQueryAllOrOne(trade_type, where);
+
+        // 取两个日期之间或查询指定日期
+        if ((trade_date_begin != null && trade_date_begin.contains("-")) &&
+                trade_date_end != null && trade_date_end.contains("-")){
+            where += " AND t1.add_date BETWEEN #{beginTime} AND #{endTime}";
+        }else if (trade_date_begin != null && trade_date_begin.contains("-")){
+            where += " AND t1.add_date BETWEEN #{beginTime} AND #{endTime}";
+        }else if (trade_date_end != null && trade_date_end.contains("-")){
+            where += " AND t1.add_date BETWEEN #{beginTime} AND #{endTime}";
+        }
+        List<Accounts> list = accountMapper.selectLimit(page, limit, trade_type, trade_date_begin, trade_date_end, where);
+
+        return list;
+    }
+
+    /**
+     * 记载财务会计账目数据总条数 韦德 2018年8月27日00:21:16
+     *
+     * @return
+     */
+    @Override
+    public int getAccountsCount() {
+        return accountMapper.selectCount(new Accounts());
     }
 
     /**
@@ -560,4 +554,16 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements PayService 
         return accounts;
     }
 
+    /**
+     * 查询全部数据或者只有一类数据
+     * @param accountsType
+     * @param where
+     * @return
+     */
+    private String extractQueryAllOrOne(Integer accountsType, String where) {
+        if (accountsType != null && accountsType != 0){
+            where += " AND t1.accounts_type = #{accounts_type}";
+        }
+        return where;
+    }
 }

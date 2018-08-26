@@ -7,9 +7,8 @@
  */
 package com.panda.game.management.biz.impl;
 
-import com.panda.game.management.biz.SubareaService;
+import com.panda.game.management.biz.ISubareaService;
 import com.panda.game.management.entity.db.Subareas;
-import com.panda.game.management.entity.resp.GroupInformation;
 import com.panda.game.management.repository.SubareaMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class SubareaServiceImpl extends BaseServiceImpl<Subareas> implements SubareaService {
+public class SubareaServiceImpl extends BaseServiceImpl<Subareas> implements ISubareaService {
     private final SubareaMapper subareaMapper;
 
     @Autowired

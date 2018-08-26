@@ -7,11 +7,11 @@
  */
 package com.panda.game.management.biz.impl;
 
-import com.panda.game.management.biz.BaseService;
+import com.panda.game.management.biz.IBaseService;
 
 import java.util.List;
 
-public abstract class BaseServiceImpl<T> implements BaseService<T> {
+public abstract class BaseServiceImpl<T> implements IBaseService<T> {
     /**
      * 获取全部数据 韦德 2018年8月13日13:26:57
      *

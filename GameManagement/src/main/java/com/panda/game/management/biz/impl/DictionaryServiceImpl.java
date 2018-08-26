@@ -7,7 +7,7 @@
  */
 package com.panda.game.management.biz.impl;
 
-import com.panda.game.management.biz.DictionaryService;
+import com.panda.game.management.biz.IDictionaryService;
 import com.panda.game.management.entity.DataDictionary;
 import com.panda.game.management.entity.db.Dictionary;
 import com.panda.game.management.entity.resp.GroupInformation;
@@ -16,12 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
-public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implements DictionaryService {
+public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implements IDictionaryService {
     private final DictionaryMapper dictionaryMapper;
 
     @Autowired
