@@ -18,7 +18,7 @@ function initService(r) {
          * @param callback
          */
         recharge: function (param, callback) {
-            $.get("/finance/pay/doRecharge",param, function (data) {
+            $.get(route + "/toRecharge",param, function (data) {
                 callback(data);
             })
         },
@@ -29,9 +29,7 @@ function initService(r) {
             var pubKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDYa5wMSo1iyXu0nrNizOnVkKFpREm1sgaY1sJu/be3tf//DRwoolEpwBXch9Y11OBrIItd0e1TXVoZvFiRboachimheGWJFl+Xxj8UrQFWz+tuqB5q9YNvwJVAX7WKKDHenwuXTTt/+jZI8mhRQPhBLdGM6hYCRloo87vOJPh0KQIDAQAB";
             var encrypt = new JSEncrypt();
             encrypt.setPublicKey(pubKey);
-            var encrypted = encrypt.encrypt(param);
-            /*return codeHandler.encode(encrypted,'base64');*/
-            return encrypted;
+            return encrypt.encrypt(param);
         }
     }
 }

@@ -65,4 +65,18 @@ public interface IUserService extends IBaseService<Users> {
      * @param param
      */
     void register(Users param);
+
+    /**
+     * 根据主键id查询用户信息 韦德 2018年8月27日11:17:42
+     * @param systemAccountsId
+     * @return
+     */
+    UserResp getUserById(Integer systemAccountsId);
+
+    /**
+     * 根据用户名查询用户信息 韦德 2018年8月27日22:51:49
+     * @param username
+     * @return
+     */
+    Users getUserByUserName(String username);
 }

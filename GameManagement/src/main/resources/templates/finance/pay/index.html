@@ -6,16 +6,13 @@
       layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
-    <title>交易清单</title>
-    <link rel="stylesheet" th:href="@{/frame/layui/css/layui.css}">
-    <link rel="stylesheet" th:href="@{/frame/static/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/finance/statement.css}">
-    <link rel="icon" th:href="@{/frame/static/image/code.png}">
+    <title th:text="'交易流水-' + ${title}"></title>
+    <link rel="stylesheet" th:href="@{/css/finance/index.css}">
 </head>
 <body>
 
 <th:block layout:fragment="current_page">
-    <a><cite>交易清单</cite></a>
+    <a><cite>交易流水</cite></a>
 </th:block>
 
 <th:block layout:fragment="body">
@@ -54,7 +51,7 @@
                                </div>
                                <div class="layui-col-md6">
                                    <div class="grid-demo grid-demo-bg2">
-                                       <span>总支出：</span>
+                                       <span>总收入：</span>
                                        &nbsp;
                                        <span style="font-size: 40px;color:rgba(255,254,190,0.79)" id="income-amount">Loading...</span>
                                        &nbsp;
@@ -63,7 +60,7 @@
                                </div>
                                <div class="layui-col-md6">
                                    <div class="grid-demo grid-demo-bg3">
-                                       <span>总收入：</span>
+                                       <span>总支出：</span>
                                        &nbsp;
                                        <span style="font-size: 40px;color:rgba(255,254,190,0.79)" id="expend-amount">Loading...</span>
                                        &nbsp;
@@ -90,8 +87,10 @@
                        <select name="trade_type" lay-verify="required">
                            <option value="">请选择一项条件</option>
                            <option value="0">全部</option>
-                           <option value="1">充值</option>
-                           <option value="2">消费</option>
+                           <option value="6">充值</option>
+                           <option value="7">提现</option>
+                           <option value="8">扣费</option>
+                           <option value="9">消费</option>
                        </select>
                    </div>
                    <!--交易类型 end-->
@@ -136,9 +135,7 @@
 
 </th:block>
 <th:block layout:fragment="free_footer">
-    <script type="text/javascript" th:src="@{/frame/layui/layui.js}"></script>
-    <script type="text/javascript" th:src="@{/js/index.js}"></script>
-    <script type="text/javascript" th:src="@{/js/finance/statement.js}"></script>
+    <script type="text/javascript" th:src="@{/js/finance/pay.js}"></script>
     <!-- 表格操作按钮集 -->
     <script type="text/html" id="barOption">
         <a name="item-view" class="layui-btn layui-btn layui-btn-xs" lay-event="detail">查看</a>

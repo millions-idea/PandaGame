@@ -1,5 +1,5 @@
 /*!财务模块-交易清单 韦德 2018年8月5日22:50:57*/
-var route = "./statement";
+var route = "./pay";
 var service;
 var tableIndex;
 (function () {
@@ -9,14 +9,14 @@ var tableIndex;
     service.getSystemAccount(function (data) {
         console.log(data)
         if(!isNaN(data.error) || (!isNaN(data.code) && data.code != 0)) return;
-        $("#sys_username").text(data.username);
+        $("#sys_username").text(data.phone);
         $("#sys_balance").text(data.balance);
         $("#income-amount").text(data.incomeAmount);
         $("#expend-amount").text(data.expendAmount);
     });
 
     // 加载数据表
-    initDataTable(route + "/getLimit", function (form, table, layer, vipTable, tableIns) {
+    initDataTable(route + "/getPayLimit", function (form, table, layer, vipTable, tableIns) {
         // 动态注册事件
         var $tableDelete = $("#my-data-table-delete"),
             $tableAdd = $("#my-data-table-add");
@@ -118,7 +118,7 @@ function initService(r) {
          * @param callback
          */
         getSystemAccount: function (callback) {
-            $.get("/finance/getSystemAccount",function (data) {
+            $.get(route + "/getSystemAccount",function (data) {
                 callback(data);
             })
         },
@@ -199,26 +199,33 @@ function initDataTable(url, callback, loadDone) {
 function getTableColumns() {
     return [[
         {type: "numbers"}
-        , {field: 'transaction_id', title: 'ID', width: 80, sort: true}
-        , {field: 'record_id', title: '流水号', width: 300}
-        , {field: 'record_no', title: '交易号', width: 200, templet: function (d) {
-                return d.record_no == null ? "站内交易" : d.record_no;
+        , {field: 'payId', title: 'ID', width: 80, sort: true}
+        , {field: 'systemRecordId', title: '流水号', width: 220}
+        , {field: 'channelRecordId', title: '交易号', width: 120, templet: function (d) {
+                return d.channelRecordId == null ? "站内交易" : d.channelRecordId;
             }}
-        , {field: 'from_username', title: '甲方', width: 150}
-        , {field: 'to_username', title: '乙方', width: 150}
-        , {field: 'trade_date', title: '交易日', width: 240}
-        , {field: 'trade_type', title: '交易类型', width: 120, templet: function (d) {
-                return d.trade_type == 1 ? "收入" : "支出";
+        , {field: 'addTime', title: '交易日', width: 240, templet: function (d) {
+                return utils.date.timestampConvert(d.addTime);
             }}
-        , {field: 'trade_amount', title: '金额', width: 120, align: "center", templet: function (d) {
-                if(d.trade_type == 1){
-                    return "<span style='color: #2fc253;font-size: 15px;'>+" + d.trade_amount + "</span>";
+        , {field: 'fromName', title: '甲方', width: 150}
+        , {field: 'toName', title: '乙方', width: 150}
+        , {field: 'channelName', title: '渠道名称', width: 120}
+        , {field: 'toAccountTime', title: '渠道到账时间', width: 240, templet: function (d) {
+                return d.toAccountTime == null ? '-' : utils.date.timestampConvert(d.toAccountTime);
+            }}
+        , {field: 'productName', title: '商品名称', width: 120}
+        , {field: 'tradeName', title: '交易类型', width: 120}
+        , {field: 'amount', title: '交易总额', width: 120, align: "center"}
+        , {field: 'status', title: '状态', width: 120, templet: function (d) {
+                if(d.status == 0) {
+                    return "正常";
+                }else if(d.status == 1){
+                    return "退款";
                 }else{
-                    return "<span style='color: #c2330f;font-size: 15px;'>-" + d.trade_amount + "</span>";
+                    return "未知";
                 }
-                return "<span>" + d.trade_amount + "</span>";
             }}
-        , {field: 'remark', title: '摘要', width: 240}
+        , {field: 'remark', title: '摘要', width: 120}
     ]];
 }
 

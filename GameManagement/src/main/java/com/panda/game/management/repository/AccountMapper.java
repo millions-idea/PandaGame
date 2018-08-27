@@ -8,13 +8,16 @@
 package com.panda.game.management.repository;
 
 import com.panda.game.management.entity.db.Accounts;
+import com.panda.game.management.entity.db.Pays;
 import com.panda.game.management.entity.resp.AccountsResp;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface AccountMapper extends MyMapper<Accounts> {
@@ -67,4 +70,15 @@ public interface AccountMapper extends MyMapper<Accounts> {
             , @Param("beginTime") String trade_date_begin
             , @Param("endTime") String trade_date_end
             , @Param("condition")  String condition);
+
+
+
+    @Select("SELECT (SELECT SUM(amount) FROM tb_pays WHERE from_uid != #{id}) AS incomeAmount\n" +
+            "\t\t\t\t, (SELECT SUM(amount) FROM tb_pays WHERE from_uid = #{id}) AS expendAmount FROM tb_pays LIMIT 1;")
+    /**
+     * 获取系统账户账簿 韦德 2018年8月27日17:38:27
+     * @param id
+     * @return
+     */
+    Map<String, BigDecimal> getSystemAccounts(@Param("id") Integer id);
 }

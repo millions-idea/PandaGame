@@ -7,11 +7,11 @@
       {
         "text": "人工充值",
         "icon": "&#xe63c;",
-        "href": "/finance/pay/recharge"
+        "href": "/management/finance/recharge"
       }, {
         "text": "交易清单",
         "icon": "&#xe63c;",
-        "href": "/finance/statement"
+        "href": "/management/finance/pay"
       }, {
         "text": "会计账簿",
         "icon": "&#xe63c;",
@@ -19,54 +19,14 @@
       }
     ]
   },{
-      "text": "基础模块管理",
+      "text": "客服运营",
       "icon": "&#xe620;",
       "subset": [
         {
-          "text": "品牌电商",
+          "text": "会员管理",
           "icon": "&#xe621;",
           "href": "/business-brands"
-        },{
-          "text": "快递空包",
-          "icon": "&#xe621;",
-          "href": "/express-platform"
-        },{
-          "text": "提现设置",
-          "icon": "&#xe621;",
-          "href": "/system/toTiXianSetting"
-        },{
-          "text": "会员禁用名设置",
-          "icon": "&#xe621;",
-          "href": "/member/toForbiddenHtml"
-        }
-      ]
-    },{
-      "text": "会员管理",
-      "icon": "&#xe601;",
-      "subset": [
-        {
-          "text": "会员列表",
-          "icon": "&#xe621;",
-          "href": "/member"
-        },{
-          "text": "会员实名认证",
-          "icon": "&#xe621;",
-          "href": "/member/toMemberRealNameAuth"
-        }      ,{
-          "text": "会员买号审核",
-          "icon": "&#xe621;",
-          "href": "/member/toAuthAccount"
-        },{
-          "text": "会员银行卡审核",
-          "icon": "&#xe621;",
-          "href": "/member/toAuthBankHtml"
-        },{
-          "text": "会员提现审核",
-          "icon": "&#xe621;",
-          "href": "/member/tiXianHtml"
-        }
-
-      ]
+        }]
     }
   ]
 }

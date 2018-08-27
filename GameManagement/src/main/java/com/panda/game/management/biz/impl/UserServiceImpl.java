@@ -25,9 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -80,6 +82,40 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserServ
         count = 0;
         count = walletMapper.insert(wallets);
         if(count == 0) throw new MsgException("开通钱包失败");
+    }
+
+    /**
+     * 根据主键id查询用户信息 韦德 2018年8月27日11:17:42
+     *
+     * @param systemAccountsId
+     * @return
+     */
+    @Override
+    public UserResp getUserById(Integer systemAccountsId) {
+        UserDetailInfo userInfo = userMapper.selectUserDetail(systemAccountsId.toString());
+        UserResp userResp = new UserResp();
+        PropertyUtil.clone(userInfo, userResp);
+        return userResp;
+    }
+
+    /**
+     * 根据用户名查询用户信息 韦德 2018年8月27日22:51:49
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public Users getUserByUserName(String username) {
+        Example example = new Example(Users.class);
+        Example.Criteria criteria = example.createCriteria();
+        Users users = new Users();
+        users.setPhone(username);
+        criteria.andEqualTo("phone", users.getPhone());
+        List<Users> usersList = userMapper.selectByExample(example);
+        if (users != null && usersList.size() > 0) {
+            return usersList.get(0);
+        }
+        return null;
     }
 
     /**

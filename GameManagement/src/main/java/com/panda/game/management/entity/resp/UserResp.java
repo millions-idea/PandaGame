@@ -17,7 +17,6 @@ import java.util.Date;
 
 @Getter
 @Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserResp {
@@ -49,5 +48,19 @@ public class UserResp {
         String encryptPhone = StringUtil.padLeft(encryptPhoneBefore, 9, '*').concat(encryptPhoneAfter);
         return encryptPhone;
     }
+
+
+    @JsonView(FinanceView.class)
+    /**
+     * 总收入
+     */
+    private Double incomeAmount;
+
+
+    @JsonView(FinanceView.class)
+    /**
+     * 总支出
+     */
+    private Double expendAmount;
 
 }

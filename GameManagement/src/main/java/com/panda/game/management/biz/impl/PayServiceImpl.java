@@ -7,6 +7,8 @@
  */
 package com.panda.game.management.biz.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 import com.panda.game.management.annotaion.AspectLog;
 import com.panda.game.management.biz.IPayService;
 import com.panda.game.management.entity.Constant;
@@ -16,18 +18,23 @@ import com.panda.game.management.entity.db.Pays;
 import com.panda.game.management.entity.dbExt.UserDetailInfo;
 import com.panda.game.management.entity.param.PayParam;
 import com.panda.game.management.entity.resp.AccountsResp;
+import com.panda.game.management.entity.resp.UserResp;
 import com.panda.game.management.exception.InfoException;
 import com.panda.game.management.repository.*;
 import com.panda.game.management.repository.utils.ConditionUtil;
+import com.panda.game.management.utils.DecimalUtil;
 import com.panda.game.management.utils.IdWorker;
 import com.panda.game.management.utils.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService {
@@ -37,6 +44,8 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
     private final DictionaryMapper dictionaryMapper;
     private final UserMapper userMapper;
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Autowired
     public PayServiceImpl(PayMapper payMapper, WalletMapper walletMapper, AccountMapper accountMapper, DictionaryMapper dictionaryMapper, UserMapper userMapper) {
@@ -303,6 +312,47 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
     }
 
     /**
+     * 提取交易流水分页条件
+     * @param condition
+     * @param trade_type
+     * @param trade_date_begin
+     * @param trade_date_end
+     * @return
+     */
+    private String extractPaysLimitWhere(String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
+        // 查询模糊条件
+        String where = " 1=1";
+        if(condition != null) {
+            where += " AND (" + ConditionUtil.like("pay_id", condition, true, "t1");
+            where += " OR " + ConditionUtil.like("system_record_id", condition, true, "t1");
+            where += " OR " + ConditionUtil.like("from_name", condition, true, "t1");
+            where += " OR " + ConditionUtil.like("to_name", condition, true, "t1");
+            if (condition.split("-").length == 2){
+                where += " OR " + ConditionUtil.like("add_time", condition, true, "t1");
+            }
+            where += " OR " + ConditionUtil.like("trade_type", condition, true, "t1");
+            where += " OR " + ConditionUtil.like("remark", condition, true, "t1") + ")";
+        }
+
+        // 查询全部数据或者只有一类数据
+        if (trade_type != null && trade_type != 0){
+            where += " AND t1.trade_type = #{trade_type}";
+        }
+
+        // 取两个日期之间或查询指定日期
+        if ((trade_date_begin != null && trade_date_begin.contains("-")) &&
+                trade_date_end != null && trade_date_end.contains("-")){
+            where += " AND t1.add_time BETWEEN #{beginTime} AND #{endTime}";
+        }else if (trade_date_begin != null && trade_date_begin.contains("-")){
+            where += " AND t1.add_time BETWEEN #{beginTime} AND #{endTime}";
+        }else if (trade_date_end != null && trade_date_end.contains("-")){
+            where += " AND t1.add_time BETWEEN #{beginTime} AND #{endTime}";
+        }
+        return where;
+    }
+
+
+    /**
      * 统计分页加载财务会计账目数据列表总条数 韦德 2018年8月27日09:58:27
      *
      * @param condition
@@ -318,7 +368,7 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
     }
 
     /**
-     * 记载财务会计账目数据总条数 韦德 2018年8月27日00:21:16
+     * 加载财务会计账目数据总条数 韦德 2018年8月27日00:21:16
      *
      * @return
      */
@@ -326,6 +376,136 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
     public int getAccountsCount() {
         return accountMapper.selectCount(new Accounts());
     }
+
+    /**
+     * 统计系统账户余额以及交易额 韦德 2018年8月27日11:21:35
+     *
+     * @param systemAccountsId
+     * @return
+     */
+    @Override
+    public UserResp getAccountAmount(Integer systemAccountsId) {
+        UserResp userResp = this.getAccountAmountForCache(systemAccountsId);
+        if(userResp == null) userResp = this.getAccountAmountForDB(systemAccountsId);
+        return userResp;
+    }
+
+
+    /**
+     * 获取账户的总收入与总支出情况的缓存 韦德 2018年8月7日00:43:31
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public UserResp getAccountAmountForCache(Integer id) {
+        Object obj = null;
+        try{
+            obj = redisTemplate.opsForValue().get("accountAmount_" + id);
+        }catch (Exception e) {
+            System.err.println(e.toString());
+        }
+        if(obj != null)
+        {
+            Map map = JSON.parseObject(String.valueOf(obj));
+            UserResp userResp = new UserResp();
+            userResp.setIncomeAmount(DecimalUtil.toDecimal(map.get("incomeAmount")).doubleValue());
+            userResp.setExpendAmount(DecimalUtil.toDecimal(map.get("expendAmount")).doubleValue());
+            return userResp;
+        }
+        return null;
+    }
+
+    /**
+     * 分页加载交易流水 韦德 2018年8月27日21:55:17
+     *
+     * @param page
+     * @param limit
+     * @param condition
+     * @param trade_type
+     * @param trade_date_begin
+     * @param trade_date_end
+     * @return
+     */
+    @Override
+    public List<Pays> getPaysLimit(Integer page, String limit, String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
+        // 计算分页位置
+        page = ConditionUtil.extractPageIndex(page, limit);
+        String where = extractPaysLimitWhere(condition, trade_type, trade_date_begin, trade_date_end);
+        List<Pays> list = payMapper.selectLimit(page, limit, trade_type, trade_date_begin, trade_date_end, where);
+        return list;
+    }
+
+    /**
+     * 加载交易流水数据总条数 韦德 2018年8月27日21:55:32
+     *
+     * @return
+     */
+    @Override
+    public int getPaysCount() {
+        return payMapper.selectCount(new Pays());
+    }
+
+    /**
+     * 加载交易流水数据分页总条数 韦德 2018年8月27日22:37:10
+     *
+     * @param condition
+     * @param trade_type
+     * @param trade_date_begin
+     * @param trade_date_end
+     * @return
+     */
+    @Override
+    public Integer getPaysLimitCount(String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
+        String where = extractPaysLimitWhere(condition, trade_type, trade_date_begin, trade_date_end);
+        return payMapper.getPaysLimitCount(trade_type, trade_date_begin, trade_date_end, where);
+    }
+
+    /**
+     * 充值 韦德 2018年8月7日03:05:53
+     *
+     * @param id
+     * @param amount
+     */
+    @Override
+    public Boolean recharge(Integer id, Double amount) {
+        PayParam payParam = new PayParam();
+        payParam.setFromUid(Constant.SYSTEM_ACCOUNTS_ID);
+        payParam.setAmount(amount);
+        payParam.setToUid(id);
+        payParam.setCurrency(0);
+        payParam.setRemark("人工充值");
+        this.recharge(payParam);
+        return true;
+    }
+
+    /**
+     * 统计账户的总收入与总支出情况 韦德 2018年8月7日00:43:31
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public UserResp getAccountAmountForDB(Integer id) {
+        Map<String, BigDecimal> map = accountMapper.getSystemAccounts(id);
+        if(!map.isEmpty()){
+            Double incomeAmount = map.get("incomeAmount").doubleValue();
+            Double expendAmount = map.get("expendAmount").doubleValue();
+            if(incomeAmount != null && expendAmount != null){
+                UserResp userResp = new UserResp();
+                userResp.setIncomeAmount(incomeAmount);
+                userResp.setExpendAmount(expendAmount);
+                try {
+                    redisTemplate.opsForValue().set("accountAmount_" + id, JsonUtil.getJson(map), 45, TimeUnit.MINUTES);
+                }catch (Exception e){
+                    System.err.println(e.toString());
+                }
+                return userResp;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * 提现 韦德 2018年8月21日13:42:56

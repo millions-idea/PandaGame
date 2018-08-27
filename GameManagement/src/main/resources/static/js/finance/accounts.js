@@ -6,7 +6,7 @@ var tableIndex;
     service = initService(route);
 
     // 加载数据表
-    initDataTable(route + "/getLimit", function (form, table, layer, vipTable, tableIns) {
+    initDataTable(route + "/getAccountsLimit", function (form, table, layer, vipTable, tableIns) {
         // 动态注册事件getSign
         var $tableDelete = $("#my-data-table-delete"),
             $tableAdd = $("#my-data-table-add");

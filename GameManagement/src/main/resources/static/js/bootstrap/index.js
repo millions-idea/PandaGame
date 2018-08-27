@@ -26,8 +26,6 @@ layui.use(['form', 'layer'], function () {
                 layer.alert("您无权访问系统，请联系相关部门索取工号！");
                 return;
             }
-            layer.msg("登录成功");
-
             location.href = "/management/index";
         });
         return false;
