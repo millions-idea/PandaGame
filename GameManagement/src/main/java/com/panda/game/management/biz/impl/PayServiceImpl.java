@@ -15,6 +15,7 @@ import com.panda.game.management.entity.db.Accounts;
 import com.panda.game.management.entity.db.Pays;
 import com.panda.game.management.entity.dbExt.UserDetailInfo;
 import com.panda.game.management.entity.param.PayParam;
+import com.panda.game.management.entity.resp.AccountsResp;
 import com.panda.game.management.exception.InfoException;
 import com.panda.game.management.repository.*;
 import com.panda.game.management.repository.utils.ConditionUtil;
@@ -259,7 +260,20 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
     public List<Accounts> getAccountsLimit(Integer page, String limit, String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
         // 计算分页位置
         page = ConditionUtil.extractPageIndex(page, limit);
+        String where = extractLimitWhere(condition, trade_type, trade_date_begin, trade_date_end);
+        List<Accounts> list = accountMapper.selectLimit(page, limit, trade_type, trade_date_begin, trade_date_end, where);
+        return list;
+    }
 
+    /**
+     * 提取分页条件
+     * @param condition
+     * @param trade_type
+     * @param trade_date_begin
+     * @param trade_date_end
+     * @return
+     */
+    private String extractLimitWhere(String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
         // 查询模糊条件
         String where = " 1=1";
         if(condition != null) {
@@ -279,15 +293,28 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
         // 取两个日期之间或查询指定日期
         if ((trade_date_begin != null && trade_date_begin.contains("-")) &&
                 trade_date_end != null && trade_date_end.contains("-")){
-            where += " AND t1.add_date BETWEEN #{beginTime} AND #{endTime}";
+            where += " AND t1.add_time BETWEEN #{beginTime} AND #{endTime}";
         }else if (trade_date_begin != null && trade_date_begin.contains("-")){
-            where += " AND t1.add_date BETWEEN #{beginTime} AND #{endTime}";
+            where += " AND t1.add_time BETWEEN #{beginTime} AND #{endTime}";
         }else if (trade_date_end != null && trade_date_end.contains("-")){
-            where += " AND t1.add_date BETWEEN #{beginTime} AND #{endTime}";
+            where += " AND t1.add_time BETWEEN #{beginTime} AND #{endTime}";
         }
-        List<Accounts> list = accountMapper.selectLimit(page, limit, trade_type, trade_date_begin, trade_date_end, where);
+        return where;
+    }
 
-        return list;
+    /**
+     * 统计分页加载财务会计账目数据列表总条数 韦德 2018年8月27日09:58:27
+     *
+     * @param condition
+     * @param trade_type
+     * @param trade_date_begin
+     * @param trade_date_end
+     * @return
+     */
+    @Override
+    public int getAccountsLimitCount(String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
+        String where = extractLimitWhere(condition, trade_type, trade_date_begin, trade_date_end);
+        return accountMapper.selectLimitCount(trade_type, trade_date_begin, trade_date_end, where);
     }
 
     /**

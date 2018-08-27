@@ -184,9 +184,11 @@ function getTableColumns() {
         , {field: 'accountsId', title: 'ID', width: 80, sort: true}
         , {field: 'payId', title: '流水号', width: 300}
         , {field: 'tradeAccountName', title: '用户名', width: 150}
-        , {field: 'add_date', title: '创建时间', width: 240}
+        , {field: 'addTime', title: '创建时间', width: 240, templet: function (d) {
+                return utils.date.timestampConvert(d.addTime);
+            }}
         , {field: 'accountsType', title: '交易类型', width: 120, templet: function (d) {
-                return d.accountsType == 1 ? "进账" : "出账";
+                return d.accountsType == 1 ? "增" : "减";
             }}
         , {field: 'amount', title: '交易额', width: 120, templet: function (d) {
                 if(d.accountsType == 1){
@@ -196,8 +198,8 @@ function getTableColumns() {
                 }
                 return "<span>" + d.amount + "</span>";
             }}
-        , {field: 'beforeBalance', title: '交易前余额', width: 120, align: "center"}
-        , {field: 'afterBalance', title: '交易后余额', width: 120, align: "center"}
+        , {field: 'beforeBalance', title: '变动前余额', width: 120, align: "center"}
+        , {field: 'afterBalance', title: '变动后余额', width: 120, align: "center"}
         , {field: 'remark', title: '摘要', width: 240}
     ]];
 }

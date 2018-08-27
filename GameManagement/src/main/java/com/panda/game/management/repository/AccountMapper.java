@@ -8,6 +8,7 @@
 package com.panda.game.management.repository;
 
 import com.panda.game.management.entity.db.Accounts;
+import com.panda.game.management.entity.resp.AccountsResp;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -34,7 +35,7 @@ public interface AccountMapper extends MyMapper<Accounts> {
     int insertList(@Param("list") List<Accounts> list);
 
     @Select("SELECT t1.*,t2.phone FROM tb_accounts t1 LEFT JOIN tb_users t2 ON t1.trade_account_id = t2.user_id " +
-            "WHERE ${condition} ORDER BY add_date DESC LIMIT #{page},${limit}")
+            "WHERE ${condition} ORDER BY t1.add_time DESC LIMIT #{page},${limit}")
     /**
      * 查询分页 韦德 2018年8月27日00:39:38
      * @param page
@@ -46,7 +47,23 @@ public interface AccountMapper extends MyMapper<Accounts> {
      * @return
      */
     List<Accounts> selectLimit(@Param("page") Integer page, @Param("limit") String limit
-            , @Param("accountsType") Integer accountsType
+            , @Param("accounts_type") Integer accountsType
+            , @Param("beginTime") String trade_date_begin
+            , @Param("endTime") String trade_date_end
+            , @Param("condition")  String condition);
+
+
+    @Select("SELECT COUNT(t1.accounts_id) FROM tb_accounts t1 LEFT JOIN tb_users t2 ON t1.trade_account_id = t2.user_id " +
+            "WHERE ${condition}")
+    /**
+     * 查询分页记录总数 韦德 2018年8月27日09:52:40
+     * @param trade_type
+     * @param trade_date_begin
+     * @param trade_date_end
+     * @param where
+     * @return
+     */
+    int selectLimitCount( @Param("accounts_type") Integer accountsType
             , @Param("beginTime") String trade_date_begin
             , @Param("endTime") String trade_date_end
             , @Param("condition")  String condition);

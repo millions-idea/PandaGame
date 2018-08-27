@@ -10,6 +10,8 @@ package com.panda.game.management.controller;
 import com.panda.game.management.biz.IPayService;
 import com.panda.game.management.entity.JsonArrayResult;
 import com.panda.game.management.entity.db.Accounts;
+import com.panda.game.management.entity.resp.AccountsResp;
+import com.panda.game.management.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,14 +42,19 @@ public class FinanceController {
      */
     @RequestMapping("/accounts/getLimit")
     @ResponseBody
-    public JsonArrayResult<Accounts> getVouchers(Integer page, String limit, String condition, Integer trade_type, String trade_date_begin, String trade_date_end){
+    public JsonArrayResult<AccountsResp> getVouchers(Integer page, String limit, String condition, Integer trade_type, String trade_date_begin, String trade_date_end){
+        Integer count = 0;
         List<Accounts> list = payService.getAccountsLimit(page, limit, condition, trade_type, trade_date_begin, trade_date_end);
-        if (condition == null || condition.isEmpty()){
-            int count = payService.getAccountsCount();
-            JsonArrayResult jsonArrayResult = new JsonArrayResult(list);
-            jsonArrayResult.setCount(count);
-            return jsonArrayResult;
+        JsonArrayResult jsonArrayResult = new JsonArrayResult(0,list);
+        if (StringUtil.isBlank(condition)
+                && StringUtil.isBlank(trade_date_begin)
+                && StringUtil.isBlank(trade_date_end)
+                && (trade_type == null || trade_type == 0)){
+            count = payService.getAccountsCount();
+        }else{
+            count = payService.getAccountsLimitCount(condition, trade_type, trade_date_begin, trade_date_end);
         }
-        return new JsonArrayResult(list);
+        jsonArrayResult.setCount(count);
+        return jsonArrayResult;
     }
 }
