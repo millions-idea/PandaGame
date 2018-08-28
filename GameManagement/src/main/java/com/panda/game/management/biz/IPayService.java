@@ -78,7 +78,7 @@ public interface IPayService extends IBaseService<Pays> {
      * @param trade_date_end
      * @return
      */
-    List<Accounts> getAccountsLimit(Integer page, String limit, String condition, Integer trade_type, String trade_date_begin, String trade_date_end);
+    List<Accounts> getAccountsLimit(Integer page, String limit, String condition, Integer trade_type, Integer filter_type, String trade_date_begin, String trade_date_end);
 
     /**
      * 统计分页加载财务会计账目数据列表
@@ -88,7 +88,7 @@ public interface IPayService extends IBaseService<Pays> {
      * @param trade_date_end
      * @return
      */
-    int getAccountsLimitCount(String condition, Integer trade_type, String trade_date_begin, String trade_date_end);
+    int getAccountsLimitCount(String condition, Integer trade_type, Integer filter_type, String trade_date_begin, String trade_date_end);
 
     /**
      * 加载财务会计账目数据总条数 韦德 2018年8月27日00:21:16
@@ -127,7 +127,7 @@ public interface IPayService extends IBaseService<Pays> {
      * @param trade_date_end
      * @return
      */
-    List<Pays> getPaysLimit(Integer page, String limit, String condition, Integer trade_type, String trade_date_begin, String trade_date_end);
+    List<Pays> getPaysLimit(Integer page, String limit, String condition, Integer trade_type, Integer filter_type, String trade_date_begin, String trade_date_end);
 
     /**
      * 加载交易流水数据总条数 韦德 2018年8月27日21:55:32
@@ -143,7 +143,7 @@ public interface IPayService extends IBaseService<Pays> {
      * @param trade_date_end
      * @return
      */
-    Integer getPaysLimitCount(String condition, Integer trade_type, String trade_date_begin, String trade_date_end);
+    Integer getPaysLimitCount(String condition, Integer trade_type,  Integer filter_type,  String trade_date_begin, String trade_date_end);
 
     /**
      * 充值 韦德 2018年8月7日03:05:53

@@ -266,10 +266,10 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
      * @return
      */
     @Override
-    public List<Accounts> getAccountsLimit(Integer page, String limit, String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
+    public List<Accounts> getAccountsLimit(Integer page, String limit, String condition, Integer trade_type, Integer filter_type, String trade_date_begin, String trade_date_end) {
         // 计算分页位置
         page = ConditionUtil.extractPageIndex(page, limit);
-        String where = extractLimitWhere(condition, trade_type, trade_date_begin, trade_date_end);
+        String where = extractLimitWhere(condition, trade_type, filter_type, trade_date_begin, trade_date_end);
         List<Accounts> list = accountMapper.selectLimit(page, limit, trade_type, trade_date_begin, trade_date_end, where);
         return list;
     }
@@ -282,33 +282,43 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
      * @param trade_date_end
      * @return
      */
-    private String extractLimitWhere(String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
+    private String extractLimitWhere(String condition, Integer trade_type, Integer filter_type,  String trade_date_begin, String trade_date_end) {
         // 查询模糊条件
         String where = " 1=1";
-        if(condition != null) {
-            where += " AND (" + ConditionUtil.like("accounts_id", condition, true, "t1");
-            where += " OR " + ConditionUtil.like("pay_id", condition, true, "t1");
-            where += " OR " + ConditionUtil.like("phone", condition, true, "t2");
-            if (condition.split("-").length == 2){
-                where += " OR " + ConditionUtil.like("add_date", condition, true, "t1");
+        if(filter_type == null  || filter_type == 0){
+            if(condition != null) {
+                condition = condition.trim();
+                where += " AND (" + ConditionUtil.like("accounts_id", condition, true, "t1");
+                where += " OR " + ConditionUtil.like("pay_id", condition, true, "t1");
+                where += " OR " + ConditionUtil.like("phone", condition, true, "t2");
+                if (condition.split("-").length == 2){
+                    where += " OR " + ConditionUtil.like("add_date", condition, true, "t1");
+                }
+                where += " OR " + ConditionUtil.like("accounts_type", condition, true, "t1");
+                where += " OR " + ConditionUtil.like("remark", condition, true, "t1") + ")";
             }
-            where += " OR " + ConditionUtil.like("accounts_type", condition, true, "t1");
-            where += " OR " + ConditionUtil.like("remark", condition, true, "t1") + ")";
-        }
 
-        // 查询全部数据或者只有一类数据
-        where = extractQueryAllOrOne(trade_type, where);
+            // 查询全部数据或者只有一类数据
+            where = extractQueryAllOrOne(trade_type, where);
 
-        // 取两个日期之间或查询指定日期
-        if ((trade_date_begin != null && trade_date_begin.contains("-")) &&
-                trade_date_end != null && trade_date_end.contains("-")){
-            where += " AND t1.add_time BETWEEN #{beginTime} AND #{endTime}";
-        }else if (trade_date_begin != null && trade_date_begin.contains("-")){
-            where += " AND t1.add_time BETWEEN #{beginTime} AND #{endTime}";
-        }else if (trade_date_end != null && trade_date_end.contains("-")){
-            where += " AND t1.add_time BETWEEN #{beginTime} AND #{endTime}";
+            // 取两个日期之间或查询指定日期
+            where = extractBetweenTime(trade_date_begin, trade_date_end, where);
+        }else{
+            if(condition != null) {
+                condition = condition.trim();
+                where += " AND ( 1=1 ";
+                if(condition.contains("-")){
+                    where += "AND  " + ConditionUtil.match("accounts_type", "2", true, "t1");
+                    where += " AND " + ConditionUtil.match("amount", condition.replace("-","").trim(), true, "t1") + ")";
+                }else if(condition.contains("+")){
+                    where += "AND  " + ConditionUtil.match("accounts_type", "1", true, "t1");
+                    where += " AND " + ConditionUtil.match("amount", condition.replace("+","").trim(), true, "t1") + ")";
+                }else{
+                    where += ")";
+                }
+            }
         }
-        return where;
+        return where.trim();
     }
 
     /**
@@ -319,27 +329,48 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
      * @param trade_date_end
      * @return
      */
-    private String extractPaysLimitWhere(String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
+    private String extractPaysLimitWhere(String condition, Integer trade_type, Integer filter_type, String trade_date_begin, String trade_date_end) {
         // 查询模糊条件
         String where = " 1=1";
-        if(condition != null) {
-            where += " AND (" + ConditionUtil.like("pay_id", condition, true, "t1");
-            where += " OR " + ConditionUtil.like("system_record_id", condition, true, "t1");
-            where += " OR " + ConditionUtil.like("from_name", condition, true, "t1");
-            where += " OR " + ConditionUtil.like("to_name", condition, true, "t1");
-            if (condition.split("-").length == 2){
-                where += " OR " + ConditionUtil.like("add_time", condition, true, "t1");
+        if(filter_type == null || filter_type == 0){
+            if(condition != null) {
+                condition = condition.trim();
+                where += " AND (" + ConditionUtil.like("pay_id", condition, true, "t1");
+                where += " OR " + ConditionUtil.like("system_record_id", condition, true, "t1");
+                where += " OR " + ConditionUtil.like("from_name", condition, true, "t1");
+                where += " OR " + ConditionUtil.like("to_name", condition, true, "t1");
+                if (condition.split("-").length == 2){
+                    where += " OR " + ConditionUtil.like("add_time", condition, true, "t1");
+                }
+                where += " OR " + ConditionUtil.like("trade_type", condition, true, "t1");
+                where += " OR " + ConditionUtil.like("remark", condition, true, "t1") + ")";
             }
-            where += " OR " + ConditionUtil.like("trade_type", condition, true, "t1");
-            where += " OR " + ConditionUtil.like("remark", condition, true, "t1") + ")";
-        }
 
-        // 查询全部数据或者只有一类数据
-        if (trade_type != null && trade_type != 0){
-            where += " AND t1.trade_type = #{trade_type}";
+            // 查询全部数据或者只有一类数据
+            if (trade_type != null && trade_type != 0){
+                where += " AND t1.trade_type = #{trade_type}";
+            }
+            // 取两个日期之间或查询指定日期
+            where = extractBetweenTime(trade_date_begin, trade_date_end, where);
+        }else{
+            if(condition != null) {
+                condition = condition.trim();
+                where += " AND (" + ConditionUtil.like("from_name", condition, true, "t1");
+                where += " OR " + ConditionUtil.like("to_name", condition, true, "t1");
+                where += " OR " + ConditionUtil.like("amount", condition, true, "t1") + ")";
+            }
         }
+        return where.trim();
+    }
 
-        // 取两个日期之间或查询指定日期
+    /**
+     * 提取两个日期之间的条件
+     * @param trade_date_begin
+     * @param trade_date_end
+     * @param where
+     * @return
+     */
+    private String extractBetweenTime(String trade_date_begin, String trade_date_end, String where) {
         if ((trade_date_begin != null && trade_date_begin.contains("-")) &&
                 trade_date_end != null && trade_date_end.contains("-")){
             where += " AND t1.add_time BETWEEN #{beginTime} AND #{endTime}";
@@ -362,8 +393,8 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
      * @return
      */
     @Override
-    public int getAccountsLimitCount(String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
-        String where = extractLimitWhere(condition, trade_type, trade_date_begin, trade_date_end);
+    public int getAccountsLimitCount(String condition, Integer trade_type, Integer filter_type, String trade_date_begin, String trade_date_end) {
+        String where = extractLimitWhere(condition, trade_type, filter_type,  trade_date_begin, trade_date_end);
         return accountMapper.selectLimitCount(trade_type, trade_date_begin, trade_date_end, where);
     }
 
@@ -428,10 +459,10 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
      * @return
      */
     @Override
-    public List<Pays> getPaysLimit(Integer page, String limit, String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
+    public List<Pays> getPaysLimit(Integer page, String limit, String condition, Integer trade_type, Integer filter_type, String trade_date_begin, String trade_date_end) {
         // 计算分页位置
         page = ConditionUtil.extractPageIndex(page, limit);
-        String where = extractPaysLimitWhere(condition, trade_type, trade_date_begin, trade_date_end);
+        String where = extractPaysLimitWhere(condition, trade_type, filter_type, trade_date_begin, trade_date_end);
         List<Pays> list = payMapper.selectLimit(page, limit, trade_type, trade_date_begin, trade_date_end, where);
         return list;
     }
@@ -456,8 +487,8 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
      * @return
      */
     @Override
-    public Integer getPaysLimitCount(String condition, Integer trade_type, String trade_date_begin, String trade_date_end) {
-        String where = extractPaysLimitWhere(condition, trade_type, trade_date_begin, trade_date_end);
+    public Integer getPaysLimitCount(String condition, Integer trade_type, Integer filter_type, String trade_date_begin, String trade_date_end) {
+        String where = extractPaysLimitWhere(condition, trade_type, filter_type, trade_date_begin, trade_date_end);
         return payMapper.getPaysLimitCount(trade_type, trade_date_begin, trade_date_end, where);
     }
 

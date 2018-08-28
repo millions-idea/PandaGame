@@ -55,9 +55,11 @@ public class FinanceController {
      */
     @RequestMapping("/accounts/getAccountsLimit")
     @ResponseBody
-    public JsonArrayResult<AccountsResp> getAccountsLimit(Integer page, String limit, String condition, Integer trade_type, String trade_date_begin, String trade_date_end){
+    public JsonArrayResult<AccountsResp> getAccountsLimit(Integer page, String limit, String condition, Integer trade_type, Integer filter_type, String trade_date_begin, String trade_date_end){
         Integer count = 0;
-        List<Accounts> list = payService.getAccountsLimit(page, limit, condition, trade_type, trade_date_begin, trade_date_end);
+        if(condition != null && condition.contains("[add]")) condition = condition.replace("[add]", "+");
+        if(condition != null && condition.contains("[reduce]")) condition = condition.replace("[reduce]", "-");
+        List<Accounts> list = payService.getAccountsLimit(page, limit, condition, trade_type, filter_type, trade_date_begin, trade_date_end);
         JsonArrayResult jsonArrayResult = new JsonArrayResult(0,list);
         if (StringUtil.isBlank(condition)
                 && StringUtil.isBlank(trade_date_begin)
@@ -65,7 +67,7 @@ public class FinanceController {
                 && (trade_type == null || trade_type == 0)){
             count = payService.getAccountsCount();
         }else{
-            count = payService.getAccountsLimitCount(condition, trade_type, trade_date_begin, trade_date_end);
+            count = payService.getAccountsLimitCount(condition, trade_type, filter_type, trade_date_begin, trade_date_end);
         }
         jsonArrayResult.setCount(count);
         return jsonArrayResult;
@@ -107,9 +109,9 @@ public class FinanceController {
      */
     @RequestMapping("/pay/getPayLimit")
     @ResponseBody
-    public JsonArrayResult<Pays> getPayLimit(Integer page, String limit, String condition, Integer trade_type, String trade_date_begin, String trade_date_end){
+    public JsonArrayResult<Pays> getPayLimit(Integer page, String limit, String condition, Integer trade_type, Integer filter_type, String trade_date_begin, String trade_date_end){
         Integer count = 0;
-        List<Pays> list = payService.getPaysLimit(page, limit, condition, trade_type, trade_date_begin, trade_date_end);
+        List<Pays> list = payService.getPaysLimit(page, limit, condition, trade_type, filter_type, trade_date_begin, trade_date_end);
         JsonArrayResult jsonArrayResult = new JsonArrayResult(0,list);
         if (StringUtil.isBlank(condition)
                 && StringUtil.isBlank(trade_date_begin)
@@ -117,7 +119,7 @@ public class FinanceController {
                 && (trade_type == null || trade_type == 0)){
             count = payService.getPaysCount();
         }else{
-            count = payService.getPaysLimitCount(condition, trade_type, trade_date_begin, trade_date_end);
+            count = payService.getPaysLimitCount(condition, trade_type, filter_type, trade_date_begin, trade_date_end);
         }
         jsonArrayResult.setCount(count);
         return jsonArrayResult;
@@ -131,7 +133,6 @@ public class FinanceController {
     public String recharge(){
         return "finance/pay/recharge";
     }
-
 
     @FinanceToken
     @GetMapping("/pay/toRecharge")

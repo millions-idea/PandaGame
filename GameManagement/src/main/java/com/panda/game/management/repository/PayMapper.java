@@ -50,7 +50,8 @@ public interface PayMapper extends  MyMapper<Pays>{
      */
     Double selectWithdrawAmount(@Param("userId") Integer userId, @Param("remark") String remark);
 
-    @Select("SELECT t1.*,t2.phone FROM tb_pays t1 LEFT JOIN tb_users t2 ON t1.from_uid = t2.user_id OR t1.to_uid = t2.user_id " +
+    @Select("SELECT t1.*,t2.phone,t3.* FROM tb_pays t1 LEFT JOIN tb_users t2 ON t1.from_uid = t2.user_id " +
+            " LEFT JOIN tb_pays t3 ON t1.to_uid = t2.user_id " +
             "WHERE ${condition} ORDER BY t1.add_time DESC LIMIT #{page},${limit}")
     /**
      * 查询分页 韦德 2018年8月27日00:39:38
@@ -68,7 +69,8 @@ public interface PayMapper extends  MyMapper<Pays>{
             , @Param("endTime") String trade_date_end
             , @Param("condition")  String condition);
 
-    @Select("SELECT COUNT(t1.pay_id) FROM tb_pays t1 LEFT JOIN tb_users t2 ON t1.from_uid = t2.user_id OR  t1.to_uid = t2.user_id " +
+    @Select("SELECT COUNT(t1.pay_id) FROM tb_pays t1 LEFT JOIN tb_users t2 ON t1.from_uid = t2.user_id " +
+            "LEFT JOIN tb_pays t3 ON t1.to_uid = t2.user_id " +
             "WHERE ${condition}")
     /**
      * 查询分页记录总数 韦德 2018年8月27日09:52:40

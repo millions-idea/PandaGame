@@ -7,7 +7,6 @@ var tableIndex;
 
     // 获取系统账户信息
     service.getSystemAccount(function (data) {
-        console.log(data)
         if(!isNaN(data.error) || (!isNaN(data.code) && data.code != 0)) return;
         $("#sys_username").text(data.phone);
         $("#sys_balance").text(data.balance);
@@ -135,6 +134,7 @@ function initDataTable(url, callback, loadDone) {
     var $queryButton = $("#my-data-table-query"),
         $queryCondition = $("#my-data-table-condition"),
         $tradeTypeInput = $("select[name='trade_type']"),
+        $filterTypeInput = $("select[name='filter_type']"),
         $tradeDateBeginInput = $("input[name='trade_date_begin']"),
         $tradeDateEndInput = $("input[name='trade_date_end']");
 
@@ -146,6 +146,7 @@ function initDataTable(url, callback, loadDone) {
 
         var param =  "?condition=" + $queryCondition.val();
         param += "&trade_type=" + $tradeTypeInput.val();
+        param += "&filter_type=" + $filterTypeInput.val();
         param += "&trade_date_begin=" + $tradeDateBeginInput.val();
         param += "&trade_date_end=" + $tradeDateEndInput.val();
 

@@ -19,13 +19,13 @@
       }
     ]
   },{
-      "text": "客服运营",
+      "text": "市场运营",
       "icon": "&#xe620;",
       "subset": [
         {
-          "text": "会员管理",
-          "icon": "&#xe621;",
-          "href": "/business-brands"
+          "text": "佣金结算",
+          "icon": "&#xe63c;",
+          "href": "/management/room/close-accounts"
         }]
     }
   ]

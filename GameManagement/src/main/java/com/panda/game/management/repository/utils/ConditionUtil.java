@@ -48,4 +48,25 @@ public class ConditionUtil {
         condition += tb + " LIKE '%" + value + "%' ";
         return condition;
     }
+
+
+    /**
+     * 准确匹配
+     * @param column
+     * @param value
+     * @param isJoin
+     * @param alias
+     * @return
+     */
+    public static String match(String column, String value, boolean isJoin, String alias){
+        String condition = "";
+        if (!isJoin){
+            alias = "";
+        }else{
+            alias += ".";
+        }
+        String tb = alias + "`" + column + "`";
+        condition += tb + " = " + value + "  ";
+        return condition;
+    }
 }

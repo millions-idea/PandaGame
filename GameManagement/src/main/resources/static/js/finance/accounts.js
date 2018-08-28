@@ -117,6 +117,7 @@ function initDataTable(url, callback, loadDone) {
     var $queryButton = $("#my-data-table-query"),
         $queryCondition = $("#my-data-table-condition"),
         $tradeTypeInput = $("select[name='trade_type']"),
+        $filterTypeInput = $("select[name='filter_type']"),
         $tradeDateBeginInput = $("input[name='trade_date_begin']"),
         $tradeDateEndInput = $("input[name='trade_date_end']");
 
@@ -125,9 +126,12 @@ function initDataTable(url, callback, loadDone) {
     // 注册查询事件
     $queryButton.click(function () {
         $queryButton.attr("disabled",true);
-
-        var param =  "?condition=" + $queryCondition.val();
+        var condition = $queryCondition.val();
+        if(condition.indexOf("+") != -1) condition = condition.replace("+", "[add]");
+        if(condition.indexOf("-") != -1) condition = condition.replace("-", "[reduce]");
+        var param =  "?condition=" + encodeURI(condition);
         param += "&trade_type=" + $tradeTypeInput.val();
+        param += "&filter_type=" + $filterTypeInput.val();
         param += "&trade_date_begin=" + $tradeDateBeginInput.val();
         param += "&trade_date_end=" + $tradeDateEndInput.val();
 
