@@ -290,6 +290,7 @@
 			});
 
 			function getPersonCount(){
+				console.log("刷新" + roomCode +"在线人数")
 				room.getPersonCount({
 					"roomCode": roomCode
 				}, function(data){

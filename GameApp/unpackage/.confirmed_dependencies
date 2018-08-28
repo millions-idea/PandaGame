@@ -84,7 +84,8 @@
 	},
 	"html/create-room.html": {
 		"refer": [
-			"html/room-detail.html"
+			"html/room-detail.html",
+			"html/room.html"
 		]
 	}
 }

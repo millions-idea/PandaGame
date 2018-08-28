@@ -224,7 +224,8 @@
 			"html/create-room.html": {
 				"resources": [],
 				"refer": [
-					"html/room-detail.html"
+					"html/room-detail.html",
+					"html/room.html"
 				],
 				"priority": 0
 			}

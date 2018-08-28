@@ -6,13 +6,13 @@
       layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
-    <title th:text="'会计账簿-' + ${title}"></title>
+    <title th:text="'佣金结算-' + ${title}"></title>
     <link rel="stylesheet" th:href="@{/css/finance/index.css}">
 </head>
 <body>
 
 <th:block layout:fragment="current_page">
-    <a><cite>会计账簿</cite></a>
+    <a><cite>佣金结算</cite></a>
 </th:block>
 
 <th:block layout:fragment="body">
@@ -31,42 +31,30 @@
                        <select name="trade_type" lay-verify="required">
                            <option value="">请选择一项条件</option>
                            <option value="0">全部</option>
-                           <option value="1">收入</option>
-                           <option value="2">支出</option>
+                           <option value="1">胜利</option>
+                           <option value="2">惨败</option>
                        </select>
                    </div>
                    <!--交易类型 end-->
 
-                   <!--特殊过滤 begin-->
-                   <div class="layui-inline">
-                       <label class="layui-form-label" style="margin-left: -20px; !important">特殊过滤</label>
-                   </div>
-                   <div class="layui-inline">
-                       <select name="filter_type">
-                           <option value="0">默认</option>
-                           <option value="1">交易额</option>
-                       </select>
-                   </div>
-                   <!--特殊过滤 end-->
-
-                   <!--交易日 begin-->
+                   <!--days begin-->
                    <div class="layui-inline" >
-                       <label class="layui-form-label">开始交易日</label>
+                       <label class="layui-form-label">开始日期</label>
                    </div>
                    <div class="layui-inline">
                        <input name="trade_date_begin" type="text" class="layui-input" id="date">
                    </div>
-                   <!--交易日 end-->
+                   <!--days end-->
 
 
-                   <!--交易日 begin-->
+                   <!--days begin-->
                    <div class="layui-inline" >
-                       <label class="layui-form-label">截止交易日</label>
+                       <label class="layui-form-label">结束日期</label>
                    </div>
                    <div class="layui-inline">
                        <input name="trade_date_end" type="text" class="layui-input" id="date2">
                    </div>
-                   <!--交易日 end-->
+                   <!--days end-->
 
                    <span class="fl layui-inline" style="margin-right: -20px;">
                         <a class="layui-btn btn-add btn-default" id="btn-refresh-my-data-table"><i class="layui-icon layui-icon-refresh"></i></a>

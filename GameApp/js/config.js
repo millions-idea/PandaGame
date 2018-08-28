@@ -3,7 +3,7 @@
 	window.config = {
 		title: "宜乐对战",
 		/*api: "http://p9rf4z.natappfree.cc/",*/
-		api: "http://193.112.151.148:59845/",
+		api: "http://yfz6dx.natappfree.cc/",
 		wss: "ws://192.168.1.103:8088/ws",
 		pages: [{
 			id: "home",

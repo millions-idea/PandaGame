@@ -131,8 +131,18 @@
 												}
 			                					
 															
-												// 构建聊天业务CHAT
-												wss.initRoom(roomCode, name); 
+												mui.openWindow({
+										            url: "room.html",
+										            id: "room",
+										            preload: false,
+										            waiting: {
+										                autoShow: true,
+										              title:'正在加载...'
+										            },
+												    createNew:true
+										       }); 
+
+												
 			                					
 											}, function(){
 												
@@ -191,28 +201,23 @@
 												plus.nativeUI.toast("创建成功");
 												 
 												
-			                					$.openWindow({
-													url: 'room.html',
-													id: 'room',
-													preload: false,
-													show: {
-														aniShow: 'pop-in',
-														duration: 200
-													},
-													styles: {
-														popGesture: 'hide'
-													},
-													waiting: {
-														title: "正在加载...",
-														autoShow: true
-													}
-												});
-												
 												for (var i = 0 ; i < pages.length ; i ++) {
 													if (i != 2) { 
 														plus.webview.hide(pages[i].id, "fade-out", 200);
 													}
 												}
+												
+												mui.openWindow({
+										            url: "room.html",
+										            id: "room",
+										            preload: false,
+										            waiting: {
+										                autoShow: true,
+										              title:'正在加载...'
+										            },
+												    createNew:true
+										       }); 
+												
 												plus.webview.currentWebview().close();
 			                					
 			                				}, function(){
