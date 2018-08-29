@@ -161,10 +161,10 @@
 							
 							toHome($);
 							
-						}, function(msg){
+						}, function(){
 							loginButton.disabled = false;
 							loginButton.classList.remove("button-disabled");
-							plus.nativeUI.toast(msg);
+							plus.nativeUI.toast("登录失败");
 						})
 					}, false) 
 				});

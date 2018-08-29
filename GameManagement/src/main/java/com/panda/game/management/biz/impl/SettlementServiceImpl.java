@@ -14,6 +14,7 @@ import com.panda.game.management.repository.SettlementMapper;
 import com.panda.game.management.repository.utils.ConditionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class SettlementServiceImpl extends BaseServiceImpl<Settlement> implement
      * @return
      */
     @Override
+    @Transactional
     public List<SettlementDetailInfo> getMemberList(Long roomCode) {
         return settlementMapper.selectDetailInfo(roomCode);
     }
@@ -91,6 +93,7 @@ public class SettlementServiceImpl extends BaseServiceImpl<Settlement> implement
      * @return
      */
     @Override
+    @Transactional
     public int updateStatusByRoomCode(Long roomCode, int status) {
         return settlementMapper.updateStatusByRoomCode(roomCode, status);
     }

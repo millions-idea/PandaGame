@@ -12,6 +12,7 @@ import com.panda.game.management.entity.db.GameMemberGroup;
 import com.panda.game.management.repository.GameMemberGroupMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class GameMemberGroupServiceImpl extends BaseServiceImpl<GameMemberGroup>
     }
 
     @Override
+    @Transactional
     public List<GameMemberGroup> getListByRoom(Long roomCode) {
         return gameMemberGroupMapper.getListByRoom(roomCode);
     }

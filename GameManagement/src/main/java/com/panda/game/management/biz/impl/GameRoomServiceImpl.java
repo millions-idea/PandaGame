@@ -227,7 +227,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         if(memberGroupList == null || memberGroupList.isEmpty()){
             count = gameRoomMapper.updateStatusByRoomCode(roomCode,4);
             if(count == 0) throw new MsgException("解散房间失败");
-            GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(room, subareas);
+            GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(Integer.valueOf(userId), room, subareas);
             lastPersonCallback.accept(gameRoomCallbackResp);
         }
     }
@@ -266,7 +266,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         if(memberGroupList == null || memberGroupList.isEmpty()){
             count = gameRoomMapper.updateStatusByRoomCode(roomCode,4);
             if(count == 0) throw new MsgException("解散房间失败");
-            GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(room, subareas);
+            GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(0, room, subareas);
             callback.accept(gameRoomCallbackResp);
         }
     }
@@ -410,6 +410,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
     }
 
     @Override
+    @Transactional
     public int updateStatusByRoomCode(Long roomCode, int status) {
         return gameRoomMapper.updateStatusByRoomCode(roomCode,status);
     }

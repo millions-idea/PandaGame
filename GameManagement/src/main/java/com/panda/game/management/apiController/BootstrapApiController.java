@@ -9,9 +9,12 @@ package com.panda.game.management.apiController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.panda.game.management.biz.IBadBoyService;
+import com.panda.game.management.biz.IMessageService;
 import com.panda.game.management.biz.ISmsService;
 import com.panda.game.management.biz.IUserService;
+import com.panda.game.management.entity.JsonArrayResult;
 import com.panda.game.management.entity.JsonResult;
+import com.panda.game.management.entity.db.Messages;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.resp.UserResp;
 import com.panda.game.management.facade.UserFacadeService;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/bootstrap")
@@ -37,6 +41,8 @@ public class BootstrapApiController {
     private ISmsService ISmsService;
     @Autowired
     private UserFacadeService userFacadeService;
+    @Autowired
+    private IMessageService messageService;
 
     @PostMapping("/register")
     public JsonResult register(HttpServletRequest request, Users user, String smsCode){
@@ -102,5 +108,16 @@ public class BootstrapApiController {
     public JsonResult logout(String token){
         userService.logout(token);
         return JsonResult.successful();
+    }
+
+    /**
+     * 查询短消息列表 韦德 2018年8月29日23:56:01
+     * @param token
+     * @return
+     */
+    @GetMapping("/getMessageList")
+    public JsonArrayResult<Messages> getMessageList(String token){
+        List<Messages> list = messageService.getMessageList(token);
+        return new JsonArrayResult<>(list);
     }
 }

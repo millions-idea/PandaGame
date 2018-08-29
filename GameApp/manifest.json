@@ -175,7 +175,8 @@
 				"refer": [
 					"html/custom-service.html",
 					"html/update-password.html",
-					"login.html"
+					"login.html",
+					"html/messages.html"
 				],
 				"priority": 0
 			},

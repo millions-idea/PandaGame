@@ -7,12 +7,10 @@
  */
 package com.panda.game.management.facade.impl;
 
-import com.panda.game.management.biz.IGameMemberGroupService;
-import com.panda.game.management.biz.IGameRoomService;
-import com.panda.game.management.biz.IPayService;
-import com.panda.game.management.biz.ISettlementService;
+import com.panda.game.management.biz.*;
 import com.panda.game.management.entity.Constant;
 import com.panda.game.management.entity.db.GameMemberGroup;
+import com.panda.game.management.entity.db.Messages;
 import com.panda.game.management.entity.db.Settlement;
 import com.panda.game.management.entity.dbExt.SettlementDetailInfo;
 import com.panda.game.management.entity.param.PayParam;
@@ -22,9 +20,11 @@ import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.facade.GameRoomFacadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +38,8 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
     private IPayService payService;
     @Autowired
     private ISettlementService settlementService;
+    @Autowired
+    private IMessageService messageService;
 
     /**
      * 结算 韦德 2018年8月21日01:02:27
@@ -50,21 +52,21 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
     @Transactional
     public void closeAccounts(String token, Long roomCode, Double grade) {
         // 结算
-        gameRoomService.closeAccounts(token, roomCode, grade, (gameRoomCallbackResp) -> {
-            if(gameRoomCallbackResp == null || gameRoomCallbackResp.getGameRoom() == null || gameRoomCallbackResp.getSubareas() == null)
+        gameRoomService.closeAccounts(token, roomCode, grade, (callback) -> {
+            if(callback == null || callback.getGameRoom() == null || callback.getSubareas() == null)
                 throw new InfoException("回调参数有误");
 
             // 计算房间内所有人的成绩
             // 如果所有人的成绩相加运算后得到结果是0，系统自动进行结算
 
             // 扣除此房间内所有人的金币
-            List<GameMemberGroup> memberList = gameMemberGroupService.getListByRoom(gameRoomCallbackResp.getGameRoom().getRoomCode());
+            List<GameMemberGroup> memberList = gameMemberGroupService.getListByRoom(callback.getGameRoom().getRoomCode());
             if(memberList == null || memberList.isEmpty()) throw new InfoException("加载房间成员列表失败");
 
 
             List<PayParam> payParams = new ArrayList<>();
             memberList.forEach(member -> {
-                Double price = gameRoomCallbackResp.getSubareas().getReducePrice();
+                Double price = callback.getSubareas().getReducePrice();
                 PayParam payParam = new PayParam();
                 // 优先扣减不可用余额
                 Double notWithdrawAmount = payService.getNotWithdrawAmount(member.getUserId());
@@ -88,6 +90,12 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
             count = settlementService.updateStatusByRoomCode(roomCode, 1);
             if(count == 0) throw new MsgException("更新结算状态失败[A02]");
 
+            List<Messages> messagesList = new ArrayList<>();
+            memberList.forEach(member -> {
+                messagesList.add(new Messages(null, member.getUserId()
+                        ,  callback.getGameRoom().getExternalRoomId() + "房间结算审核通过通知", 0, new Date()));
+            });
+            messageService.pushMessage(messagesList);
         });
     }
 
@@ -97,6 +105,7 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
      * @param roomCode
      */
     @Override
+    @Transactional
     public void closeAccounts(Long roomCode) {
         // 结算
         gameRoomService.closeAccounts(roomCode, (callback) -> {
@@ -118,6 +127,15 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
             count = settlementService.updateStatusByRoomCode(roomCode, 1);
             if(count == 0) throw new MsgException("更新结算状态失败[A02]");
 
+            List<GameMemberGroup> memberList = gameMemberGroupService.getListByRoom(callback.getGameRoom().getRoomCode());
+            if(memberList == null || memberList.isEmpty()) throw new InfoException("加载房间成员列表失败");
+
+            List<Messages> messagesList = new ArrayList<>();
+            memberList.forEach(member -> {
+                messagesList.add(new Messages(null, member.getUserId()
+                        ,  callback.getGameRoom().getExternalRoomId() + "房间结算审核通过通知", 0, new Date()));
+            });
+            messageService.pushMessage(messagesList);
         });
     }
 

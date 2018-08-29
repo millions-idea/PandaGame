@@ -18,6 +18,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GameRoomCallbackResp {
+    private Integer userId;
     private GameRoom gameRoom;
     private Subareas subareas;
 }

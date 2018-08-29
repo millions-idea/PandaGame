@@ -239,6 +239,7 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
      * @return
      */
     @Override
+    @Transactional
     public Double getNotWithdrawAmount(Integer userId) {
         return payMapper.selectNotWithdrawAmount(userId, "新用户注册奖励");
     }

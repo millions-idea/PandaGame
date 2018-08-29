@@ -199,6 +199,22 @@
 		})
 		
 	} 
+	
+	owner.getMessageList = function(param, callback, errorCallback){ 
+		callback = callback || $.noop; 
+		$.ajax(toUrl("api/bootstrap/getMessageList"), {
+			type: "get",
+			data: param,	
+			success: function(data){
+				console.log(JSON.stringify(data))
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+		
+	} 
 
 	/**
 	 * 获取当前状态
@@ -265,5 +281,16 @@
 		var json = plus.storage.getItem('userInfo');
 		return JSON.parse(json);
 	} 
-		
+	
+	
+	owner:timestampConvert = function (ts) {
+        var date = new Date(ts);
+        Y = date.getFullYear() + '-';
+        M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        D = date.getDate() + ' ';
+        h = date.getHours() + ':';
+        m = date.getMinutes() + ':';
+        s = date.getSeconds();
+        return Y+M+D+h+m+s;
+    }
 }(mui, window.app = {}));
