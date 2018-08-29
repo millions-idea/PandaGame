@@ -17,4 +17,10 @@ public interface GameRoomFacadeService {
      * @param grade
      */
     void  closeAccounts(String token, Long roomCode, Double grade);
+
+    /**
+     * 结算 韦德 2018年8月29日20:53:36
+     * @param roomCode
+     */
+    void  closeAccounts(Long roomCode);
 }

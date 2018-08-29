@@ -49,6 +49,13 @@ public interface IGameRoomService extends IBaseService<GameRoom> {
     void closeAccounts(String token, Long roomCode, Double grade, Consumer<GameRoomCallbackResp> lastPersonCallback);
 
     /**
+     * 申请结算 韦德 2018年8月29日20:54:47
+     * @param roomCode
+     * @param callback
+     */
+    void closeAccounts(Long roomCode, Consumer<GameRoomCallbackResp> callback);
+
+    /**
      * 获取所有游戏房间 韦德 2018年8月20日21:20:09
      * @return
      */
@@ -80,4 +87,6 @@ public interface IGameRoomService extends IBaseService<GameRoom> {
      * @param roomCode
      */
     Integer getPersonCount(String roomCode);
+
+    int updateStatusByRoomCode(Long roomCode, int status);
 }

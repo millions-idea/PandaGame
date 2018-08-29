@@ -22,7 +22,7 @@ public interface GameRoomMapper extends MyMapper<GameRoom> {
     @Select("SELECT t1.* " +
             ",(SELECT COUNT(*) FROM tb_game_member_group WHERE room_code = t1.room_code AND is_confirm = 0) AS personCount " +
             ",(SELECT is_owner FROM tb_game_member_group WHERE user_id = #{userId} AND room_code = t1.room_code) AS isOwner " +
-            "FROM tb_game_room t1 LEFT JOIN tb_game_member_group t2 ON t1.room_code = t2.room_code WHERE t2.user_id=#{userId} AND `status` != 6 ORDER BY t1.add_time DESC")
+            "FROM tb_game_room t1 LEFT JOIN tb_game_member_group t2 ON t1.room_code = t2.room_code WHERE t2.user_id=#{userId} AND (`status` != 6 AND `status` != 5) ORDER BY t1.add_time DESC")
     /**
      * 根据userId查询房间列表 韦德 2018年8月19日15:54:57
      * @param userId
@@ -30,7 +30,7 @@ public interface GameRoomMapper extends MyMapper<GameRoom> {
      */
     List<GameRoomDetailInfo> selectByUid(@Param("userId") Integer userId);
 
-    @Select("SELECT * FROM tb_game_room WHERE room_code = #{roomCode} AND `status` !=  6")
+    @Select("SELECT * FROM tb_game_room WHERE room_code = #{roomCode}")
     /**
      * 查询 韦德 2018年8月20日10:42:28
      * @param roomCode

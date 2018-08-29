@@ -104,7 +104,7 @@
 									return false;
 								}
 								
-								plus.nativeUI.toast("匹配成功");
+
 								
 								var roomCode = data.msg.roomCode;
 								var name = data.msg.name;
@@ -130,20 +130,32 @@
 													return false;
 												}
 			                					
-															
+												
+												for (var i = 0 ; i < pages.length ; i ++) {
+													if (i != 2) { 
+														plus.webview.hide(pages[i].id, "fade-out", 200);
+													}
+												}
+												
 												mui.openWindow({
-										            url: "room.html",
+										            url: "/html/room.html",
 										            id: "room",
 										            preload: false,
-										            waiting: {
-										                autoShow: true,
-										              title:'正在加载...'
-										            },
-												    createNew:true
+										            show: {
+														aniShow: 'pop-in',
+														duration: 200
+													},
+													styles: {
+														popGesture: 'hide'
+													},
+													waiting: {
+														title: "正在加载...",
+														autoShow: true
+													}
 										       }); 
-
 												
-			                					
+												plus.webview.currentWebview().close();
+			                				
 											}, function(){
 												
 											});
@@ -211,11 +223,17 @@
 										            url: "room.html",
 										            id: "room",
 										            preload: false,
-										            waiting: {
-										                autoShow: true,
-										              title:'正在加载...'
-										            },
-												    createNew:true
+										            show: {
+														aniShow: 'pop-in',
+														duration: 200
+													},
+													styles: {
+														popGesture: 'hide'
+													},
+													waiting: {
+														title: "正在加载...",
+														autoShow: true
+													}
 										       }); 
 												
 												plus.webview.currentWebview().close();

@@ -78,7 +78,7 @@ public interface GameMemberGroupMapper extends MyMapper<GameMemberGroup> {
      */
     int selectPersonCount(@Param("roomCode") String roomCode);
 
-    @Select("SELECT COUNT(*) FROM tb_game_room WHERE owner_id = #{userId} AND `status` != 6 AND is_enable = 1")
+    @Select("SELECT COUNT(*) FROM tb_game_room WHERE owner_id = #{userId} AND (`status` != 6 AND `status` != 5) AND is_enable = 1")
     /**
      * 查询正在游戏中的房间数量 韦德 2018年8月24日22:45:38
      * @param userId
@@ -95,4 +95,6 @@ public interface GameMemberGroupMapper extends MyMapper<GameMemberGroup> {
      */
     int selectConfirm(@Param("userId") Integer userId, @Param("roomCode") Long roomCode);
 
+    @Update("UPDATE tb_game_member_group SET is_confirm=#{isConfirm} WHERE room_code=#{roomCode}")
+    int updateByRoomCode(GameMemberGroup gameMemberGroup);
 }

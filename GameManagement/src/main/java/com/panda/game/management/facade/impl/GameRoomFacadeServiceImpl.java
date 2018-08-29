@@ -14,9 +14,11 @@ import com.panda.game.management.biz.ISettlementService;
 import com.panda.game.management.entity.Constant;
 import com.panda.game.management.entity.db.GameMemberGroup;
 import com.panda.game.management.entity.db.Settlement;
+import com.panda.game.management.entity.dbExt.SettlementDetailInfo;
 import com.panda.game.management.entity.param.PayParam;
 import com.panda.game.management.entity.resp.GameRoomCallbackResp;
 import com.panda.game.management.exception.InfoException;
+import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.facade.GameRoomFacadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,9 +54,13 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
             if(gameRoomCallbackResp == null || gameRoomCallbackResp.getGameRoom() == null || gameRoomCallbackResp.getSubareas() == null)
                 throw new InfoException("回调参数有误");
 
+            // 计算房间内所有人的成绩
+            // 如果所有人的成绩相加运算后得到结果是0，系统自动进行结算
+
             // 扣除此房间内所有人的金币
             List<GameMemberGroup> memberList = gameMemberGroupService.getListByRoom(gameRoomCallbackResp.getGameRoom().getRoomCode());
             if(memberList == null || memberList.isEmpty()) throw new InfoException("加载房间成员列表失败");
+
 
             List<PayParam> payParams = new ArrayList<>();
             memberList.forEach(member -> {
@@ -70,32 +76,48 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
             });
             payService.batchConsume(payParams);
 
+            // 1、计算房间总成绩
+            List<SettlementDetailInfo> settlementList = settlementService.getMemberList(roomCode);
+            Double countGrade = settlementList.stream().map(s -> s.getGrade()).reduce(0D, (acc, element) -> acc + element);
+            if(settlementList == null || settlementList.isEmpty() || countGrade != 0) return;// 说明有人误报成绩，交给后台人工复审成绩
+
+            int count = gameRoomService.updateStatusByRoomCode(roomCode, 5);
+            if(count == 0) throw new MsgException("更新结算状态失败[A00]");
+
+            count = 0;
+            count = settlementService.updateStatusByRoomCode(roomCode, 1);
+            if(count == 0) throw new MsgException("更新结算状态失败[A02]");
+
+        });
+    }
+
+    /**
+     * 结算 韦德 2018年8月29日20:53:36
+     *
+     * @param roomCode
+     */
+    @Override
+    public void closeAccounts(Long roomCode) {
+        // 结算
+        gameRoomService.closeAccounts(roomCode, (callback) -> {
+            if(callback == null || callback.getGameRoom() == null || callback.getSubareas() == null)
+                throw new InfoException("回调参数有误");
+
             // 计算房间内所有人的成绩
             // 如果所有人的成绩相加运算后得到结果是0，系统自动进行结算
 
             // 1、计算房间总成绩
-            List<Settlement> settlementList = settlementService.getMemberList(roomCode);
+            List<SettlementDetailInfo> settlementList = settlementService.getMemberList(roomCode);
             Double countGrade = settlementList.stream().map(s -> s.getGrade()).reduce(0D, (acc, element) -> acc + element);
-            if(settlementList == null || settlementList.isEmpty() || countGrade != 0) return;// 说明有人误报成绩，交给后台人工复审成绩
+            if(settlementList == null || settlementList.isEmpty() || countGrade != 0) throw new InfoException("房间总成绩有误，请重新计算！");// 说明有人误报成绩，交给后台人工复审成绩
 
-            // 2、给此房间内的所有人进行结算
-            List<Settlement> goodGradeMemberList = settlementList.stream().filter(s -> s.getGrade() > 0).collect(Collectors.toList());
-            List<Settlement> badGradeMemberList = settlementList.stream().filter(s -> s.getGrade() <= 0).collect(Collectors.toList());
+            int count = gameRoomService.updateStatusByRoomCode(roomCode, 5);
+            if(count == 0) throw new MsgException("更新结算状态失败[A00]");
 
-            List<PayParam> goodSettlementPayParams = new ArrayList<>();
-            badGradeMemberList.forEach(member -> {
-                PayParam payParam = loopReduceBalance(gameRoomCallbackResp, member.getUserId());
-                goodSettlementPayParams.add(payParam);
-            });
-            payService.batchTransfer(goodSettlementPayParams);
+            count = 0;
+            count = settlementService.updateStatusByRoomCode(roomCode, 1);
+            if(count == 0) throw new MsgException("更新结算状态失败[A02]");
 
-
-            List<PayParam> badSettlementPayParams = new ArrayList<>();
-            goodGradeMemberList.forEach(member -> {
-                PayParam payParam = loopAddBalance(gameRoomCallbackResp, member.getUserId());
-                badSettlementPayParams.add(payParam);
-            });
-            payService.batchTransfer(badSettlementPayParams);
         });
     }
 

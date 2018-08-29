@@ -25,14 +25,14 @@
                <div class="layui-form">
                    <!--交易类型 begin-->
                    <div class="layui-inline">
-                       <label class="layui-form-label">交易类型</label>
+                       <label class="layui-form-label">状态</label>
                    </div>
                    <div class="layui-inline">
                        <select name="trade_type" lay-verify="required">
                            <option value="">请选择一项条件</option>
-                           <option value="0">全部</option>
-                           <option value="1">胜利</option>
-                           <option value="2">惨败</option>
+                           <option value="0">待结算</option>
+                           <option value="1">已结算</option>
+                           <option value="2">已拒绝</option>
                        </select>
                    </div>
                    <!--交易类型 end-->
@@ -77,12 +77,10 @@
 
 </th:block>
 <th:block layout:fragment="free_footer">
-    <script type="text/javascript" th:src="@{/js/finance/accounts.js}"></script>
+    <script type="text/javascript" th:src="@{/js/room/settlement.js}"></script>
     <!-- 表格操作按钮集 -->
     <script type="text/html" id="barOption">
-        <a name="item-view" class="layui-btn layui-btn layui-btn-xs" lay-event="detail">查看</a>
         <a name="item-edit" class="layui-btn layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">编辑</a>
-        <a name="item-remove" class="layui-btn layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
     </script>
     <script>
         layui.use(['laydate'], function(){

@@ -1,0 +1,90 @@
+<div class="layui-form layui-form-pane my-view" method="post" action="./express-platform/edit"
+      enctype="application/x-www-form-urlencoded" xmlns:th="http://www.thymeleaf.org">
+    <input type="hidden" id="roomCode" th:value="${model.getRoomCode()}">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">房间号码</label>
+        <div class="layui-input-block">
+            <input type="text" id="name" autocomplete="off"
+                    disabled="disabled" lay-verify="required" class="layui-input" th:value="${model.getRoomCode()}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-form">
+            <table class="layui-table">
+                <colgroup>
+                    <col width="120">
+                    <col width="120">
+                    <col width="280">
+                    <col>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>手机号</th>
+                    <th>熊猫账号</th>
+                    <th>编辑成绩</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item, iterStat : ${list}">
+                    <td th:text="${item.getPhone()}"></td>
+                    <td th:text="${item.getPandaId()}"></td>
+                    <td>
+                        <input th:attr="data-item=${T(com.panda.game.management.utils.JsonUtil).getJsonNotEscape(item)}" style="width: 81%; display: inline-block" type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入新成绩" class="layui-input" th:value="${item.getGrade()}">
+                        <button name="updateGrade" style="overflow: hidden !important;margin-left: 5px;display: inline-block;width: 19px;padding-left: 2.6px !important;" class="layui-btn layui-btn-xs"><i class="layui-icon"></i></button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <button lay-submit lay-filter="my-form" class="layui-btn layui-btn-warm layui-row layui-col-xs12" id="closeAccounts">一键强制结算</button>
+    </div>
+</div>
+
+<script>
+    layui.use(['form'], function(){
+        var form = layui.form;
+        form.render();
+    });
+
+
+    $(function () {
+        var $updateGradeButtons = $("button[name='updateGrade']"),
+            $closeAccountsButton = $("#closeAccounts");
+        $updateGradeButtons.click(function () {
+            var grade = $(this).prev().val(),
+                item = JSON.parse($(this).prev().attr("data-item"));
+            $.post("./editGrade", {
+                "userId": item.userId,
+                "grade": parseFloat(grade),
+                "roomCode": item.roomCode
+            }, function (data) {
+                if(data == null || data.code == null || data.code != 200) {
+                    layer.msg("保存失败");
+                    return;
+                }
+                layer.msg("保存成功");
+            });
+        })
+
+        $closeAccountsButton.click(function () {
+            $.post("./executeCloseAccounts", {
+                "roomCode": $("#roomCode").val()
+            }, function (data) {
+                if(data == null || data.code == null || data.code != 200) {
+                    if(data.code == 300){
+                        layer.msg(data.msg);
+                        return;
+                    }else{
+                        layer.msg("编辑失败");
+                        return;
+                    }
+                }
+                layer.msg("编辑成功");
+                tableIndex.reload();
+            });
+        })
+    })
+</script>

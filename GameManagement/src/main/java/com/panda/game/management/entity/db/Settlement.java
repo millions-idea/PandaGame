@@ -29,4 +29,5 @@ public class Settlement {
     private Integer state;
     private Date addTime;
     private Date updateTime;
+    private String remark;
 }
