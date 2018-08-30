@@ -32,4 +32,11 @@ public interface IMessageService {
      * @return
      */
     List<Messages> getMessageList(String token);
+
+    /**
+     * 批量查阅 韦德 2018年8月30日18:27:43
+     * @param list
+     */
+    void batchMarkRead(List<Messages> list);
+
 }

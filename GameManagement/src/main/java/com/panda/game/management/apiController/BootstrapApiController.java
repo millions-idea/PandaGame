@@ -118,6 +118,18 @@ public class BootstrapApiController {
     @GetMapping("/getMessageList")
     public JsonArrayResult<Messages> getMessageList(String token){
         List<Messages> list = messageService.getMessageList(token);
+        messageService.batchMarkRead(list);
+        return new JsonArrayResult<>(list);
+    }
+
+    /**
+     * 查询短消息列表 韦德 2018年8月29日23:56:01
+     * @param token
+     * @return
+     */
+    @GetMapping("/getMessageNotification")
+    public JsonArrayResult<Messages> getMessageNotification(String token){
+        List<Messages> list = messageService.getMessageList(token);
         return new JsonArrayResult<>(list);
     }
 }

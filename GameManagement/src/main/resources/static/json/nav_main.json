@@ -20,12 +20,16 @@
     ]
   },{
       "text": "市场运营",
-      "icon": "&#xe620;",
+      "icon": "&#xe632;",
       "subset": [
         {
           "text": "佣金结算",
           "icon": "&#xe63c;",
           "href": "/management/room/close-accounts"
+        },{
+          "text": "提现审批",
+          "icon": "&#xe63c;",
+          "href": "/management/withdraw/index"
         }]
     }
   ]

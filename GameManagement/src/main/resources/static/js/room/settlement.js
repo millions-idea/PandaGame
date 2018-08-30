@@ -176,7 +176,7 @@ function getTableColumns() {
         , {field: 'roomCode', title: '房间号', width: 150}
         , {field: 'roomName', title: '房间名称', width: 150}
         , {field: 'externalRoomId', title: '外部房间号', width: 150}
-        , {field: 'status', title: '游戏状态', width: 150, templet: function (d) {
+        , {field: 'status', title: '游戏状态', width: 150,  sort: true,templet: function (d) {
             //状态(0=未开始,1=已就绪,2=已开始,3=已暂停,4=已结束,5=已结算,6=已失效)
                 var state = "未开始";
                 if(d.status == 1){
@@ -194,7 +194,7 @@ function getTableColumns() {
                 }
                 return state;
             }}
-        , {field: 'countGrade', title: '总成绩', width: 150, templet: function (d) {
+        , {field: 'countGrade', title: '总成绩', width: 150,  sort: true, templet: function (d) {
                 var str = "";
                 if(d.countGrade == 0){
                     str += "<span class='layui-badge layui-bg-green'>正常</span>";
@@ -203,7 +203,7 @@ function getTableColumns() {
                 }
                 return str;
             }}
-        , {field: 'state', title: '状态', width: 120, templet: function (d) {
+        , {field: 'state', title: '状态', width: 120, sort: true, templet: function (d) {
                var state = "待结算";
                 if(d.state == 1){
                     state = "已结算";

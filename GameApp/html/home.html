@@ -138,6 +138,7 @@
 		<script type="text/javascript">
 			var gDoc;
 			var gallery = mui('.mui-slider');
+			var bindMessageClick = 0;
 			
 			(function($, doc){
 				
@@ -167,8 +168,7 @@
 					plus.navigator.setStatusBarBackground("#FE532A");
 					
 					// 禁止屏幕翻转
-					plus.screen.lockOrientation("portrait-primary"); 
-					
+					plus.screen.lockOrientation("portrait-primary");  
 					
 					doc.getElementById("recharge").addEventListener("tap", function(){
 						mui.openWindow({
@@ -235,6 +235,12 @@
 				})
 				
 			})(mui, document);
+			
+			function onClick( msg ) {
+				// Clicked push message code. 
+				console.log("Clicked push message code. " + msg);
+			}
+
 			
 			/**
 			 * 下拉刷新回调
@@ -323,6 +329,41 @@
 				},function(){
 					plus.nativeUI.toast("获取游戏分区失败");
 				});
+			
+				
+				// 读取短消息通知
+				var localCache = plus.storage.getItem('userInfo');
+				if(!(localCache != null && localCache.length > 0)) return false; 
+				app.getMessageNotification({
+					"token": JSON.parse(localCache).token.toString()
+				}, function(data){
+					if(data == null || data.code == null || data.code == 500 || data.code == 400) return console.log("拉取短消息通知列表失败");
+					if(data.code == 300) return console.log("拉取短消息通知列表失败，具体原因：" + data.msg);
+					
+					for (var i = 0; i < data.data.length; i++) {
+						if(data.data[i].state == 0){
+							plus.push.createMessage("您有一条新的短消息：" + data.data[i].message);
+						}
+					} 
+				}, function(){});
+				
+				// 推送消息被点击
+				if(bindMessageClick == 0) plus.push.addEventListener("click", openMessage)
+			}
+			
+			
+			function openMessage(){
+				bindMessageClick = 1;
+				console.log("推送消息被点击!")
+				mui.openWindow({
+                    url: "/html/messages.html",
+                    id: "messages",
+                    preload: false,
+                    waiting: {
+                        autoShow: true,
+                      title:'正在加载...'
+                    }
+                });
 			}
 		</script>
 		 

@@ -12,6 +12,7 @@ import com.panda.game.management.entity.db.Pays;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -84,4 +85,13 @@ public interface PayMapper extends  MyMapper<Pays>{
             , @Param("beginTime") String trade_date_begin
             , @Param("endTime") String trade_date_end
             , @Param("condition")  String condition);
+
+    @Update("UPDATE tb_pays SET channel_record_id=#{channelRecordId},to_account_time=NOW() WHERE system_record_id=#{systemRecordId}")
+    /**
+     * 更新交易回执单号 韦德  2018年8月30日14:55:50
+     * @param systemRecordId
+     * @param channelRecordId
+     * @return
+     */
+    int updateChannelRecordId(@Param("systemRecordId") Long systemRecordId, @Param("channelRecordId") String channelRecordId);
 }

@@ -32,7 +32,7 @@ public interface IPayService extends IBaseService<Pays> {
      * 提现 韦德 2018年8月21日13:42:56
      * @param payParam
      */
-    void withdraw(PayParam payParam);
+    Long withdraw(PayParam payParam);
 
     /**
      * 消费 韦德 2018年8月16日13:17:17
@@ -151,4 +151,12 @@ public interface IPayService extends IBaseService<Pays> {
      * @param amount
      */
     Boolean recharge(Integer id, Double amount);
+
+    /**
+     * 更新交易回执单号 韦德 2018年8月30日14:54:32
+     * @param systemRecordId
+     * @param channelRecordId
+     * @return
+     */
+    int updateChannelRecordId(Long systemRecordId, String channelRecordId);
 }

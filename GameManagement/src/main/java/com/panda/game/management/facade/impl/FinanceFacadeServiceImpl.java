@@ -24,9 +24,9 @@ import java.util.Map;
 @Service
 public class FinanceFacadeServiceImpl implements FinanceFacadeService {
     @Autowired
-    private com.panda.game.management.biz.IWithdrawService IWithdrawService;
+    private com.panda.game.management.biz.IWithdrawService withdrawService;
     @Autowired
-    private com.panda.game.management.biz.IPayService IPayService;
+    private com.panda.game.management.biz.IPayService payService;
 
     /**
      * 申请提现 韦德 2018年8月21日10:57:26
@@ -42,17 +42,19 @@ public class FinanceFacadeServiceImpl implements FinanceFacadeService {
         if(map.isEmpty()) JsonResult.failing();
         String userId = map.get("userId");
         if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
-        IWithdrawService.addWithdraw(token, amount);
+
         // 转账
         PayParam payParam = new PayParam();
         payParam.setFromUid(Integer.valueOf(userId));
         payParam.setAmount(amount);
         payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
-        IPayService.withdraw(payParam);
+        long  systemRecordId = payService.withdraw(payParam);
+
+        withdrawService.addWithdraw(token, amount, systemRecordId);
     }
 
     /**
-     * 申请提现 韦德 2018年8月21日10:42:23
+     * 提现审批 韦德 2018年8月21日10:42:23
      *
      * @param withdraw
      * @return
@@ -60,17 +62,24 @@ public class FinanceFacadeServiceImpl implements FinanceFacadeService {
     @Override
     @Transactional
     public boolean confirmWithdraw(Withdraw withdraw) {
-        // 查询提现信息
-        Withdraw model = IWithdrawService.getWithdrawById(withdraw);
-        if(model == null) throw new MsgException("加载提现信息失败");
-
-        // 更改状态
+        // 1、更新提现审批表
+        Withdraw model = withdrawService.getWithdrawById(withdraw);
+        if(model == null) throw new MsgException("审批请求不存在");
         model.setUpdateTime(new Date());
         model.setState(1);
-        int count = IWithdrawService.update(model);
-        if(count == 0) throw new MsgException("更改状态失败");
+        model.setRemark(withdraw.getRemark());
+        model.setSystemRecordId(withdraw.getSystemRecordId());
+        model.setChannelRecordId(withdraw.getChannelRecordId());
+        int count = withdrawService.update(model);
+        if(count == 0) throw new MsgException("编辑提现状态失败");
 
-        // TODO 更新支付宝交易号
+        // 2、更新财务日志
+        count = 0;
+        count = payService.updateChannelRecordId(withdraw.getSystemRecordId(),  withdraw.getChannelRecordId());
+        if(count == 0) throw new MsgException("更新交易回执失败");
+
+        withdraw.setUserId(model.getUserId());
         return true;
     }
+
 }

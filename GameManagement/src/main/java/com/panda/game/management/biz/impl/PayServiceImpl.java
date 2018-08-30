@@ -512,6 +512,20 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
     }
 
     /**
+     * 更新交易回执单号 韦德 2018年8月30日14:54:32
+     *
+     * @param systemRecordId
+     * @param channelRecordId
+     * @return
+     */
+    @Override
+    @Transactional
+    @AspectLog(description = "客服审批提现-更新回执单号")
+    public int updateChannelRecordId(Long systemRecordId, String channelRecordId) {
+        return payMapper.updateChannelRecordId(systemRecordId, channelRecordId);
+    }
+
+    /**
      * 统计账户的总收入与总支出情况 韦德 2018年8月7日00:43:31
      *
      * @param id
@@ -547,7 +561,7 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
     @Override
     @Transactional
     @AspectLog(description = "W转账")
-    public void withdraw(PayParam payParam) {
+    public Long withdraw(PayParam payParam) {
         payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
 
         // 查询交易主体信息
@@ -588,6 +602,8 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
         if(count == 0) throw new InfoException("生成往来账失败");
 
         System.out.println("交易成功");
+
+        return payParam.getSystemRecordId();
     }
 
     /**
@@ -665,8 +681,9 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
      * @throws Exception
      */
     private Pays extractRechargePayModel(List<UserDetailInfo> userDetailInfoList, PayParam payParam) throws Exception {
+        long payId = IdWorker.getFlowIdWorkerInstance().nextId();
         Pays pays = new Pays();
-        pays.setPayId(IdWorker.getFlowIdWorkerInstance().nextId());
+        pays.setPayId(payId);
         pays.setFromUid(payParam.getFromUid());
         pays.setFromName(userDetailInfoList.get(0).getPhone());
         pays.setToUid(payParam.getToUid());
@@ -690,13 +707,10 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
 
         pays.setAddTime(new Date());
         pays.setAmount(payParam.getAmount());
-
-        payParam.setSystemRecordId(IdWorker.getFlowIdWorkerInstance().nextId());
-
-        pays.setSystemRecordId(payParam.getSystemRecordId());
         pays.setRemark(payParam.getRemark());
-
         pays.setStatus(0);
+        payParam.setSystemRecordId(IdWorker.getFlowIdWorkerInstance().nextId());
+        pays.setSystemRecordId(payParam.getSystemRecordId());
         return pays;
     }
 
@@ -708,8 +722,10 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
      * @throws Exception
      */
     private Pays extractWithdrawPayModel(List<UserDetailInfo> userDetailInfoList, PayParam payParam) throws Exception {
+        long payId = IdWorker.getFlowIdWorkerInstance().nextId();
+
         Pays pays = new Pays();
-        pays.setPayId(IdWorker.getFlowIdWorkerInstance().nextId());
+        pays.setPayId(payId);
         pays.setFromUid(payParam.getFromUid());
         pays.setFromName(userDetailInfoList.get(0).getPhone());
         pays.setToUid(payParam.getToUid());
@@ -726,13 +742,11 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
 
         pays.setAddTime(new Date());
         pays.setAmount(payParam.getAmount());
+        pays.setRemark(payParam.getRemark());
+        pays.setStatus(0);
 
         payParam.setSystemRecordId(IdWorker.getFlowIdWorkerInstance().nextId());
-
         pays.setSystemRecordId(payParam.getSystemRecordId());
-        pays.setRemark(payParam.getRemark());
-
-        pays.setStatus(0);
         return pays;
     }
 

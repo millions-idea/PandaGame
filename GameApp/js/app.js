@@ -207,6 +207,10 @@
 			data: param,	
 			success: function(data){
 				console.log(JSON.stringify(data))
+				if(data != null && data.code != null && data.code == 200){
+					plus.storage.setItem('messageList',JSON.stringify(data.data));
+				}
+							
 				return callback(data);
 			},
 			error: function(xhr,type,errorThrown){
@@ -215,6 +219,27 @@
 		})
 		
 	} 
+
+	owner.getMessageNotification = function(param, callback, errorCallback){ 
+		callback = callback || $.noop; 
+		$.ajax(toUrl("api/bootstrap/getMessageNotification"), {
+			type: "get",
+			data: param,	
+			success: function(data){
+				console.log(JSON.stringify(data))
+				if(data != null && data.code != null && data.code == 200){
+					plus.storage.setItem('messageList',JSON.stringify(data.data));
+				}
+							
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+		
+	} 
+
 
 	/**
 	 * 获取当前状态

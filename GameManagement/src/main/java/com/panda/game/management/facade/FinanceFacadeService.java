@@ -17,12 +17,13 @@ public interface FinanceFacadeService {
      * @param token
      * @param amount
      */
-    void addWithdraw(String token, Double amount);
+    void addWithdraw(String token, Double amount );
 
 
     /**
-     * 申请提现 韦德 2018年8月21日10:42:23
+     * 提现审批 韦德 2018年8月21日10:42:23
      * @return
      */
     boolean confirmWithdraw(Withdraw withdraw);
+
 }

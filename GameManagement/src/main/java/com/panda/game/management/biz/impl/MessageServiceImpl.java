@@ -7,6 +7,7 @@
  */
 package com.panda.game.management.biz.impl;
 
+import com.google.common.base.Joiner;
 import com.panda.game.management.biz.IMessageService;
 import com.panda.game.management.entity.db.Messages;
 import com.panda.game.management.repository.MessageMapper;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class MessageServiceImpl extends BaseServiceImpl<Messages> implements IMessageService {
@@ -68,4 +70,16 @@ public class MessageServiceImpl extends BaseServiceImpl<Messages> implements IMe
         messages.setUserId(Integer.valueOf(userId));
         return messageMapper.selectOrderBy(messages);
     }
+
+    /**
+     * 批量查阅 韦德 2018年8月30日18:27:43
+     *
+     * @param list
+     */
+    @Override
+    public void batchMarkRead(List<Messages> list) {
+        String join = Joiner.on(",").join(list.stream().map(item->item.getMessageId()).collect(Collectors.toList()));
+        messageMapper.updateStatus(join, 1);
+    }
+
 }

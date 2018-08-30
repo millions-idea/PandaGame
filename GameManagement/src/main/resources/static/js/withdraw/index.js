@@ -1,22 +1,13 @@
-/*!财务模块-交易清单 韦德 2018年8月5日22:50:57*/
-var route = "./pay";
+/*!财务模块-会计账簿 韦德 2018年8月27日01:05:05*/
+var route = "/management/withdraw";
 var service;
 var tableIndex;
 (function () {
     service = initService(route);
 
-    // 获取系统账户信息
-    service.getSystemAccount(function (data) {
-        if(!isNaN(data.error) || (!isNaN(data.code) && data.code != 0)) return;
-        $("#sys_username").text(data.phone);
-        $("#sys_balance").text(data.balance);
-        $("#income-amount").text(data.incomeAmount);
-        $("#expend-amount").text(data.expendAmount);
-    });
-
     // 加载数据表
-    initDataTable(route + "/getPayLimit", function (form, table, layer, vipTable, tableIns) {
-        // 动态注册事件
+    initDataTable(route + "/getWithdrawLimit", function (form, table, layer, vipTable, tableIns) {
+        // 动态注册事件getSign
         var $tableDelete = $("#my-data-table-delete"),
             $tableAdd = $("#my-data-table-add");
         $tableDelete.click(function () {
@@ -62,44 +53,36 @@ var tableIndex;
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的DOM对象
-
-            if(layEvent === 'detail'){ //查看
-                service.view(data,function (html) {
-                    layer.open({
-                        type: 1,
-                        skin: 'layui-layer-rim',
-                        title: '预览',
-                        area: ['420px', 'auto'],
-                        shadeClose:true,
-                        content: html
-                    });
+            if(layEvent === 'ok'){ //审批通过
+                var payId = $( obj.tr[2]).find("td:eq(1)").text();
+                if(payId == null || payId.length == 0) return layer.msg("请先输入交易号!");
+                service.confirm(data, function (data) {
+                    if(utils.response.isErrorByCode(data)) return layer.msg("操作失败");
+                    if(utils.response.isException(data)) return layer.msg(data.msg);
+                    tableIndex.reload();
+                    layer.msg("操作成功");
                 })
-            } else if(layEvent === 'del'){ //删除
-                layer.confirm('确定要删除此项吗？', function(index){
-                    var param = {
-                        id: obj.data.goods_id.toString()
-                    };
-                    service.deleteBy(param, function (data) {
-                        if(!isNaN(data.error) || data.code == 1){
-                            layer.msg("删除失败");
-                            return
-                        }
-                        layer.msg("删除成功");
-                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                        layer.close(index);
-                    })
-                });
-            } else if(layEvent === 'edit'){ //编辑
-                service.getEditView(data, function (html) {
-                    layer.open({
-                        type: 1,
-                        skin: 'layui-layer-rim',
-                        title: '编辑',
-                        area: ['420px', 'auto'],
-                        shadeClose:true,
-                        content: html
+            }else if(layEvent === 'pass'){ //拒绝
+                var cause = $( obj.tr[2]).find("td:eq(0)").text();
+                if(cause == null || cause.length == 0) {
+                    layer.confirm('您还没有填写拒绝原因，是否取消此次操作？', {
+                        btn: ['继续','取消'] //按钮
+                    }, function(){
+                        service.pass(data, function (data) {
+                            if(utils.response.isErrorByCode(data)) return layer.msg("操作失败");
+                            if(utils.response.isException(data)) return layer.msg(data.msg);
+                            tableIndex.reload();
+                            layer.msg("操作成功");
+                        })
                     });
-                });
+                }else{
+                    service.pass(data, function (data) {
+                        if(utils.response.isErrorByCode(data)) return layer.msg("操作失败");
+                        if(utils.response.isException(data)) return layer.msg(data.msg);
+                        tableIndex.reload();
+                        layer.msg("操作成功");
+                    })
+                }
             }
         });
     });
@@ -113,14 +96,28 @@ var tableIndex;
 function initService(r) {
     return {
         /**
-         * 获取系统账户信息 2018年8月7日00:23:26
+         * 审批通过 韦德 2018年8月30日14:58:13
+         * @param param
          * @param callback
          */
-        getSystemAccount: function (callback) {
-            $.get(route + "/getSystemAccount",function (data) {
+        confirm: function (param, callback) {
+            param.addTime = utils.date.timestampConvert(param.addTime);
+            $.post(r + "/confirm", param, function (data) {
                 callback(data);
-            })
+            });
         },
+        /**
+         * 拒绝审批 韦德 2018年8月30日14:58:13
+         * @param param
+         * @param callback
+         */
+        pass: function (param, callback) {
+            param.addTime = utils.date.timestampConvert(param.addTime);
+            if(param.updateTime != null) param.updateTime = utils.date.timestampConvert(param.updateTime);
+            $.post(r + "/pass", param, function (data) {
+                callback(data);
+            });
+        }
     }
 }
 
@@ -134,7 +131,6 @@ function initDataTable(url, callback, loadDone) {
     var $queryButton = $("#my-data-table-query"),
         $queryCondition = $("#my-data-table-condition"),
         $tradeTypeInput = $("select[name='trade_type']"),
-        $filterTypeInput = $("select[name='filter_type']"),
         $tradeDateBeginInput = $("input[name='trade_date_begin']"),
         $tradeDateEndInput = $("input[name='trade_date_end']");
 
@@ -143,12 +139,13 @@ function initDataTable(url, callback, loadDone) {
     // 注册查询事件
     $queryButton.click(function () {
         $queryButton.attr("disabled",true);
-
-        var param =  "?condition=" + $queryCondition.val();
-        param += "&trade_type=" + $tradeTypeInput.val();
-        param += "&filter_type=" + $filterTypeInput.val();
-        param += "&trade_date_begin=" + $tradeDateBeginInput.val();
-        param += "&trade_date_end=" + $tradeDateEndInput.val();
+        var condition = $queryCondition.val();
+        if(condition.indexOf("+") != -1) condition = condition.replace("+", "[add]");
+        if(condition.indexOf("-") != -1) condition = condition.replace("-", "[reduce]");
+        var param =  "?condition=" + encodeURI(condition);
+        param += "&state=" + $tradeTypeInput.val();
+        param += "&beginTime=" + $tradeDateBeginInput.val();
+        param += "&endTime=" + $tradeDateEndInput.val();
 
         loadTable(tableIndex,"my-data-table", "#my-data-table", cols, url + param, function (res, curr, count) {
             $queryButton.removeAttr("disabled");
@@ -168,12 +165,11 @@ function initDataTable(url, callback, loadDone) {
         // 表格渲染
         tableIndex = table.render({
             elem: '#my-data-table'                  //指定原始表格元素选择器（推荐id选择器）
-            , height: 480    //容器高度
+            , height: 720    //容器高度
             , cols: cols
             , id: 'my-data-table'
             , url: url
             , method: 'get'
-            , totalRow: true
             , page: true
             , limits: [30, 60, 90, 150, 300]
             , limit: 30 //默认采用30
@@ -200,34 +196,31 @@ function initDataTable(url, callback, loadDone) {
  */
 function getTableColumns() {
     return [[
-        {type: "numbers"}
-        , {field: 'payId', title: 'ID', width: 80, sort: true, unresize: true, totalRowText: '合计'}
-        , {field: 'systemRecordId', title: '流水号', width: 220}
-        , {field: 'channelRecordId', title: '交易号', width: 120,edit: 'number', templet: function (d) {
-                return d.channelRecordId == null ? "站内交易" : d.channelRecordId;
+        {type: "numbers", fixed: 'left'}
+        , {field: 'withdrawId', title: '审批ID', width: 80, sort: true}
+        , {field: 'systemRecordId', title: '流水号', width: 240, sort: true}
+        , {field: 'phone', title: '手机号', width: 150}
+        , {field: 'amount', title: '金额', width: 150, templet: function (d) {
+                return "<span style='color: #c2330f;'>" + d.amount + "</span>";
             }}
-        , {field: 'addTime', title: '交易日', width: 240, templet: function (d) {
+        , {field: 'state', title: '状态', width: 120, sort:true,  templet: function (d) {
+               var state = "待审核";
+                if(d.state == 1){
+                    state = "已通过";
+               }else if(d.state == 2){
+                    state = "已拒绝";
+                }
+                return state;
+            }}
+        , {field: 'addTime', title: '时间', width: 180, sort: true, templet: function (d) {
                 return utils.date.timestampConvert(d.addTime);
             }}
-        , {field: 'fromName', title: '甲方', width: 150}
-        , {field: 'toName', title: '乙方', width: 150}
-        , {field: 'channelName', title: '渠道名称', width: 120}
-        , {field: 'toAccountTime', title: '渠道到账时间', width: 240, templet: function (d) {
-                return d.toAccountTime == null ? '-' : utils.date.timestampConvert(d.toAccountTime);
+        , {field: 'updateTime', title: '最后编辑时间', width: 180, sort: true, templet: function (d) {
+                return d.updateTime == null ? '' : utils.date.timestampConvert(d.updateTime);
             }}
-        , {field: 'productName', title: '商品名称', width: 120}
-        , {field: 'tradeName', title: '交易类型', width: 120}
-        , {field: 'amount', title: '交易总额', width: 120, align: "center", totalRow: true}
-        , {field: 'status', title: '状态', width: 120, templet: function (d) {
-                if(d.status == 0) {
-                    return "正常";
-                }else if(d.status == 1){
-                    return "退款";
-                }else{
-                    return "未知";
-                }
-            }}
-        , {field: 'remark', title: '摘要', width: 120}
+        , {fixed: 'right', field: 'remark', title: '摘要(可编辑)', edit:"text", width: 240}
+        , {fixed: 'right', field: 'channelRecordId', title: '交易号(可编辑)', edit:"text", width: 240}
+        , {fixed: 'right',title: '操作', width: 180, align: 'center', toolbar: '#barOption'}
     ]];
 }
 
@@ -243,7 +236,7 @@ function getTableColumns() {
 function loadTable(index,id,elem,cols,url,loadDone) {
     index.reload({
         elem: elem
-        , height: 480    //容器高度
+        , height: 720    //容器高度
         , cols: cols
         , id: id
         , url: url
@@ -262,6 +255,6 @@ function loadTable(index,id,elem,cols,url,loadDone) {
 
 function resetPager() {
     $(".layui-table-body.layui-table-main").each(function (i, o) {
-        $(o).height(395);
+        $(o).height(640);
     });
 }
