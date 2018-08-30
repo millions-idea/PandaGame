@@ -53,7 +53,9 @@ public class WithdrawController extends BaseController{
     @ResponseBody
     public JsonResult pass(Withdraw withdraw){
         withdrawService.pass(withdraw);
-        messageService.pushMessage(new Messages(null, withdraw.getUserId(), "您的提现未成功，原因：" + withdraw.getRemark(), 0, new Date()));
+        String message = "您的提现未成功";
+        if(withdraw.getRemark() != null) message = "您的提现未成功，原因：" + withdraw.getRemark();
+        messageService.pushMessage(new Messages(null, withdraw.getUserId(), message, 0, new Date()));
         return JsonResult.successful();
     }
 

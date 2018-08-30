@@ -18,6 +18,7 @@ import com.panda.game.management.entity.db.Accounts;
 import com.panda.game.management.entity.db.Pays;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.resp.AccountsResp;
+import com.panda.game.management.entity.resp.PaysResp;
 import com.panda.game.management.entity.resp.UserResp;
 import com.panda.game.management.exception.FinanceException;
 import com.panda.game.management.utils.PropertyUtil;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -60,7 +62,15 @@ public class FinanceController {
         if(condition != null && condition.contains("[add]")) condition = condition.replace("[add]", "+");
         if(condition != null && condition.contains("[reduce]")) condition = condition.replace("[reduce]", "-");
         List<Accounts> list = payService.getAccountsLimit(page, limit, condition, trade_type, filter_type, trade_date_begin, trade_date_end);
-        JsonArrayResult jsonArrayResult = new JsonArrayResult(0,list);
+        List<AccountsResp> wrapList = new ArrayList<>();
+        list.forEach(item -> {
+            AccountsResp resp = new AccountsResp();
+            PropertyUtil.clone(item, resp);
+            resp.setAccountsId(item.getAccountsId().toString());
+            resp.setPayId(item.getPayId().toString());
+            wrapList.add(resp);
+        });
+        JsonArrayResult jsonArrayResult = new JsonArrayResult(0,wrapList);
         if (StringUtil.isBlank(condition)
                 && StringUtil.isBlank(trade_date_begin)
                 && StringUtil.isBlank(trade_date_end)
@@ -109,10 +119,18 @@ public class FinanceController {
      */
     @RequestMapping("/pay/getPayLimit")
     @ResponseBody
-    public JsonArrayResult<Pays> getPayLimit(Integer page, String limit, String condition, Integer trade_type, Integer filter_type, String trade_date_begin, String trade_date_end){
+    public JsonArrayResult<PaysResp> getPayLimit(Integer page, String limit, String condition, Integer trade_type, Integer filter_type, String trade_date_begin, String trade_date_end){
         Integer count = 0;
         List<Pays> list = payService.getPaysLimit(page, limit, condition, trade_type, filter_type, trade_date_begin, trade_date_end);
-        JsonArrayResult jsonArrayResult = new JsonArrayResult(0,list);
+        List<PaysResp> wrapList = new ArrayList<>();
+        list.forEach(item -> {
+            PaysResp resp = new PaysResp();
+            PropertyUtil.clone(item, resp);
+            resp.setPayId(item.getPayId().toString());
+            resp.setSystemRecordId(item.getSystemRecordId().toString());
+            wrapList.add(resp);
+        });
+        JsonArrayResult jsonArrayResult = new JsonArrayResult(0,wrapList);
         if (StringUtil.isBlank(condition)
                 && StringUtil.isBlank(trade_date_begin)
                 && StringUtil.isBlank(trade_date_end)

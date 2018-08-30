@@ -30,6 +30,10 @@
           "text": "提现审批",
           "icon": "&#xe63c;",
           "href": "/management/withdraw/index"
+        },{
+          "text": "充值房卡",
+          "icon": "&#xe63c;",
+          "href": "/management/room/room-card"
         }]
     }
   ]

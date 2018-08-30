@@ -13,10 +13,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountsResp extends Accounts {
+public class AccountsResp {
+    private String accountsId;
+    private String payId;
+    private Integer tradeAccountId;
+    private String tradeAccountName;
+    private Integer accountsType;
+    private Integer currency;
+    private Double amount;
+    private Double beforeBalance;
+    private Double afterBalance;
+    private Date addTime;
+    private String remark;
     private Integer pageCount;
 }

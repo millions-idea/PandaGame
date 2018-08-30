@@ -170,6 +170,7 @@
 					// 禁止屏幕翻转
 					plus.screen.lockOrientation("portrait-primary");  
 					
+					
 					doc.getElementById("recharge").addEventListener("tap", function(){
 						mui.openWindow({
 		                    url: "recharge.html",
@@ -220,9 +221,9 @@
 											if(data == null || data.code == 500 || data.code == 300) return plus.nativeUI.toast("领取失败");
 											if(data.code == 400) return plus.nativeUI.toast(data.msg);
 			
-											plus.nativeUI.toast("领取成功");
+											plus.nativeUI.toast("已提交申请，请等待客服审核！");
 										}, function(){
-											plus.nativeUI.toast("领取失败");
+											plus.nativeUI.toast("操作失败");
 										}) 
 								}
 							})
@@ -331,7 +332,16 @@
 				});
 			
 				
+				
 				// 读取短消息通知
+				readMessage();
+				
+				// 推送消息被点击
+				if(bindMessageClick == 0) plus.push.addEventListener("click", openMessage)
+			}
+			
+			function readMessage(){
+				console.log("拉取短信息心跳线程")
 				var localCache = plus.storage.getItem('userInfo');
 				if(!(localCache != null && localCache.length > 0)) return false; 
 				app.getMessageNotification({
@@ -341,14 +351,14 @@
 					if(data.code == 300) return console.log("拉取短消息通知列表失败，具体原因：" + data.msg);
 					
 					for (var i = 0; i < data.data.length; i++) {
+						console.log(data.data[i].message + "," + data.data[i].state)
 						if(data.data[i].state == 0){
 							plus.push.createMessage("您有一条新的短消息：" + data.data[i].message);
 						}
 					} 
 				}, function(){});
 				
-				// 推送消息被点击
-				if(bindMessageClick == 0) plus.push.addEventListener("click", openMessage)
+				
 			}
 			
 			

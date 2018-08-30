@@ -731,8 +731,8 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
         pays.setToUid(payParam.getToUid());
         pays.setToName(userDetailInfoList.get(1).getPhone());
 
-        pays.setChannelType(DataDictionary.DATA_DICTIONARY.get("finance.pays.channel.internal").getDictionaryId());
-        pays.setChannelName(DataDictionary.DATA_DICTIONARY.get("finance.pays.channel.internal").getValue());
+        pays.setChannelType(DataDictionary.DATA_DICTIONARY.get("finance.pays.channel.alipay").getDictionaryId());
+        pays.setChannelName(DataDictionary.DATA_DICTIONARY.get("finance.pays.channel.alipay").getValue());
 
         pays.setProductType(DataDictionary.DATA_DICTIONARY.get("finance.pays.product.currency").getDictionaryId());
         pays.setProductName(DataDictionary.DATA_DICTIONARY.get("finance.pays.product.currency").getValue());

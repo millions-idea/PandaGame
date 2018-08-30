@@ -18,16 +18,16 @@ import java.util.List;
 
 @Mapper
 public interface SettlementMapper extends MyMapper<Settlement>{
-    @Select("SELECT COUNT(DISTINCT t1.room_code) FROM tb_settlement t1\n" +
-            "LEFT JOIN tb_game_room t2 ON t1.room_code = t2.room_code \n")
+    @Select("SELECT COUNT(*) FROM(SELECT COUNT(DISTINCT t1.room_code) FROM tb_settlement t1\n" +
+            "            LEFT JOIN tb_game_room t2 ON t1.room_code = t2.room_code GROUP BY t2.room_code) t3")
     /**
      * 查询记录总数 韦德 2018年8月27日09:52:40
      */
     int selectCountDistinct();
 
-    @Select("SELECT COUNT(DISTINCT t1.room_code) FROM tb_settlement t1\n" +
+    @Select("SELECT COUNT(*) FROM(SELECT COUNT(DISTINCT t1.room_code) FROM tb_settlement t1\n" +
             "LEFT JOIN tb_game_room t2 ON t1.room_code = t2.room_code \n" +
-            "WHERE ${condition}")
+            "WHERE ${condition} GROUP BY t2.room_code) t3")
     /**
      * 查询分页记录总数 韦德 2018年8月27日09:52:40
      */

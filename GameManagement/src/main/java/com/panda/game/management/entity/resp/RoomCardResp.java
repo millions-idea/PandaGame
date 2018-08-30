@@ -1,30 +1,32 @@
 /***
  * @pName management
- * @name RoomCard
+ * @name RoomCardResp
  * @user HongWei
- * @date 2018/8/20
+ * @date 2018/8/30
  * @desc
  */
-package com.panda.game.management.entity.db;
+package com.panda.game.management.entity.resp;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Date;
 
-@Table(name = "tb_room_card")
 @Getter
 @Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomCard {
-    @Id
+public class RoomCardResp {
+    /*roomCard*/
     private Integer cardId;
     private Integer userId;
     private String pandaId;
     private Integer state;
     private Date addTime;
     private Date updateTime;
+
+    /*users*/
+    private String phone;
 }
