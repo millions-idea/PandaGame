@@ -78,11 +78,6 @@
 </th:block>
 <th:block layout:fragment="free_footer">
     <script type="text/javascript" th:src="@{/js/withdraw/index.js}"></script>
-    <!-- 表格操作按钮集 -->
-    <script type="text/html" id="barOption">
-        <a name="item-view" class="layui-btn layui-btn layui-btn-sm" lay-event="ok">审批通过</a>
-        <a name="item-edit" class="layui-btn layui-btn layui-btn-sm layui-btn-danger" lay-event="pass">拒绝</a>
-    </script>
     <script>
         layui.use(['laydate'], function(){
             var laydate = layui.laydate;

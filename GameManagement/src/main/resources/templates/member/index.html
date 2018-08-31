@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'会员管理-' + ${title}"></title>
+    <link rel="stylesheet" th:href="@{/css/member/index.css}">
+</head>
+<body>
+
+<th:block layout:fragment="current_page">
+    <a><cite>会员管理</cite></a>
+</th:block>
+
+<th:block layout:fragment="body">
+   <div class="layui-row">
+       <div class="layui-col-md12" style="">
+           <!--主体 begin-->
+           <!-- 工具集 -->
+           <div class="my-btn-box">
+               <!--下拉列表-->
+               <div class="layui-form">
+                   <span class="fl layui-inline" style="margin-right: -20px;">
+                        <a class="layui-btn btn-add btn-default" id="btn-refresh-my-data-table"><i class="layui-icon layui-icon-refresh"></i></a>
+                    </span>
+                   <span class="fr">
+                    <span class="layui-form-label">搜索条件：</span>
+                    <div class="layui-input-inline">
+                        <input id="my-data-table-condition" type="text" autocomplete="off" placeholder="请输入搜索条件" class="layui-input">
+                    </div>
+                    <button id="my-data-table-query" class="layui-btn mgl-20">查询</button>
+                </span>
+               </div>
+
+           </div>
+           <!-- 表格 -->
+           <div id="my-data-table" class="my-data-table" lay-filter="my-data-table"></div>
+           <!--主体 end-->
+       </div>
+   </div>
+
+</th:block>
+<th:block layout:fragment="free_footer">
+    <script type="text/javascript" th:src="@{/js/withdraw/index.js}"></script>
+    <script>
+        layui.use(['laydate'], function(){
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: "#date"
+            });
+            laydate.render({
+                elem: "#date2"
+            });
+        });
+    </script>
+</th:block>
+</body>
+</html>

@@ -139,6 +139,7 @@
 			var gDoc;
 			var gallery = mui('.mui-slider');
 			var bindMessageClick = 0;
+			var getMessageTimer = null;
 			
 			(function($, doc){
 				
@@ -334,14 +335,16 @@
 				
 				
 				// 读取短消息通知
+				//if(getMessageTimer == null) getMessageTimer = setInterval(readMessage, 10000);
 				readMessage();
 				
 				// 推送消息被点击
-				if(bindMessageClick == 0) plus.push.addEventListener("click", openMessage)
+				if(bindMessageClick == 0) plus.push.addEventListener("click", openMessage);
+				
 			}
 			
 			function readMessage(){
-				console.log("拉取短信息心跳线程")
+				console.log("拉取短信息心跳线程");
 				var localCache = plus.storage.getItem('userInfo');
 				if(!(localCache != null && localCache.length > 0)) return false; 
 				app.getMessageNotification({
@@ -349,13 +352,12 @@
 				}, function(data){
 					if(data == null || data.code == null || data.code == 500 || data.code == 400) return console.log("拉取短消息通知列表失败");
 					if(data.code == 300) return console.log("拉取短消息通知列表失败，具体原因：" + data.msg);
-					
 					for (var i = 0; i < data.data.length; i++) {
-						console.log(data.data[i].message + "," + data.data[i].state)
 						if(data.data[i].state == 0){
-							plus.push.createMessage("您有一条新的短消息：" + data.data[i].message);
+							plus.push.createMessage("您有一条新的短消息: " + data.data[i].message);
 						}
 					} 
+					app.getMessageList({"token": JSON.parse(localCache).token.toString()}, function(){});
 				}, function(){});
 				
 				
@@ -365,6 +367,7 @@
 			function openMessage(){
 				bindMessageClick = 1;
 				console.log("推送消息被点击!")
+				if(plus.webview.getWebviewById("messages") != null) plus.webview.getWebviewById("messages").close();
 				mui.openWindow({
                     url: "/html/messages.html",
                     id: "messages",
@@ -372,7 +375,8 @@
                     waiting: {
                         autoShow: true,
                       title:'正在加载...'
-                    }
+                    },
+                    createNew: true
                 });
 			}
 		</script>

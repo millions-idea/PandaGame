@@ -369,7 +369,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
             // 计算差多少分钟
             long min = diff % nd % nh / nm;
 
-            if(min < 180) throw new MsgException("限隔180分钟领取一次~");
+            if(hour <= 3) throw new MsgException("限隔180分钟领取一次~");
         }
 
 

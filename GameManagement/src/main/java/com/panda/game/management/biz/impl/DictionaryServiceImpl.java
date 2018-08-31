@@ -9,18 +9,27 @@ package com.panda.game.management.biz.impl;
 
 import com.panda.game.management.biz.IDictionaryService;
 import com.panda.game.management.entity.DataDictionary;
+import com.panda.game.management.entity.DynamicConfiguration;
 import com.panda.game.management.entity.db.Dictionary;
 import com.panda.game.management.entity.resp.GroupInformation;
+import com.panda.game.management.exception.InfoException;
+import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.repository.DictionaryMapper;
+import com.panda.game.management.utils.QRCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implements IDictionaryService {
     private final DictionaryMapper dictionaryMapper;
+    @Autowired
+    private DynamicConfiguration dynamicConfiguration;
 
     @Autowired
     public DictionaryServiceImpl(DictionaryMapper dictionaryMapper) {
@@ -76,6 +85,55 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
 
         String consumeServiceHtml = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("my.consume.service.html")).findFirst().get().getValue();
         groupInformation.setConsumeServiceHtml(consumeServiceHtml);
+
+        String payQCodeUrl = dynamicConfiguration.getDomain() + "/images/upload/" + DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("finance.pays.qrcode.image")).findFirst().get().getValue();
+        groupInformation.setPayQRCodeUrl(payQCodeUrl);
+
+        String payCode = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("finance.pays.qrcode.payCode")).findFirst().get().getValue();
+        groupInformation.setPayCode(payCode);
         return groupInformation;
+    }
+
+    /**
+     * 上传二维码 韦德 2018年8月31日13:31:29
+     *
+     * @param url
+     */
+    @Override
+    @Transactional
+    public void updateQRCode(String url) {
+        Dictionary dictionary = DataDictionary.DATA_DICTIONARY.get("finance.pays.qrcode.image");
+        int count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), url);
+        if(count == 0) throw new MsgException("更新二维码失败");
+
+        dictionary = DataDictionary.DATA_DICTIONARY.get("finance.pays.qrcode.payCode");
+        String absPath = Thread.currentThread().getContextClassLoader().getResource("").getFile();
+        String path = absPath.substring(1, absPath.length()) + "static/images/upload/" + url;
+        String payCode = null;
+        try {
+            payCode = QRCodeUtil.decode(path);
+        } catch (Exception e) {
+            System.err.println(e);
+            throw new InfoException("解析二维码失败");
+        }
+        payCode = payCode.substring(22, payCode.length());
+        count = 0;
+        count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), payCode);
+        if(count == 0) throw new MsgException("更新二维条码失败");
+    }
+
+    /**
+     * 刷新本地字典 韦德 2018年8月31日13:46:02
+     */
+    @Override
+    public void refresh() {
+        List<Dictionary> list = this.getList();
+        if(list != null  && !list.isEmpty()){
+            List<Dictionary> dictionaryList = list;
+            DataDictionary.DATA_DICTIONARY.clear();
+            Map<String,Dictionary> dataDictionaryList = new HashMap<>();
+            dictionaryList.forEach(dictionary -> dataDictionaryList.put(dictionary.getKey() , dictionary));
+            DataDictionary.DATA_DICTIONARY = dataDictionaryList;
+        }
     }
 }

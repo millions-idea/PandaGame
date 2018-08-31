@@ -7,6 +7,12 @@
  */
 package com.panda.game.management.entity;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
+
+
 public interface Constant {
     /**
      * 信息RSA公钥
@@ -40,4 +46,25 @@ public interface Constant {
      * 系统账户id
      */
     Integer SYSTEM_ACCOUNTS_ID = 1;
+
+
+
+
+    /**
+     * 允许上传的文件类型
+     */
+    String[] FILE_TYPES = {
+            "jpg",
+            "png"
+    };
+
+    /**
+     * 允许上传的MIME文件类型
+     */
+    String[] MIME_TYPES = {
+            "image/png",
+            "image/jpeg"
+    };
+
+
 }

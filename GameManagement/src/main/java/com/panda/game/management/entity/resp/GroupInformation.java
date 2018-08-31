@@ -27,4 +27,6 @@ public class GroupInformation {
     private String centerBottomAdDesc;
     private String centerBottomAdQCode;
     private String consumeServiceHtml;
+    private String payQRCodeUrl;
+    private String payCode;
 }

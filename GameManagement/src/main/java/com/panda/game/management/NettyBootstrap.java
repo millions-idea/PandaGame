@@ -20,7 +20,7 @@ public class NettyBootstrap implements ApplicationListener<ContextRefreshedEvent
             try{
                 WSServer.getInstance().start();
             }catch (Exception e){
-                System.err.println("Netty start faild!");
+                System.err.println("Netty start failing!");
                 System.err.println(e);
             }
         }

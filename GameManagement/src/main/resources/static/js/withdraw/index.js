@@ -220,7 +220,15 @@ function getTableColumns() {
             }}
         , {fixed: 'right', field: 'remark', title: '摘要(可编辑)', edit:"text", width: 240}
         , {fixed: 'right', field: 'channelRecordId', title: '交易号(可编辑)', edit:"text", width: 240}
-        , {fixed: 'right',title: '操作', width: 180, align: 'center', toolbar: '#barOption'}
+        , {fixed: 'right',title: '操作', width: 180, align: 'center', templet: function (d) {
+                if(d.state == 0){
+                    var html = " <a name=\"item-view\" class=\"layui-btn layui-btn layui-btn-sm\" lay-event=\"ok\">审批通过</a>\n" +
+                        "        <a name=\"item-edit\" class=\"layui-btn layui-btn layui-btn-sm layui-btn-danger\" lay-event=\"pass\">拒绝</a>";
+                    return html;
+                }else {
+                    return "-";
+                }
+            }}
     ]];
 }
 

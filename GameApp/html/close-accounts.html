@@ -48,7 +48,7 @@
 						
 					<!--grade begin-->
 					<div class="form-item form-item-full">
-						<input type="number" class="form-input" id="grade" maxlength="8" placeholder="请输入战绩" value="632"/>
+						<input type="number" class="form-input" id="grade" maxlength="8" placeholder="请输入战绩" value=""/>
 					</div>
 					<!--grade end-->
 					
@@ -107,6 +107,11 @@
 						
 						var type = doc.getElementById("type").value;
 						var gradeValue = grade.value;
+						if(doc.getElementById("grade").value == null || doc.getElementById("grade").value.length == 0) {
+							toCloseAccountsButton.disabled = false;
+							toCloseAccountsButton.classList.remove("disabled");
+							return plus.nativeUI.toast("请输入成绩");
+						}
 						if(type == 1) gradeValue = gradeValue - (gradeValue * 2)
 						
 						console.log("成绩:" + parseFloat(gradeValue))

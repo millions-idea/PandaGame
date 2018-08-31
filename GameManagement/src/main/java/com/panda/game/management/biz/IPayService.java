@@ -52,7 +52,7 @@ public interface IPayService extends IBaseService<Pays> {
      *
      * @param payParam
      */
-    void recharge(PayParam payParam);
+    Long recharge(PayParam payParam);
 
     /**
      * 获取不可用余额 韦德 2018年8月21日15:50:04

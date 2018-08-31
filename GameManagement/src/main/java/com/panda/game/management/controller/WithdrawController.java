@@ -13,7 +13,6 @@ import com.panda.game.management.entity.JsonArrayResult;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.Messages;
 import com.panda.game.management.entity.db.Withdraw;
-import com.panda.game.management.entity.dbExt.SettlementDetailInfo;
 import com.panda.game.management.entity.dbExt.WithdrawDetailInfo;
 import com.panda.game.management.entity.resp.WithdrawResp;
 import com.panda.game.management.facade.FinanceFacadeService;

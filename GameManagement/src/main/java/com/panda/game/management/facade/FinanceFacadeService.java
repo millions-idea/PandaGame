@@ -7,6 +7,7 @@
  */
 package com.panda.game.management.facade;
 
+import com.panda.game.management.entity.db.Recharge;
 import com.panda.game.management.entity.db.Withdraw;
 
 public interface FinanceFacadeService {
@@ -25,5 +26,19 @@ public interface FinanceFacadeService {
      * @return
      */
     boolean confirmWithdraw(Withdraw withdraw);
+
+
+    /**
+     * 充值审批 韦德 2018年8月21日10:42:23
+     * @return
+     */
+    boolean confirmRecharge(Recharge recharge);
+
+    /**
+     * 充值 韦德 2018年8月31日18:14:50
+     * @param token
+     * @param amount
+     */
+    void addRecharge(String token, Double amount);
 
 }

@@ -14,50 +14,14 @@
 <body>
 
 <th:block layout:fragment="current_page">
-    <a><cite>电商品牌服务管理</cite></a>
+    <a><cite>控制台</cite></a>
 </th:block>
 
 <th:block layout:fragment="body">
-   <div class="layui-row">
-       <!--选项卡-->
-       <div class="layui-tab layui-tab-card layui-col-md12" style="min-height: 770px">
-           <ul id="tab-channel" class="layui-tab-title" lay-filter="tab-goods">
-               <li class="layui-this">品牌电商</li>
-           </ul>
-           <div class="layui-tab-content" style="height: 100px;padding: 20px">
-               <!--主体 begin-->
-               <div class="layui-tab-item layui-show">
-                   <!-- 工具集 -->
-                   <div class="my-btn-box">
-                    <span class="fl">
-                        <a id="my-data-table-delete" class="layui-btn layui-btn-danger radius btn-delect">批量删除</a>
-                        <a id="my-data-table-add" class="layui-btn btn-add btn-default" >添加</a>
-                        <a class="layui-btn btn-add btn-default" id="btn-refresh-my-data-table"><i class="layui-icon layui-icon-refresh"></i></a>
-                    </span>
-                       <span class="fr">
-                        <span class="layui-form-label">搜索条件：</span>
-                        <div class="layui-input-inline">
-                            <input id="my-data-table-condition" type="text" autocomplete="off" placeholder="请输入搜索条件" class="layui-input">
-                        </div>
-                        <button id="my-data-table-query" class="layui-btn mgl-20">查询</button>
-                    </span>
-                   </div>
-                   <!-- 表格 -->
-                   <div id="my-data-table" class="my-data-table" lay-filter="my-data-table"></div>
-               </div>
-               <!--主体 end-->
-           </div>
-       </div>
-   </div>
-
+    <img th:src="@{/images/welcome.png}">
 </th:block>
 <th:block layout:fragment="free_footer">
-    <!-- 表格操作按钮集 -->
-    <script type="text/html" id="barOption">
-        <a name="item-view" class="layui-btn layui-btn layui-btn-xs" lay-event="detail">查看</a>
-        <a name="item-edit" class="layui-btn layui-btn layui-btn-xs layui-btn-normal" lay-event="edit">编辑</a>
-        <a name="item-remove" class="layui-btn layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
-    </script>
+
 </th:block>
 </body>
 </html>

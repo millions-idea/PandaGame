@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'支付管理-' + ${title}"></title>
+    <link rel="stylesheet" th:href="@{/css/config/pay.css}">
+    <style>
+        .my-view{
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<th:block layout:fragment="current_page">
+    <a><cite>支付管理</cite></a>
+</th:block>
+
+<th:block layout:fragment="body">
+    <div class="layui-form layui-form-pane my-view layui-row layui-col-md5" xmlns:th="http://www.thymeleaf.org">
+        <div class="layui-form-item">
+            <div class="layui-card">
+                <div class="layui-card-header">支付宝收款码预览</div>
+                <div class="layui-card-body">
+                    <img th:src="${qrcode}" class="qrcode">
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-card">
+                <div class="layui-card-header">上传新的二维码</div>
+                <div class="layui-card-body">
+                    <div class="layui-upload-drag" id="test10">
+                        <i class="layui-icon"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</th:block>
+<th:block layout:fragment="free_footer">
+    <script type="text/javascript" th:src="@{/js/common/jsencrypt.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common/base64.js}"></script>
+    <script type="text/javascript" th:src="@{/js/finance/recharge.js}"></script>
+
+    <script>
+        layui.use('upload', function(){
+            var $ = layui.jquery
+                ,upload = layui.upload;
+
+            //拖拽上传
+            upload.render({
+                elem: '#test10'
+                ,url: '/management/file/upload'
+                ,done: function(data){
+                    if(utils.response.isErrorByCode(data)) return layer.msg("上传失败");
+                    if(utils.response.isException(data)) return layer.msg(data.msg);
+                    $.get("/management/config/updateQRCode", {
+                        url: data.msg
+                    }, function (data) {
+                        if(utils.response.isErrorByCode(data)) return layer.msg("更新失败");
+                        if(utils.response.isException(data)) return layer.msg(data.msg);
+                        location.reload();
+                    })
+                }
+            });
+        });
+
+    </script>
+
+</th:block>
+</body>
+</html>

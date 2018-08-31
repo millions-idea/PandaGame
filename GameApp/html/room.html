@@ -21,8 +21,8 @@
 			</ul>
 			<script id="template" type="text/html">
 				{{each list as item index}}
-					<li name="room-item"  class="mui-table-view-cell mui-media" data-code="{{item.roomCode}}" data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
-				        <a href="javascript:;" name="item" data-code="{{item.roomCode}}"  data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
+					<li name="room-item"  class="mui-table-view-cell mui-media" data-status="{{item.status}}"  data-code="{{item.roomCode}}" data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
+				        <a href="javascript:;" name="item" data-status="{{item.status}}" data-code="{{item.roomCode}}"  data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
 				            <img class="mui-media-object mui-pull-left" src="../images/house.png">
 				            <div class="mui-media-body">
 		                		{{item.name}}
@@ -157,7 +157,9 @@
 							var roomCode = this.getAttribute("data-code");
 							var name =this.getAttribute("data-name"); 
 							var externalRoomId =this.getAttribute("data-externalRoomId"); 
+							var status =this.getAttribute("data-status"); 
 										
+							if(status == 4) return plus.nativeUI.toast("游戏已结束！请等待结算");
 							// 构建聊天业务CHAT
 							wss.initRoom(roomCode, externalRoomId, name); 
 						});

@@ -21,6 +21,7 @@ import com.panda.game.management.facade.UserFacadeService;
 import com.panda.game.management.utils.MD5Util;
 import com.panda.game.management.utils.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -116,6 +117,7 @@ public class BootstrapApiController {
      * @return
      */
     @GetMapping("/getMessageList")
+    @Transactional
     public JsonArrayResult<Messages> getMessageList(String token){
         List<Messages> list = messageService.getMessageList(token);
         messageService.batchMarkRead(list);

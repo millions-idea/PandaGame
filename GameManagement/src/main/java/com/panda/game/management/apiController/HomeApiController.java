@@ -42,6 +42,8 @@ public class HomeApiController {
     private IWithdrawService withdrawService;
     @Autowired
     private FinanceFacadeService financeFacadeService;
+    @Autowired
+    private IRechargeService rechargeService;
 
     @GetMapping("/getLevelSubareas")
     public JsonArrayResult<Subareas> getLevelSubareas(){
@@ -69,24 +71,15 @@ public class HomeApiController {
 
     @PostMapping("/recharge")
     public JsonResult recharge(String token, Double amount){
-        // 加载用户信息
-        Map<String, String> map = TokenUtil.validate(token);
-        if(map.isEmpty()) JsonResult.failing();
-        String userId = map.get("userId");
-        if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
-
-        // 转账
-        PayParam payParam = new PayParam();
-        payParam.setFromUid(Constant.SYSTEM_ACCOUNTS_ID);
-        payParam.setToUid(Integer.valueOf(userId));
-        payParam.setAmount(amount);
-        payService.transfer(payParam);
+        //financeFacadeService.addRecharge(token, amount);
+        rechargeService.add(token, amount, 0L);
         return JsonResult.successful();
     }
 
     @PostMapping("/withdraw")
     public JsonResult withdraw(String token, Double amount){
-        financeFacadeService.addWithdraw(token, amount);
+        //financeFacadeService.addWithdraw(token, amount);
+        withdrawService.addWithdraw(token ,amount, 0L);
         return JsonResult.successful();
     }
 

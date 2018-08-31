@@ -191,7 +191,7 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
     @Override
     @Transactional
     @AspectLog(description = "R转账")
-    public void recharge(PayParam payParam) {
+    public Long recharge(PayParam payParam) {
         // 查询交易主体信息
         List<UserDetailInfo> userDetailInfoList = this.getUsersInfo(payParam);
         UserDetailInfo fromUserInfo = userDetailInfoList.stream().filter(u -> u.getUserId().equals(payParam.getFromUid())).findFirst().get();
@@ -230,6 +230,7 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
         if(count == 0) throw new InfoException("生成往来账失败");
 
         System.out.println("交易成功");
+        return payParam.getSystemRecordId();
     }
 
     /**

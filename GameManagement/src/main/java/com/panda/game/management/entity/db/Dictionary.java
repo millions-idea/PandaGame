@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.SelectKey;
 import org.springframework.data.annotation.TypeAlias;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Table(name = "tb_dictionary")
@@ -21,6 +22,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Dictionary {
+    @Id
     private Integer dictionaryId;
     @Column(name = "`key`")
     private String key;

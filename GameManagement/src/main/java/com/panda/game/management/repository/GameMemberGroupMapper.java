@@ -62,6 +62,15 @@ public interface GameMemberGroupMapper extends MyMapper<GameMemberGroup> {
      */
     List<GameMemberGroup> getListByRoom(@Param("roomCode") Long roomCode);
 
+    @Select("SELECT t1.*,t2.* FROM tb_game_member_group t1\n" +
+            "LEFT JOIN tb_game_room t2 ON t1.room_code = t2.room_code WHERE t1.user_id = #{userId} AND (t2.status != 5 AND t1.is_confirm != 0)")
+    /**
+     * 查询未结束的游戏房间 韦德 2018年8月21日17:34:15
+     * @param userId
+     * @return
+     */
+    List<GameMemberGroup> selectGoodRoomList(@Param("userId") Integer userId);
+
     @Select("SELECT * FROM tb_game_member_group WHERE user_id = #{userId} AND is_confirm = 0 AND exit_time IS NULL")
     /**
      * 查询未结束的游戏房间 韦德 2018年8月21日17:34:15

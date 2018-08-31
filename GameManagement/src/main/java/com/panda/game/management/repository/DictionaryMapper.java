@@ -11,6 +11,7 @@ import com.panda.game.management.entity.db.Dictionary;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,4 +32,7 @@ public interface DictionaryMapper extends MyMapper<Dictionary> {
      * @return
      */
     List<Dictionary> selectByKey(@Param("likeKey") String likeKey);
+
+    @Update("UPDATE tb_dictionary SET `value`=#{url} WHERE dictionary_id=#{dictionaryId}")
+    int updateUrlById(@Param("dictionaryId") Integer dictionaryId,@Param("url") String url);
 }

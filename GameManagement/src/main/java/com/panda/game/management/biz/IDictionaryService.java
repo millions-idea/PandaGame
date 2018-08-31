@@ -17,4 +17,15 @@ public interface IDictionaryService extends IBaseService<Dictionary> {
      * @return
      */
     GroupInformation getGroupInformation();
+
+    /**
+     * 上传二维码 韦德 2018年8月31日13:31:29
+     * @param url
+     */
+    void updateQRCode(String url);
+
+    /**
+     * 刷新本地字典 韦德 2018年8月31日13:46:02
+     */
+    void refresh();
 }

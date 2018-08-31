@@ -1,3 +1,6 @@
 spring:
   profiles:
     active: dev
+
+app:
+  domain: "http://yejg8q.natappfree.cc"

@@ -92,6 +92,10 @@
 						
 						 // 匹配房间
 		                doc.getElementById("findFirstRoom").addEventListener("tap", function(){
+		                	
+							doc.getElementById("findFirstRoom").disabled = true;
+							doc.getElementById("findFirstRoom").classList.add("button-disabled");
+							
 		                	room.getLimitRoom({"subareasId": subareaId}, function(data){
 								
 								if(data.code == 500 || data.code == 300){
@@ -112,6 +116,9 @@
 							
 								// 加入房间
 								plus.nativeUI.confirm("确定要加入【" +roomCode + " - " + name+"】房间吗？", function(e){
+									doc.getElementById("findFirstRoom").disabled = false;
+									doc.getElementById("findFirstRoom").classList.remove("button-disabled");
+							
 									if(e.index == 0){
 										var localCache = plus.storage.getItem('userInfo');
 										if(localCache != null && localCache.length > 0){

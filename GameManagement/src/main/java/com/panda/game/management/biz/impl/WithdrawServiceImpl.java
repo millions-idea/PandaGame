@@ -11,15 +11,11 @@ import com.panda.game.management.biz.IWithdrawService;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.GameMemberGroup;
 import com.panda.game.management.entity.db.Withdraw;
-import com.panda.game.management.entity.dbExt.SettlementDetailInfo;
 import com.panda.game.management.entity.dbExt.UserDetailInfo;
 import com.panda.game.management.entity.dbExt.WithdrawDetailInfo;
 import com.panda.game.management.entity.resp.UserResp;
 import com.panda.game.management.exception.MsgException;
-import com.panda.game.management.repository.GameMemberGroupMapper;
-import com.panda.game.management.repository.PayMapper;
-import com.panda.game.management.repository.UserMapper;
-import com.panda.game.management.repository.WithdrawMapper;
+import com.panda.game.management.repository.*;
 import com.panda.game.management.repository.utils.ConditionUtil;
 import com.panda.game.management.utils.PropertyUtil;
 import com.panda.game.management.utils.TokenUtil;
@@ -36,13 +32,15 @@ public class WithdrawServiceImpl extends BaseServiceImpl<Withdraw> implements IW
     private final UserMapper userMapper;
     private final PayMapper payMapper;
     private final GameMemberGroupMapper gameMemberGroupMapper;
+    private final GameRoomMapper gameRoomMapper;
 
     @Autowired
-    public WithdrawServiceImpl(WithdrawMapper withdrawMapper, UserMapper userMapper, PayMapper payMapper, GameMemberGroupMapper gameMemberGroupMapper) {
+    public WithdrawServiceImpl(WithdrawMapper withdrawMapper, UserMapper userMapper, PayMapper payMapper, GameMemberGroupMapper gameMemberGroupMapper, GameRoomMapper gameRoomMapper) {
         this.withdrawMapper = withdrawMapper;
         this.userMapper = userMapper;
         this.payMapper = payMapper;
         this.gameMemberGroupMapper = gameMemberGroupMapper;
+        this.gameRoomMapper = gameRoomMapper;
     }
 
 
@@ -68,8 +66,10 @@ public class WithdrawServiceImpl extends BaseServiceImpl<Withdraw> implements IW
         userResp.setToken(token);
 
         // 查询账户资金是否被冻结
+        List<GameMemberGroup> memberGroupList = gameMemberGroupMapper.selectGoodRoomList(userInfo.getUserId());
         List<GameMemberGroup> gameMemberGroupList =  gameMemberGroupMapper.selectByUid(userInfo.getUserId());
-        if(gameMemberGroupList != null && gameMemberGroupList.size() > 0) throw new MsgException("您有正在参与的游戏，暂时不可以提现！");
+        if((memberGroupList != null && memberGroupList.size() > 0)
+               || (gameMemberGroupList != null && gameMemberGroupList.size() > 0)) throw new MsgException("您有未结算的游戏，暂时不可以提现！");
 
         // 查询可提现余额
         Double withdrawAmount = payMapper.selectWithdrawAmount(Integer.valueOf(userId),  "新用户注册奖励");
