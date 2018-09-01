@@ -35,4 +35,5 @@ public interface DictionaryMapper extends MyMapper<Dictionary> {
 
     @Update("UPDATE tb_dictionary SET `value`=#{url} WHERE dictionary_id=#{dictionaryId}")
     int updateUrlById(@Param("dictionaryId") Integer dictionaryId,@Param("url") String url);
+
 }

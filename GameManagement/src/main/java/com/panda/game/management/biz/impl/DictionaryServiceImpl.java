@@ -136,4 +136,16 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
             DataDictionary.DATA_DICTIONARY = dataDictionaryList;
         }
     }
+
+    /**
+     * 更新联系方式 韦德 2018年9月2日01:44:08
+     *
+     * @param html
+     */
+    @Override
+    public void updateConsumeServiceHtml(String html) {
+        Dictionary dictionary = DataDictionary.DATA_DICTIONARY.get("my.consume.service.html");
+        int count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), html);
+        if(count == 0) throw new MsgException("更新失败");
+    }
 }

@@ -28,4 +28,10 @@ public interface IDictionaryService extends IBaseService<Dictionary> {
      * 刷新本地字典 韦德 2018年8月31日13:46:02
      */
     void refresh();
+
+    /**
+     * 更新联系方式 韦德 2018年9月2日01:44:08
+     * @param html
+     */
+    void updateConsumeServiceHtml(String html);
 }

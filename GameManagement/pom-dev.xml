@@ -263,7 +263,7 @@
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<configuration>
-						<mainClass>com.panda.game.management.ManagementTomcatApplication</mainClass>
+						<mainClass>com.panda.game.management.ManagementApplication</mainClass>
 					</configuration>
 				</plugin>
 			</plugin>

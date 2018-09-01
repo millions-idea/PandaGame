@@ -2,10 +2,10 @@
 	
 	window.config = {
 		title: "宜乐对战",
-		/*api: "http://193.112.151.148:59845/",
-		wss: "ws://193.112.151.148:8088/ws",*/
-		api: "http://bcnwwk.natappfree.cc/",
-		wss: "ws://192.168.1.103:8088/ws",
+		api: "http://193.112.151.148:59845/",
+		wss: "ws://193.112.151.148:8088/ws",
+		/*api: "http://bcnwwk.natappfree.cc/",
+		wss: "ws://192.168.1.103:8088/ws",*/
 		pages: [{
 			id: "home",
 			url: "html/home.html",

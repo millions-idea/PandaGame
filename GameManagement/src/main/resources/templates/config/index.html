@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'基础设置-' + ${title}"></title>
+    <style>
+        .my-view{
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<th:block layout:fragment="current_page">
+    <a><cite>基础设置</cite></a>
+</th:block>
+
+<th:block layout:fragment="body">
+
+    <div class="layui-form layui-form-pane my-view layui-row layui-col-md5" xmlns:th="http://www.thymeleaf.org">
+
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">联系方式</label>
+            <div class="layui-input-block">
+                <textarea id="consumeServiceHtml" placeholder="请编辑联系方式" th:text="${consumeServiceHtml}" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item ">
+            <button lay-submit lay-filter="my-form" class="layui-btn layui-btn layui-btn-warm" style="float: left;">保存</button>
+        </div>
+    </div>
+
+</th:block>
+<th:block layout:fragment="free_footer">
+    <script>
+        layui.use(['form'], function(){
+            var form = layui.form,
+                layer = layui.layer;
+
+            // 表单提交验证
+            form.on('submit(my-form)',function(data){
+                var consumeServiceHtml = $('#consumeServiceHtml').val();
+
+                $.post("/management/config/updateConsumeServiceHtml",{
+                    html: consumeServiceHtml
+                }, function (data) {
+                    if(!isNaN(data.error) || data.code != 200) {
+                        layer.msg("更新失败");
+                        return;
+                    }
+                    layer.closeAll();
+                    layer.msg("更新成功");
+                })
+
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            });
+            form.render();
+        });
+
+    </script>
+
+</th:block>
+</body>
+</html>
