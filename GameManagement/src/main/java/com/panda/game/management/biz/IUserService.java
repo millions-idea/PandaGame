@@ -130,4 +130,11 @@ public interface IUserService extends IBaseService<Users> {
     int updateAvailability(Users users);
 
     int changeBalance(String username, Double amount);
+
+    /**
+     * 绑定财务账户 韦德 2018年9月2日00:57:46
+     * @param token
+     * @param account
+     */
+    void bindFinanceAccount(String token, String account);
 }

@@ -48,4 +48,17 @@ public class UserApiController {
         IUserService.editPassword(token, password, newPassword);
         return new JsonResult<>().successful();
     }
+
+
+    @PostMapping("/bindFinanceAccount")
+    /**
+     * 绑定财务账户 韦德 2018年8月17日00:34:25
+     * @param token
+     * @param account
+     * @return
+     */
+    public JsonResult bindFinanceAccount(String token, String account){
+        IUserService.bindFinanceAccount(token, account);
+        return JsonResult.successful();
+    }
 }

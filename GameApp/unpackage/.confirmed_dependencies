@@ -95,5 +95,10 @@
 			"html/new-room.html"
 		],
 		"resources": []
+	},
+	"html/withdraw.html": {
+		"refer": [
+			"html/bind-finance-account.html"
+		]
 	}
 }

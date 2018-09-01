@@ -22,12 +22,15 @@
 		 	<div class="form-placeholder-50"></div>
 
 			<div class="form-item">
-				<label style="color:red">* 请备注上自己注册时用的手机号</label>
+				<label style="color:red;font-size: 14px;">转账时请在转账备注下填写注册的手机号</label>
 		 		<div class="form-placeholder-30"></div>
 		 		<div class="form-item form-item-full">
 					<input type="number" class="form-input" id="amount" style="text-align: center;"  maxlength="8" placeholder="请输入充值金额" value=""/>
 				</div>
 				<button id='alipayButton' class="mui-btn mui-btn-block mui-btn-orange">去支付宝充值</button>
+		 		<div class="form-placeholder-20"></div>
+				<button id='payButton' class="mui-btn mui-btn-block mui-btn-orange">我已充值</button>
+				<!--<a id="alipayButton" class="mui-btn mui-btn-block mui-btn-orange" style="color:#fff" href="alipays://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/FKX01971FVU2LCLFRYARF4">去支付宝充值</a>-->
 			</div>
 			
 			<div class="form-placeholder-20"></div>
@@ -73,12 +76,15 @@
 					
 					
 					plus.webview.currentWebview().addEventListener("show", function(){
-						console.log("支付二维码：" + groupInfo.payQRCodeUrl)
 						doc.getElementById("qcode").src = groupInfo.payQRCodeUrl;
+						 
 					})
-					
-					doc.getElementById("alipayButton").addEventListener("tap",function(){
-						if(document.getElementById("amount").value == null || document.getElementById("amount").value.length == 0) return plus.nativeUI.toast("请输入充值金额"); 
+							
+					doc.getElementById("payButton").addEventListener("tap",function(){
+						if(document.getElementById("amount").value == null || document.getElementById("amount").value.length == 0) {
+							plus.nativeUI.closeWaiting();
+							return plus.nativeUI.toast("请输入充值金额"); 
+						}
 						
 						var localCache = plus.storage.getItem('userInfo');
 						if(localCache == null || localCache.length == 0) return plus.nativeUI.toast("请重新登录"); 
@@ -86,7 +92,7 @@
 							"token": JSON.parse(localCache).token.toString(),
 							"amount": parseFloat(document.getElementById("amount").value) 
 						};
-							
+						plus.nativeUI.showWaiting( "正在核对金额……" );
 						
 						home.recharge(param, function(data){
 							if(data.code == 500 || data.code == 300){
@@ -99,10 +105,7 @@
 								return false;
 							}
 							
-							plus.nativeUI.showWaiting( "准备前往支付页面……" );
-							console.log(groupInfo.payCode)
-							var urlCode = groupInfo.payCode;
-							var url = "intent://platformapi/startapp?saId=10000007&" +
+							/*var url = "intent://platformapi/startapp?saId=10000007&" +
 				            "clientVersion=3.7.0.0718&qrcode=https%3A%2F%2Fqr.alipay.com%2F" + urlCode + "%3F_s" +
 				            "%3Dweb-other&_t=1472443966571#Intent;" +
 				            "scheme=alipayqr;package=com.eg.android.AlipayGphone;end";
@@ -116,13 +119,35 @@
 							var Uri = plus.android.importClass("android.net.Uri");
 							var Intent = plus.android.importClass("android.content.Intent");
 							var callIntent = Intent.parseUri(url,Intent.URI_INTENT_SCHEME);
-							plus.android.runtimeMainActivity().startActivity(callIntent);
+							plus.android.runtimeMainActivity().startActivity(callIntent);*/
+							
+							plus.nativeUI.toast("已通知客服，审核后会给您发送短消息！");
+							
 							plus.nativeUI.closeWaiting();
 							
-							
+							 
 						}, function(){
+							plus.nativeUI.closeWaiting();
 							plus.nativeUI.toast("充值失败");
-						}) 
+							
+						})
+						
+						
+					})
+					
+						plus.nativeUI.closeWaiting();
+					
+					doc.getElementById("alipayButton").addEventListener("tap",function(){
+						
+						console.log(groupInfo.payCode)
+						var urlCode = groupInfo.payCode;
+						plus.nativeUI.showWaiting( "准备前往支付页面……" );
+						if(document.getElementById("amount").value == null || document.getElementById("amount").value.length == 0) {
+							plus.nativeUI.closeWaiting();
+							return plus.nativeUI.toast("请输入充值金额"); 
+						}
+						plus.runtime.openURL("alipays://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/" + urlCode);
+						plus.nativeUI.closeWaiting();
 					})
 					  
 					doc.getElementById("qcode").addEventListener("tap", function(){

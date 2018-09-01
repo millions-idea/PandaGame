@@ -45,5 +45,26 @@
 		})
 	}
 	
+	
+	/**
+	 * 绑定支付宝账户
+	 * @param {Object} param
+	 * @param {Object} callback
+	 * @param {Object} errorCallback
+	 */
+	owner.bindFinanceAccount = function(param, callback, errorCallback){
+		callback = callback || $.noop; 
+		$.ajax(toUrl("api/user/bindFinanceAccount"), {
+			type: "post",
+			data: param,	
+			success: function(data){
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+	}
+	
 		
 }(mui, window.my = {}));

@@ -300,6 +300,13 @@
 					"html/new-room.html"
 				],
 				"priority": 0
+			},
+			"html/withdraw.html": {
+				"resources": [],
+				"refer": [
+					"html/bind-finance-account.html"
+				],
+				"priority": 0
 			}
 		},
 		"idle": {

@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/ui.css" rel="stylesheet" />
+		<link href="../css/update-password.css" rel="stylesheet" /> 
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav my-title">
+			<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" style="color: #fff;"></a>
+			<h1 class="mui-title my-title-color">绑定支付宝</h1>
+		</header>
+		
+		
+		
+		<div class="mui-content">
+		 	<div class="form-placeholder-10"></div>
+		 	<div class="form-placeholder-5"></div>
+			
+			 
+			<div class="form-item form-item-full">
+				<input type="text" class="form-input" id="account" placeholder="请输入要绑定的支付宝账户" value=""/>
+			</div> 
+			
+			
+			<!--login button begin-->
+			<div class="form-placeholder-20"></div>
+			<div class="form-item">
+				<button id='okButton' class="mui-btn mui-btn-block mui-btn-orange">绑&nbsp;&nbsp;定</button>
+			</div>
+			<!--login button end-->
+		</div>
+		
+		
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/config.js"></script>
+		<script src="../js/app.js"></script>
+		<script src="../js/my/index.js"></script>
+		<script type="text/javascript">
+			var pages = window.config.pages;
+			
+			(function($, doc){
+				$.init({
+					statusBarStyle: "light",
+					statusBarBackground: '#fe5a2f'
+				});
+				
+				$.plusReady(function(){
+					// 设置顶部状态栏样式
+					plus.navigator.setStatusBarStyle("light");
+					plus.navigator.setStatusBarBackground("#FE532A");
+					
+					// 禁止屏幕翻转
+					plus.screen.lockOrientation("portrait-primary");
+					
+					
+					
+					var okButton = doc.getElementById("okButton"),
+						valueInput = doc.getElementById("account");
+						
+					okButton.addEventListener("tap", function(){
+						
+						if(valueInput.value == null || valueInput.length <= 0) return plus.nativeUI.toast("请输入要绑定的支付宝账户"); 
+						
+						var localCache = plus.storage.getItem('userInfo');
+						
+						if(localCache == null || localCache.length <= 0) return plus.nativeUI.toast("请重新登录"); 
+						
+						
+						okButton.disabled = true;
+						okButton.classList.add("disabled");
+						
+						my.bindFinanceAccount({
+							token: JSON.parse(localCache).token.toString(),
+							account: valueInput.value
+						}, function(data){
+							okButton.disabled = false;
+							okButton.classList.remove("disabled");
+							
+							if(data.code == 500 || data.code == 400) return plus.nativeUI.toast("绑定失败"); 
+							
+							if(data.code == 300) return plus.nativeUI.toast(data.msg);
+							
+							plus.nativeUI.toast("绑定成功"); 
+							
+							
+							for (var i = 0 ; i < pages.length ; i ++) {
+								if (i != 0) { 
+									plus.webview.hide(pages[i].id, "fade-out", 200);
+								}
+							}
+					        
+							plus.webview.getWebviewById("withdraw").close();
+							 
+							plus.webview.currentWebview().close();
+							
+							mui.openWindow({
+					            url: "/html/withdraw.html",
+					            id: "withdraw",
+					            preload: false,
+					            show: {
+									aniShow: 'pop-in',
+									duration: 200
+								},
+								styles: {
+									popGesture: 'hide'
+								},
+								waiting: {
+									title: "正在加载...",
+									autoShow: true
+								}
+					        }); 
+						})
+					}, false);
+					
+				});
+
+			})(mui, document)
+			 
+			
+			/**
+			 * 跳转登录页
+			 * @param {Object} $
+			 */
+			function toLogin($){
+				plus.storage.setItem('userInfo','');
+				plus.storage.setItem('isAutoLogin','false');
+				$.openWindow({
+					url: '/login.html',
+					id: 'login',
+					preload: true,
+					show: {
+						aniShow: 'pop-in',
+						duration: 200
+					},
+					styles: {
+						popGesture: 'hide'
+					},
+					waiting: {
+						title: "正在加载...",
+						autoShow: true
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

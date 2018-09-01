@@ -200,6 +200,9 @@ function getTableColumns() {
         , {field: 'withdrawId', title: '审批ID', width: 80, sort: true}
         , {field: 'systemRecordId', title: '流水号', width: 240, sort: true}
         , {field: 'phone', title: '手机号', width: 150}
+        , {field: 'financeId', title: '支付宝账户', width: 180, templet: function (d) {
+                return d.financeId == null ? "未绑定支付宝账户" : d.financeId;
+            }}
         , {field: 'amount', title: '金额', width: 150, templet: function (d) {
                 return "<span style='color: #c2330f;'>" + d.amount + "</span>";
             }}

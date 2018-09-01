@@ -16,9 +16,9 @@ import org.apache.ibatis.annotations.Update;
 @Mapper
 public interface WalletMapper extends MyMapper<Wallets> {
 
-    @Update("UPDATE tb_wallets SET balance = balance - #{amount}, update_time = NOW(), version = version + 1 WHERE `user_id`=#{fromUid} AND balance >= #{amount} AND version=#{version}")
+    @Update("UPDATE tb_wallets SET balance = balance - #{amount}, update_time = NOW(), version = version + 1 WHERE `user_id`=#{fromUid} AND balance > 0 AND version=#{version}")
     /**
-     * 扣减余额 韦德 2018年8月5日17:13:19
+     * 扣减余额[支持负数增长] 韦德 2018年8月5日17:13:19
      * @param formUid
      * @param amount
      * @param version

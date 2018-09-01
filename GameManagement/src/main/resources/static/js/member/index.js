@@ -247,7 +247,10 @@ function getTableColumns() {
         {type: "numbers", fixed: 'left'}
         , {field: 'userId', title: 'ID', width: 80, sort: true}
         , {field: 'phone', title: '手机号', width: 150}
-        , {field: 'pandaId', title: '熊猫麻将ID', width: 150}
+        , {field: 'financeId', title: '支付宝账户', width: 180, templet: function (d) {
+                return d.financeId == null ? "未绑定支付宝账户" : d.financeId;
+            }}
+         , {field: 'pandaId', title: '熊猫麻将ID', width: 150}
         , {field: 'ip', title: '登录IP', width: 150}
         , {field: 'phone', title: '等级', width: 150, templet: function (d) {
                 var permissionRole = "普通用户";

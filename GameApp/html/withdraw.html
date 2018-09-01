@@ -72,8 +72,7 @@
 						withdrawAmountInput = doc.getElementById("withdrawAmount"),
 						amountInput = doc.getElementById("amount");
 						
-						
-					
+						 
 					// 刷新
 					plus.webview.currentWebview().addEventListener("show", function(){
 						var localCache = plus.storage.getItem('userInfo');
@@ -97,7 +96,51 @@
 							}, function(){
 								plus.nativeUI.toast("查询可用余额失败");
 							})
+							
+							app.getUserDetailInfo(param, function(data){
+								if(data == null || data.code == null || data.code == 500 || data.code == 400) return plus.nativeUI.toast("刷新失败");
+								plus.storage.setItem('userInfo', JSON.stringify(data.msg));
+								
+								// 判断是否绑定了财务账户
+								localCache = plus.storage.getItem('userInfo');
+								if(JSON.parse(localCache).financeId == null){
+									plus.nativeUI.confirm("您还没有绑定支付宝账号，请先绑定", function(e){
+										if(e.index == 0){
+											// 打开绑定支付宝账户页面
+											mui.openWindow({
+									            url: "/html/bind-finance-account.html",
+									            id: "bind-finance-account",
+									            preload: false,
+									            show: {
+													aniShow: 'pop-in',
+													duration: 200
+												},
+												styles: {
+													popGesture: 'hide'
+												},
+												waiting: {
+													title: "正在加载...",
+													autoShow: true
+												}
+									       }); 
+									       
+									       
+										}
+									}, {
+										title: "新用户提醒",
+										buttons: [ "去绑定", "取消"]
+									});
+								}
+								
+							}, function(){
+								plus.nativeUI.toast("刷新失败，网络超时！");
+							});
+						
+							
+							
 						}
+					
+						
 					})
 						
 					withdrawButton.addEventListener("tap", function(){

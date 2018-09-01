@@ -37,6 +37,7 @@ public class Users {
     private Date updateDate;
     private String ip;
     private String pandaId;
+    private String financeId;
     private Integer isEnable;
     private Integer isDelete;
     private Integer level;

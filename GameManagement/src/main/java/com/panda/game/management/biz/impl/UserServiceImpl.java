@@ -413,6 +413,28 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserServ
         return count;
     }
 
+    /**
+     * 绑定财务账户 韦德 2018年9月2日00:57:46
+     *
+     * @param token
+     * @param account
+     */
+    @Override
+    public void bindFinanceAccount(String token, String account) {
+        Map<String, String> map = TokenUtil.validate(token);
+        if(map.isEmpty()) throw new MsgException("请重新登录");
+        Integer userId = Integer.valueOf(map.get("userId"));
+
+        Users users = userMapper.selectByPrimaryKey(userId);
+        if(users == null) throw new MsgException("用户不存在");
+
+        users.setFinanceId(account);
+        users.setUpdateDate(new Date());
+
+        int count = userMapper.updateByPrimaryKey(users);
+        if(count == 0) throw  new MsgException("绑定失败");
+    }
+
 
     /**
      * 提取分页条件

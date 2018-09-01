@@ -25,6 +25,7 @@ public class UserDetailInfo {
     private Date updateDate;
     private String ip;
     private String pandaId;
+    private String financeId;
     private Integer isEnable;
     private Integer isDelete;
 

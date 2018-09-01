@@ -32,7 +32,8 @@ public class UserResp {
     private String token;
     @JsonView(SecurityView.class)
     private String pandaId;
-
+    @JsonView(SecurityView.class)
+    private String financeId;
 
     @JsonView(FinanceView.class)
     private Double balance;

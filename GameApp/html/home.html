@@ -172,6 +172,33 @@
 					plus.screen.lockOrientation("portrait-primary");  
 					
 					
+					
+					plus.webview.currentWebview().addEventListener("show", function(){
+						console.log("页面刷新");
+						
+						
+						// 推送消息被点击
+						if(bindMessageClick == 0) {
+							console.log("注册推送消息事件");
+							
+							plus.push.addEventListener("click", function(){
+							console.log("推送消息被点击!");
+							bindMessageClick = 1;
+							if(plus.webview.getWebviewById("messages") != null) plus.webview.getWebviewById("messages").close();
+							mui.openWindow({
+			                    url: "/html/messages.html",
+			                    id: "messages",
+			                    preload: false,
+			                    waiting: {
+			                        autoShow: true,
+			                      title:'正在加载...'
+			                    },
+			                    createNew: true
+			                });
+						});
+						}
+					})
+					
 					doc.getElementById("recharge").addEventListener("tap", function(){
 						mui.openWindow({
 		                    url: "recharge.html",
@@ -237,17 +264,15 @@
 				})
 				
 			})(mui, document);
-			
-			function onClick( msg ) {
-				// Clicked push message code. 
-				console.log("Clicked push message code. " + msg);
-			}
+			 
 
 			
 			/**
 			 * 下拉刷新回调
 			 */
 			function refresh(){
+				plus.nativeUI.closeWaiting();
+				
 				var topTextAd = gDoc.getElementById("topTextAd"),
 					centerBottomAdQCode = gDoc.getElementById("centerBottomAdQCode"),
 					bottomAdTitle = gDoc.getElementById("bottomAdTitle"),
@@ -259,8 +284,6 @@
 				
 				readMessage();
 				
-				// 推送消息被点击
-				if(bindMessageClick == 0) plus.push.addEventListener("click", openMessage);
 				
 				// 加载聚合AD信息
 				home.getGroupInformation({}, function(data){
@@ -353,28 +376,11 @@
 							plus.push.createMessage("您有一条新的短消息: " + data.data[i].message);
 						}
 					} 
-					app.getMessageList({"token": JSON.parse(localCache).token.toString()}, function(){});
 				}, function(){});
 				
 				
 			}
-			
-			
-			function openMessage(){
-				bindMessageClick = 1;
-				console.log("推送消息被点击!")
-				if(plus.webview.getWebviewById("messages") != null) plus.webview.getWebviewById("messages").close();
-				mui.openWindow({
-                    url: "/html/messages.html",
-                    id: "messages",
-                    preload: false,
-                    waiting: {
-                        autoShow: true,
-                      title:'正在加载...'
-                    },
-                    createNew: true
-                });
-			}
+			 
 		</script>
 		 
 	</body>

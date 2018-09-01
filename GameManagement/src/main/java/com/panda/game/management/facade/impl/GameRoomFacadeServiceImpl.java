@@ -76,21 +76,30 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
                 // 优先扣减不可用余额
                 Double notWithdrawAmount = payService.getNotWithdrawAmount(member.getUserId());
                 if (notWithdrawAmount > price) payParam.setCurrency(1);
+                payParam.setFromUid(member.getUserId());
+                payParam.setAmount(price);
+                payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
+                payParams.add(payParam);
+
                 // 判断胜负，奖励或惩罚
                 // 赢家：80-1=+79
                 // 输家：80+1=-81
                 // 等量关系：80=战绩, 1=房费
-               SettlementDetailInfo memberSettlement = settlementList.stream().filter(settlementDetailInfo -> settlementDetailInfo.getUserId() == member.getUserId())
+                payParam = new PayParam();
+                payParam.setCurrency(0);
+                SettlementDetailInfo memberSettlement = settlementList.stream().filter(settlementDetailInfo -> settlementDetailInfo.getUserId() == member.getUserId())
                         .findFirst().get();
                 Double memberGrade = memberSettlement.getGrade();
                 // 优先扣减不可用余额
                 if(memberGrade > 0){
                     payParam.setFromUid(Constant.SYSTEM_ACCOUNTS_ID);
-                    payParam.setAmount(memberGrade - price);
+                    //payParam.setAmount(memberGrade - price);
+                    payParam.setAmount(memberGrade);
                     payParam.setToUid(member.getUserId());
                 }else{
                     payParam.setFromUid(member.getUserId());
-                    payParam.setAmount(memberGrade - memberGrade * 2 + price);
+                    //payParam.setAmount(memberGrade - memberGrade * 2 + price);
+                    payParam.setAmount(memberGrade - memberGrade * 2);
                     payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
                 }
                 payParams.add(payParam);
