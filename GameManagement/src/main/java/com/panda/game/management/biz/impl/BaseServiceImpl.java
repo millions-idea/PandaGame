@@ -13,6 +13,17 @@ import java.util.List;
 
 public abstract class BaseServiceImpl<T> implements IBaseService<T> {
     /**
+     * 获取数据 韦德 2018年8月13日13:26:57
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public T get(T param) {
+        return null;
+    }
+
+    /**
      * 获取全部数据 韦德 2018年8月13日13:26:57
      *
      * @return

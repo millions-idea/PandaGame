@@ -1,6 +1,8 @@
 package com.panda.game.management.utils;
 
 import java.io.*;
+import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class StringUtil {
@@ -97,5 +99,17 @@ public class StringUtil {
 			charr[i] = ch;
 		}
 		return new String(charr);
+	}
+
+	/**
+	 * 通过HashSet特性剔除list中重复的数据 韦德 2018年9月1日02:34:28
+	 * @param list
+	 * @return
+	 */
+	public static List removeDuplicate(List list) {
+		HashSet h = new HashSet(list);
+		list.clear();
+		list.addAll(h);
+		return list;
 	}
 }

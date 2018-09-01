@@ -40,6 +40,13 @@
                        name="amount" placeholder="￥" lay-verify="required" class="layui-input" value="" style="width: 190px">
             </div>
         </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">系统资金</label>
+
+            <div class="layui-input-block">
+                <input type="checkbox" id="isSystem" name="like[read]" title="无流水充值">
+            </div>
+        </div>
         <div class="layui-form-item ">
             <button lay-submit lay-filter="my-form" class="layui-btn layui-btn layui-btn-warm" style="float: left;width: 300px">充值</button>
         </div>
@@ -60,18 +67,38 @@
             form.on('submit(my-form)',function(data){
                 var username = $('#username').val(),
                     amount = $('#amount').val();
-                service.recharge({
-                    username: username,
-                    amount: amount,
-                    sign: service.getSign("username=" + username + "&amount=" + amount)
-                }, function (data) {
-                    if(!isNaN(data.error) || data.code != 200) {
-                        layer.msg("充值失败");
-                        return;
-                    }
-                    layer.closeAll();
-                    layer.msg("充值成功");
-                })
+
+                var isSystem = $("#isSystem").prop("checked");
+
+                if(!isSystem){
+                    service.recharge({
+                        username: username,
+                        amount: amount,
+                        sign: service.getSign("username=" + username + "&amount=" + amount)
+                    }, function (data) {
+                        if(!isNaN(data.error) || data.code != 200) {
+                            layer.msg("充值失败");
+                            return;
+                        }
+                        layer.closeAll();
+                        layer.msg("充值成功");
+                    })
+                }else{
+                    service.changeBalance({
+                        username: username,
+                        amount: amount,
+                        sign: service.getSign("username=" + username + "&amount=" + amount)
+                    }, function (data) {
+                        if(!isNaN(data.error) || data.code != 200) {
+                            layer.msg("充值失败");
+                            return;
+                        }
+                        layer.closeAll();
+                        layer.msg("充值成功");
+                    })
+                }
+
+
                 return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
             });
             form.render();

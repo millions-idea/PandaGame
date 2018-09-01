@@ -28,9 +28,6 @@
 						<span class="loading">系统正在加载,请稍后……</span>
 				</ul>
 				<script id="subareasTemplate" type="text/html">
-					<li id="findFirstRoom">
-							<img src="../images/find_room.png" alt="匹配房间" />
-					</li>
 					{{each list as item index}}
 					    <li name="create-room-item" data-id="{{item.subareaId}}">
 							<img src="{{item.backgroundImage}}" alt="{{item.name}}" />
@@ -89,95 +86,6 @@
 						doc.getElementById("subareas").innerHTML = html;
 						
 						
-						
-						 // 匹配房间
-		                doc.getElementById("findFirstRoom").addEventListener("tap", function(){
-		                	
-							doc.getElementById("findFirstRoom").disabled = true;
-							doc.getElementById("findFirstRoom").classList.add("button-disabled");
-							
-		                	room.getLimitRoom({"subareasId": subareaId}, function(data){
-								
-								if(data.code == 500 || data.code == 300){
-									plus.nativeUI.toast("匹配失败"); 
-									return false;
-								}
-								
-								if(data.code == 400){ 
-									plus.nativeUI.toast(data.msg);
-									return false;
-								}
-								
-
-								
-								var roomCode = data.msg.roomCode;
-								var name = data.msg.name;
-							
-							
-								// 加入房间
-								plus.nativeUI.confirm("确定要加入【" +roomCode + " - " + name+"】房间吗？", function(e){
-									doc.getElementById("findFirstRoom").disabled = false;
-									doc.getElementById("findFirstRoom").classList.remove("button-disabled");
-							
-									if(e.index == 0){
-										var localCache = plus.storage.getItem('userInfo');
-										if(localCache != null && localCache.length > 0){
-											room.joinRoom({
-												"token": JSON.parse(localCache).token.toString(),
-												"roomCode": roomCode
-											}, function(data){
-												if(data == null || data.code == null || data.code == 500  || data.code == 300){
-													plus.nativeUI.toast("加入房间失败");
-													return false;
-												}
-			                					
-			                					if(data.code == 400){
-			                						if(data.msg == "已存在") data.msg = "您已是此房间的成员";
-													plus.nativeUI.toast(data.msg);
-													return false;
-												}
-			                					
-												
-												for (var i = 0 ; i < pages.length ; i ++) {
-													if (i != 2) { 
-														plus.webview.hide(pages[i].id, "fade-out", 200);
-													}
-												}
-												
-												mui.openWindow({
-										            url: "/html/room.html",
-										            id: "room",
-										            preload: false,
-										            show: {
-														aniShow: 'pop-in',
-														duration: 200
-													},
-													styles: {
-														popGesture: 'hide'
-													},
-													waiting: {
-														title: "正在加载...",
-														autoShow: true
-													}
-										       }); 
-												
-												plus.webview.currentWebview().close();
-			                				
-											}, function(){
-												
-											});
-										}
-										
-									}
-								}, ["取消", "确定"])
-							
-							
-							}, function(){
-								
-							})
-		                })
-						
-						
 		                 //关闭等待框
 		                plus.nativeUI.closeWaiting();
 		                //显示当前页面
@@ -187,75 +95,30 @@
 		                var items = doc.getElementsByName("create-room-item");
 		                for (var i = 0; i < items.length; i++) {
 		                	items[i].addEventListener("tap", function(data){  
-		                		var id = this.getAttribute("data-id");
+		                		var itemId = this.getAttribute("data-id");
 		                		var parentAreaId = subareaId;
 		                		
-		                		$.prompt("请输入<span style='color:red'>熊猫麻将</span>房间号码</br>", "", "请输入房间号码", ['取消','确定'], function(e){
-		                			var popInput = document.querySelector('.mui-popup-input input');
-
-		                			
-		                			if(e.index == 1){
-		                				if(popInput.value.length != 6){
-		                					plus.nativeUI.toast("房间号码应为6位数字")
-		                					return false;
-		                				}
-		                				var localCache = plus.storage.getItem('userInfo');
-										if(localCache != null && localCache.length > 0){ 
-											home.createRoom({
-			                					"token": JSON.parse(localCache).token.toString(),
-			                					"parentAreaId": parentAreaId,
-			                					"subareaId": id, 
-			                					"externalRoomId": popInput.value
-			                				}, function(data){
-			                					if(data == null || data.code == null || data.code == 500  || data.code == 300){
-													plus.nativeUI.toast("创建失败");
-													return false;
-												}
-			                					
-			                					if(data.code == 400){
-													plus.nativeUI.toast(data.msg);
-													return false;
-												}
-			                					
-												plus.nativeUI.toast("创建成功");
-												 
-												
-												for (var i = 0 ; i < pages.length ; i ++) {
-													if (i != 2) { 
-														plus.webview.hide(pages[i].id, "fade-out", 200);
-													}
-												}
-												
-												mui.openWindow({
-										            url: "room.html",
-										            id: "room",
-										            preload: false,
-										            show: {
-														aniShow: 'pop-in',
-														duration: 200
-													},
-													styles: {
-														popGesture: 'hide'
-													},
-													waiting: {
-														title: "正在加载...",
-														autoShow: true
-													}
-										       }); 
-												
-												plus.webview.currentWebview().close();
-			                					
-			                				}, function(){
-												plus.nativeUI.toast("创建失败");
-			                				})
-										}
-		                				
-		                				
-		                			}
-		                		}, "div");
-	                			var popInput = document.querySelector('.mui-popup-input input');
-		                		popInput.maxLength = 6;
-		                		popInput.type = "number";
+		                		 mui.openWindow({
+						            url: "new-room.html",
+						            id: "new-room",
+						            preload: false,
+						            show: {
+										aniShow: 'pop-in',
+										duration: 200
+									},
+									styles: {
+										popGesture: 'hide'
+									},
+									waiting: {
+										title: "正在加载...",
+										autoShow: true
+									},
+									extras:{
+										"parentAreaId": parentAreaId,
+										"subareaId": itemId
+								    }
+						        }); 
+								
 
 		                	})
 		                }

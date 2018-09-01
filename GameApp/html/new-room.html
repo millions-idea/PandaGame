@@ -1,0 +1,278 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/ui.css" rel="stylesheet" />
+		<link href="../css/update-password.css" rel="stylesheet" /> 
+		<link rel="stylesheet" href="../css/home/index.css" />
+		<style>
+			.subareas{
+				    margin: 0 auto;
+				    width: 90%;
+				    cursor: pointer;
+				    list-style: none;
+				    padding: 0px;
+				    height: 100%;
+				    margin-top: 10px;
+			}
+			
+			.subareas li{
+				box-shadow: 0px 5px 10px 0px #dbdbdb;
+			}
+		</style>
+		<script src="../js/frame/template-web.js"></script>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav my-title">
+			<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" style="color: #fff;"></a>
+			<h1 class="mui-title my-title-color">创建房间</h1>
+		</header>
+		
+		
+		
+		<div class="mui-content">
+		 	<div class="form-placeholder-10"></div>
+		 	<div class="form-placeholder-5"></div>
+			
+			<ul id="subareas" class="subareas">
+				<li id="findFirstRoom">
+							<img src="../images/find_room.png" alt="匹配房间" />
+				</li>
+		     </ul>
+		     
+			<div class="form-placeholder-10"></div>
+			<div class="form-item form-item-full">
+				<input type="number" class="form-input" id="roomInput" maxlength="6"  oninput="if(value.length>6)value=value.slice(0,6)"  placeholder="请输入熊猫麻将房间号" value=""/>
+			</div>
+			
+			
+			
+			<!--login button begin-->
+			<div class="form-placeholder-10"></div>
+			<div class="form-item">
+				<button id='createButton' class="mui-btn mui-btn-block mui-btn-orange">创建新房间</button>
+			</div>
+			<!--login button end-->
+		</div>
+		
+		
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/config.js"></script>
+		<script src="../js/app.js"></script>
+		<script src="../js/wss.js"></script>
+		<script src="../js/home/index.js"></script>
+		<script src="../js/room/index.js"></script>
+		<script type="text/javascript">
+			var pages = window.config.pages;
+			
+			(function($, doc){
+				$.init({
+					statusBarStyle: "light",
+					statusBarBackground: '#fe5a2f'
+				});
+				
+				$.plusReady(function(){
+					// 设置顶部状态栏样式
+					plus.navigator.setStatusBarStyle("light");
+					plus.navigator.setStatusBarBackground("#FE532A");
+					
+					// 禁止屏幕翻转
+					plus.screen.lockOrientation("portrait-primary");
+					
+					
+					var createButtion = doc.getElementById("createButton"), 
+						roomInput = doc.getElementById("roomInput");
+						
+						
+					var self = plus.webview.currentWebview(),
+						parentAreaId = self.parentAreaId,
+						subareaId = self.subareaId;
+					
+						
+						
+					 // 匹配房间
+	                doc.getElementById("findFirstRoom").addEventListener("tap", function(){
+	                	
+						doc.getElementById("findFirstRoom").disabled = true;
+						doc.getElementById("findFirstRoom").classList.add("button-disabled");
+						
+	                	room.getLimitRoom({
+	                		"parentAreaId": parentAreaId,
+	                		"subareasId": subareaId
+	                	}, function(data){
+							
+							if(data.code == 500 || data.code == 300){
+								plus.nativeUI.toast("匹配失败"); 
+								return false;
+							}
+							
+							if(data.code == 400){ 
+								plus.nativeUI.toast(data.msg);
+								return false;
+							}
+							
+							
+							var roomCode = data.msg.roomCode;
+							var name = data.msg.name;
+						
+						
+							// 加入房间
+							plus.nativeUI.confirm("确定要加入【" +roomCode + " - " + name+"】房间吗？", function(e){
+								doc.getElementById("findFirstRoom").disabled = false;
+								doc.getElementById("findFirstRoom").classList.remove("button-disabled");
+						
+								if(e.index == 0){
+									var localCache = plus.storage.getItem('userInfo');
+									if(localCache != null && localCache.length > 0){
+										room.joinRoom({
+											"token": JSON.parse(localCache).token.toString(),
+											"roomCode": roomCode
+										}, function(data){
+											if(data == null || data.code == null || data.code == 500  || data.code == 300){
+												plus.nativeUI.toast("加入房间失败");
+												return false;
+											}
+		                					
+		                					if(data.code == 400){
+		                						if(data.msg == "已存在") data.msg = "您已是此房间的成员";
+												plus.nativeUI.toast(data.msg);
+												return false;
+											}
+		                					
+											
+											for (var i = 0 ; i < pages.length ; i ++) {
+												if (i != 2) { 
+													plus.webview.hide(pages[i].id, "fade-out", 200);
+												}
+											}
+											
+											mui.openWindow({
+									            url: "/html/room.html",
+									            id: "room",
+									            preload: false,
+									            show: {
+													aniShow: 'pop-in',
+													duration: 200
+												},
+												styles: {
+													popGesture: 'hide'
+												},
+												waiting: {
+													title: "正在加载...",
+													autoShow: true
+												}
+									       }); 
+											
+											plus.webview.currentWebview().close();
+		                				
+										}, function(){
+											
+										});
+									}
+									
+								}
+							}, ["取消", "确定"])
+						
+						
+						}, function(){
+							
+						})
+	                })
+						
+						
+					createButtion.addEventListener("tap", function(){
+						if(roomInput.value.length != 6){
+        					plus.nativeUI.toast("房间号码应为6位数字")
+        					return false;
+        				}
+        				var localCache = plus.storage.getItem('userInfo');
+						if(localCache != null && localCache.length > 0){ 
+							home.createRoom({
+            					"token": JSON.parse(localCache).token.toString(),
+            					"parentAreaId": parentAreaId,
+            					"subareaId": subareaId, 
+            					"externalRoomId": roomInput.value
+            				}, function(data){
+            					if(data == null || data.code == null || data.code == 500  || data.code == 300){
+									plus.nativeUI.toast("创建失败");
+									return false;
+								}
+            					
+            					if(data.code == 400){
+									plus.nativeUI.toast(data.msg);
+									return false;
+								}
+            					
+								plus.nativeUI.toast("创建成功");
+								 
+								
+								for (var i = 0 ; i < pages.length ; i ++) {
+									if (i != 2) { 
+										plus.webview.hide(pages[i].id, "fade-out", 200);
+									}
+								}
+								
+								mui.openWindow({
+						            url: "room.html",
+						            id: "room",
+						            preload: false,
+						            show: {
+										aniShow: 'pop-in',
+										duration: 200
+									},
+									styles: {
+										popGesture: 'hide'
+									},
+									waiting: {
+										title: "正在加载...",
+										autoShow: true
+									}
+						       }); 
+								
+								plus.webview.currentWebview().close();
+            					
+            				}, function(){
+								plus.nativeUI.toast("创建失败");
+            				})
+						}
+						  
+					}, false);
+					
+				});
+
+			})(mui, document)
+			 
+			
+			/**
+			 * 跳转登录页
+			 * @param {Object} $
+			 */
+			function toLogin($){
+				plus.storage.setItem('userInfo','');
+				plus.storage.setItem('isAutoLogin','false');
+				$.openWindow({
+					url: '/login.html',
+					id: 'login',
+					preload: true,
+					show: {
+						aniShow: 'pop-in',
+						duration: 200
+					},
+					styles: {
+						popGesture: 'hide'
+					},
+					waiting: {
+						title: "正在加载...",
+						autoShow: true
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

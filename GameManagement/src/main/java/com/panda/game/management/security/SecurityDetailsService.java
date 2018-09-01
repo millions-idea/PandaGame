@@ -8,14 +8,14 @@
 package com.panda.game.management.security;
 
 
+import com.google.common.base.Joiner;
+import com.panda.game.management.biz.IPermissionRelationService;
 import com.panda.game.management.biz.IUserService;
 import com.panda.game.management.entity.Constant;
+import com.panda.game.management.entity.db.PermissionRelation;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.exception.MsgException;
-import com.panda.game.management.utils.JsonUtil;
-import com.panda.game.management.utils.MD5Util;
-import com.panda.game.management.utils.RequestUtil;
-import com.panda.game.management.utils.ServletUtil;
+import com.panda.game.management.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Component
 public class SecurityDetailsService implements UserDetailsService {
@@ -36,6 +38,8 @@ public class SecurityDetailsService implements UserDetailsService {
     private IUserService userService;
     @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    private IPermissionRelationService permissionRelationService;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -45,11 +49,25 @@ public class SecurityDetailsService implements UserDetailsService {
         param.setPhone(username);
         param.setIp(ip);
         Users detail = userService.login(param);
-        // 检查权限
-        if(detail.getLevel() == null || detail.getLevel() != 10) throw new UsernameNotFoundException("您无权访问系统，请向有关部分申请工号！");
         // 清除缓存
-        redisTemplate.delete("accountAmount_" + Constant.SYSTEM_ACCOUNTS_ID);
-        return new SecurityUserDetails(detail, detail.getPhone(), detail.getPhone(), detail.getPassword(), AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ADMIN"));
+        try{
+            redisTemplate.delete("accountAmount_" + Constant.SYSTEM_ACCOUNTS_ID);
+        }catch (Exception e){
+            System.out.println("清除缓存失败！");
+        }
+
+        // 查询权限
+        List<PermissionRelation> permissionRelationList = permissionRelationService.getListByUid(detail.getUserId());
+
+        if(permissionRelationList == null || permissionRelationList.isEmpty()) throw new UsernameNotFoundException("您无权访问系统，请向有关部分申请工号！");
+
+        List<String> permissionRoleList = permissionRelationList.stream().map(permissionRelation -> permissionRelation.getPermissionRole()).collect(Collectors.toList());
+
+        permissionRoleList = StringUtil.removeDuplicate(permissionRoleList);
+
+        String authStrings = Joiner.on(",").join(permissionRoleList);
+
+        return new SecurityUserDetails(detail, detail.getPhone(), detail.getPhone(), detail.getPassword(), AuthorityUtils.commaSeparatedStringToAuthorityList(authStrings));
     }
 
 

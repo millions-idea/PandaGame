@@ -24,6 +24,8 @@ import com.panda.game.management.exception.FinanceException;
 import com.panda.game.management.utils.PropertyUtil;
 import com.panda.game.management.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -165,4 +168,18 @@ public class FinanceController {
         if(payService.recharge(users.getUserId(), amount)) return JsonResult.successful();
         return JsonResult.failing();
     }
+
+
+    @FinanceToken
+    @GetMapping("/pay/changeBalance")
+    @ResponseBody
+    /**
+     * 无流水充值
+     * @return
+     */
+    public JsonResult changeBalance(String username, Double amount) {
+        userService.changeBalance(username, amount);
+        return JsonResult.successful();
+    }
+
 }

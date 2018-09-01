@@ -23,7 +23,7 @@ public interface GameMemberGroupMapper extends MyMapper<GameMemberGroup> {
      */
     List<GameMemberGroup> selectByRoomCode(@Param("roomCode") Long roomCode);
 
-    @Select("SELECT * FROM tb_game_member_group WHERE room_code = #{roomCode} AND is_confirm = 0")
+    @Select("SELECT * FROM tb_game_member_group WHERE room_code = #{roomCode} AND is_confirm = 0  FOR UPDATE")
     /**
      * 根据房间号查询未结算成员列表 韦德 2018年8月20日10:36:25
      * @param roomCode

@@ -34,7 +34,7 @@
 			
 			<div class="info">
 				<p>如果没有前往支付宝支付页面<br/>请点击下面的二维码保存到相册扫一扫支付</p>
-				<img id="qcode" class="msg-content-image" src="http://yejg8q.natappfree.cc/images/upload/20180831134930861980128.png"/>
+				<img id="qcode" class="msg-content-image" src="#"/>
 				<div class="form-placeholder-10"></div>
 				<p>注意：<br/>目前充值由人工客服代理<br/>到账后会有短消息提醒您！</p> 
 				<p>遇到支付问题联系客服！</p> 
@@ -70,6 +70,12 @@
 					var self = plus.webview.currentWebview();
 					var beforeSelf = self.self;
 					var roomCode = self.room_code;
+					
+					
+					plus.webview.currentWebview().addEventListener("show", function(){
+						console.log("支付二维码：" + groupInfo.payQRCodeUrl)
+						doc.getElementById("qcode").src = groupInfo.payQRCodeUrl;
+					})
 					
 					doc.getElementById("alipayButton").addEventListener("tap",function(){
 						if(document.getElementById("amount").value == null || document.getElementById("amount").value.length == 0) return plus.nativeUI.toast("请输入充值金额"); 

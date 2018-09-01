@@ -23,6 +23,25 @@
            <div class="my-btn-box">
                <!--下拉列表-->
                <div class="layui-form">
+                   <!--days begin-->
+                   <div class="layui-inline" >
+                       <label class="layui-form-label">开始日期</label>
+                   </div>
+                   <div class="layui-inline">
+                       <input name="trade_date_begin" type="text" class="layui-input" id="date">
+                   </div>
+                   <!--days end-->
+
+
+                   <!--days begin-->
+                   <div class="layui-inline" >
+                       <label class="layui-form-label">结束日期</label>
+                   </div>
+                   <div class="layui-inline">
+                       <input name="trade_date_end" type="text" class="layui-input" id="date2">
+                   </div>
+                   <!--days end-->
+
                    <span class="fl layui-inline" style="margin-right: -20px;">
                         <a class="layui-btn btn-add btn-default" id="btn-refresh-my-data-table"><i class="layui-icon layui-icon-refresh"></i></a>
                     </span>
@@ -44,7 +63,17 @@
 
 </th:block>
 <th:block layout:fragment="free_footer">
-    <script type="text/javascript" th:src="@{/js/withdraw/index.js}"></script>
+    <!-- 表格操作按钮集 -->
+    <script type="text/html" id="barOption">
+        <a name="item-view" class="layui-btn layui-btn layui-btn-xs" lay-event="reset">重置密码</a>
+        <a name="item-edit" class="layui-btn layui-btn layui-btn-xs layui-btn-normal" lay-event="disable">冻结</a>
+        <a name="item-edit" class="layui-btn layui-btn layui-btn-xs layui-btn-primary" lay-event="enable">解冻</a>
+        <a name="item-remove" class="layui-btn layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
+        <a name="item-edit" class="layui-btn layui-btn layui-btn-xs layui-btn-warm" lay-event="renew">恢复</a>
+        <a name="item-edit" class="layui-btn layui-btn layui-btn-xs" lay-event="setService">提升为客服</a>
+        <a name="item-edit" class="layui-btn layui-btn layui-btn-xs" lay-event="setAdmin">提升为管理员</a>
+    </script>
+    <script type="text/javascript" th:src="@{/js/member/index.js}"></script>
     <script>
         layui.use(['laydate'], function(){
             var laydate = layui.laydate;

@@ -296,7 +296,8 @@
 				"resources": [],
 				"refer": [
 					"html/room-detail.html",
-					"html/room.html"
+					"html/room.html",
+					"html/new-room.html"
 				],
 				"priority": 0
 			}

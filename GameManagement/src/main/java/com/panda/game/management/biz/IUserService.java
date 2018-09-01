@@ -8,7 +8,11 @@
 package com.panda.game.management.biz;
 
 import com.panda.game.management.entity.db.Users;
+import com.panda.game.management.entity.dbExt.RechargeDetailInfo;
+import com.panda.game.management.entity.dbExt.UserDetailInfo;
 import com.panda.game.management.entity.resp.UserResp;
+
+import java.util.List;
 
 /**
  * 用户逻辑接口 韦德 2018年8月13日13:58:10
@@ -79,4 +83,51 @@ public interface IUserService extends IBaseService<Users> {
      * @return
      */
     Users getUserByUserName(String username);
+
+
+    /**
+     * 分页加载 韦德 2018年8月30日11:29:00
+     * @param page
+     * @param limit
+     * @param condition
+     * @param state
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    List<UserDetailInfo> getLimit(Integer page, String limit, String condition, Integer state, String beginTime, String endTime);
+
+    /**
+     * 加载总记录数 韦德 2018年8月30日11:29:11
+     * @return
+     */
+    Integer getCount();
+
+    /**
+     * 加载分页记录数 韦德 2018年8月30日11:29:22
+     * @param condition
+     * @param state
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    Integer getLimitCount(String condition, Integer state, String beginTime, String endTime);
+
+
+    /**
+     * 更新密码 韦德 2018年9月1日00:23:54
+     * @param users
+     */
+    int updatePassword(Users users);
+
+    /**
+     * 冻结用户 韦德 2018年9月1日00:28:07
+     * @param users
+     */
+    int updateEnable(Users users);
+
+
+    int updateAvailability(Users users);
+
+    int changeBalance(String username, Double amount);
 }

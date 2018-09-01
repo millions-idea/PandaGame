@@ -75,6 +75,8 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 			if(chatMemberList != null && chatMemberList.size() > 0)
 			    System.out.println("在线用户ID：" + Joiner.on(",").join(chatMemberList.stream().map(item->item.getSenderId()).collect(Collectors.toList())));
 
+			System.err.println(String.format("房间%s新进入游客%s", roomCode, senderId));
+
 			// 打印会话频道列表
 			UserChannelRel.output();
 		} else if (action == MsgActionEnum.CHAT.type) {
@@ -84,6 +86,8 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 			String senderId = chatMsg.getSenderId();
 			String roomCode = chatMsg.getRoomCode();
 			List<ChatMember> list = UserChannelRel.get(roomCode);
+
+			if(senderId.endsWith(",")) senderId = senderId.substring(0, senderId.length() - 1);
 
 			if(list != null && list.size() > 0){
 				List<GameMemberGroup> receiveList = list.get(0).getReceiveList();
@@ -98,8 +102,11 @@ public class ChatHandler extends SimpleChannelInboundHandler<TextWebSocketFrame>
 
 			// 发送消息
 			// 从全局用户Channel关系中获取接受方的channel
+
+			String finalSenderId = senderId;
 			list.forEach(item -> {
-			    if(!senderId.equalsIgnoreCase(item.getSenderId())) {
+				System.out.println(String.format("%s匹配%s用户在线情况", finalSenderId, item.getSenderId()));
+				if(!finalSenderId.equalsIgnoreCase(item.getSenderId())) {
                     System.out.println(String.format("向%s用户推送消息", item.getSenderId()));
                     Channel receiverChannel = item.getChannel();
                     if (receiverChannel == null) {

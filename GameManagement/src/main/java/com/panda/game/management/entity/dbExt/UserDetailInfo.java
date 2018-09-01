@@ -34,4 +34,7 @@ public class UserDetailInfo {
     private Date roomCardGetTime;
     private Date updateTime;
     private Integer version;
+
+    /*permission relation*/
+    private String permissionRole;
 }

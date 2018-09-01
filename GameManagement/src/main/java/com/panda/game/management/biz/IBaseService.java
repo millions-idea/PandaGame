@@ -11,6 +11,12 @@ import java.util.List;
 
 public interface IBaseService<T> {
     /**
+     * 获取数据 韦德 2018年8月13日13:26:57
+     * @return
+     */
+    T get(T param);
+
+    /**
      * 获取全部数据 韦德 2018年8月13日13:26:57
      * @return
      */

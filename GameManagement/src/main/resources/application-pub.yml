@@ -1,8 +1,8 @@
-#开发环境
-profiles: dev
+#生产环境
+profiles: pub
 
 app:
-  domain: "http://yejg8q.natappfree.cc"
+  domain: "http://193.112.151.148:59845"
 
 #数据库配置
 spring:
@@ -51,4 +51,4 @@ server:
 logging:
   level:
     root: info
-  #file: c:boot.log
+  file: c:boot.log

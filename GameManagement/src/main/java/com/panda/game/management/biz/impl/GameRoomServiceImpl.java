@@ -391,12 +391,13 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
     /**
      * 根据分区匹配房间 韦德 2018年8月21日17:11:02
      *
+     * @param parentAreaId
      * @param subareasId
      * @return
      */
     @Override
-    public GameRoomDetailInfo getLimitRoom(String subareasId) {
-        return gameRoomMapper.getLimitRoom(subareasId);
+    public GameRoomDetailInfo getLimitRoom(String parentAreaId, String subareasId) {
+        return gameRoomMapper.getLimitRoom(parentAreaId,subareasId);
     }
 
     /**

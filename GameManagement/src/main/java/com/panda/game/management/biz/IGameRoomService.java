@@ -77,10 +77,11 @@ public interface IGameRoomService extends IBaseService<GameRoom> {
 
     /**
      * 根据分区匹配房间 韦德 2018年8月21日17:11:02
+     * @param parentAreaId
      * @param subareasId
      * @return
      */
-    GameRoomDetailInfo getLimitRoom(String subareasId);
+    GameRoomDetailInfo getLimitRoom(String parentAreaId, String subareasId);
 
     /**
      * 查询房间人数 韦德 2018年8月24日15:48:45

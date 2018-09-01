@@ -30,6 +30,16 @@ function initService(r) {
             var encrypt = new JSEncrypt();
             encrypt.setPublicKey(pubKey);
             return encrypt.encrypt(param);
+        },
+        /**
+         * 无流水充值
+         * @param param
+         * @param callback
+         */
+        changeBalance: function (param, callback) {
+            $.get(route + "/changeBalance",param, function (data) {
+                callback(data);
+            })
         }
     }
 }

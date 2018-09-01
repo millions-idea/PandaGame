@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,24 +63,42 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
             // 扣除此房间内所有人的金币
             List<GameMemberGroup> memberList = gameMemberGroupService.getListByRoom(callback.getGameRoom().getRoomCode());
             if(memberList == null || memberList.isEmpty()) throw new InfoException("加载房间成员列表失败");
+            // 查询所有人的成绩信息
+            List<SettlementDetailInfo> settlementList = settlementService.getMemberList(roomCode);
+            if(settlementList == null || settlementList.isEmpty()) throw new InfoException("加载房间成员成绩失败");
 
 
             List<PayParam> payParams = new ArrayList<>();
             memberList.forEach(member -> {
-                Double price = callback.getSubareas().getReducePrice();
                 PayParam payParam = new PayParam();
+                // 扣除房费
+                Double price = callback.getSubareas().getReducePrice();
                 // 优先扣减不可用余额
                 Double notWithdrawAmount = payService.getNotWithdrawAmount(member.getUserId());
                 if (notWithdrawAmount > price) payParam.setCurrency(1);
-                payParam.setFromUid(member.getUserId());
-                payParam.setAmount(price);
-                payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
+                // 判断胜负，奖励或惩罚
+                // 赢家：80-1=+79
+                // 输家：80+1=-81
+                // 等量关系：80=战绩, 1=房费
+               SettlementDetailInfo memberSettlement = settlementList.stream().filter(settlementDetailInfo -> settlementDetailInfo.getUserId() == member.getUserId())
+                        .findFirst().get();
+                Double memberGrade = memberSettlement.getGrade();
+                // 优先扣减不可用余额
+                if(memberGrade > 0){
+                    payParam.setFromUid(Constant.SYSTEM_ACCOUNTS_ID);
+                    payParam.setAmount(memberGrade - price);
+                    payParam.setToUid(member.getUserId());
+                }else{
+                    payParam.setFromUid(member.getUserId());
+                    payParam.setAmount(memberGrade - memberGrade * 2 + price);
+                    payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
+                }
                 payParams.add(payParam);
+
             });
             payService.batchConsume(payParams);
 
             // 1、计算房间总成绩
-            List<SettlementDetailInfo> settlementList = settlementService.getMemberList(roomCode);
             Double countGrade = settlementList.stream().map(s -> s.getGrade()).reduce(0D, (acc, element) -> acc + element);
             if(settlementList == null || settlementList.isEmpty() || countGrade != 0) return;// 说明有人误报成绩，交给后台人工复审成绩
 

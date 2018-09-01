@@ -215,17 +215,17 @@
 							mui.confirm("确定为熊猫麻将ID为：" + JSON.parse(localCache).pandaId + "\r\n账户领取30张房卡吗？(金币>100)", "免费房卡", ["确定", "取消"], function(e){
 								if(e.index == 0){
 									
-										home.getRoomCard({
-											"token": JSON.parse(localCache).token.toString(),
-											"pandaId": JSON.parse(localCache).pandaId.toString(),
-										}, function(data){
-											if(data == null || data.code == 500 || data.code == 300) return plus.nativeUI.toast("领取失败");
-											if(data.code == 400) return plus.nativeUI.toast(data.msg);
-			
-											plus.nativeUI.toast("已提交申请，请等待客服审核！");
-										}, function(){
-											plus.nativeUI.toast("操作失败");
-										}) 
+									home.getRoomCard({
+										"token": JSON.parse(localCache).token.toString(),
+										"pandaId": JSON.parse(localCache).pandaId.toString(),
+									}, function(data){
+										if(data == null || data.code == 500 || data.code == 300) return plus.nativeUI.toast("领取失败");
+										if(data.code == 400) return plus.nativeUI.toast(data.msg);
+		
+										plus.nativeUI.toast("已提交申请，请等待客服审核！");
+									}, function(){
+										plus.nativeUI.toast("操作失败");
+									}) 
 								}
 							})
 						}else{
@@ -256,6 +256,11 @@
 					centerLeftAdDesc = gDoc.getElementById("centerLeftAdDesc"),
 					centerRightAdTitle = gDoc.getElementById("centerRightAdTitle"),
 					centerRightAdDesc = gDoc.getElementById("centerRightAdDesc");
+				
+				readMessage();
+				
+				// 推送消息被点击
+				if(bindMessageClick == 0) plus.push.addEventListener("click", openMessage);
 				
 				// 加载聚合AD信息
 				home.getGroupInformation({}, function(data){
@@ -331,16 +336,7 @@
 				},function(){
 					plus.nativeUI.toast("获取游戏分区失败");
 				});
-			
-				
-				
-				// 读取短消息通知
-				//if(getMessageTimer == null) getMessageTimer = setInterval(readMessage, 10000);
-				readMessage();
-				
-				// 推送消息被点击
-				if(bindMessageClick == 0) plus.push.addEventListener("click", openMessage);
-				
+			 
 			}
 			
 			function readMessage(){

@@ -1,10 +1,7 @@
 package com.panda.game.management;
 
 import com.panda.game.management.config.WebLogAspectConfiguration;
-import com.panda.game.management.entity.Constant;
-import com.panda.game.management.entity.DynamicConfiguration;
 import com.panda.game.management.utils.SpringApplicationContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -12,7 +9,6 @@ import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 
@@ -22,11 +18,15 @@ import javax.servlet.MultipartConfigElement;
 @EnableCaching
 @EnableAspectJAutoProxy
 @EnableAsync
-public class ManagementApplication {
+public class ManagementTomcatApplication extends SpringBootServletInitializer {
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(ManagementTomcatApplication.class);
+	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(ManagementApplication.class, args);
-		System.out.println("启动内置tomcat服务成功!");
+		SpringApplication.run(ManagementTomcatApplication.class, args);
+		System.out.println("启动外部tomcat服务成功!");
 	}
 
 	@Bean

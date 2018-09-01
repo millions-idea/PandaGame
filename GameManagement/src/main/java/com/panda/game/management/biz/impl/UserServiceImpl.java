@@ -9,15 +9,19 @@ package com.panda.game.management.biz.impl;
 
 import com.google.common.collect.ImmutableMap;
 import com.panda.game.management.biz.IUserService;
+import com.panda.game.management.entity.db.Recharge;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.db.Wallets;
+import com.panda.game.management.entity.dbExt.RechargeDetailInfo;
 import com.panda.game.management.entity.dbExt.UserDetailInfo;
 import com.panda.game.management.entity.resp.UserResp;
+import com.panda.game.management.exception.FinanceException;
 import com.panda.game.management.exception.InfoException;
 import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.repository.PayMapper;
 import com.panda.game.management.repository.UserMapper;
 import com.panda.game.management.repository.WalletMapper;
+import com.panda.game.management.repository.utils.ConditionUtil;
 import com.panda.game.management.utils.MD5Util;
 import com.panda.game.management.utils.PropertyUtil;
 import com.panda.game.management.utils.TokenUtil;
@@ -116,6 +120,84 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserServ
             return usersList.get(0);
         }
         return null;
+    }
+
+    /**
+     * 分页加载 韦德 2018年8月30日11:29:00
+     *
+     * @param page
+     * @param limit
+     * @param condition
+     * @param state
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public List<UserDetailInfo> getLimit(Integer page, String limit, String condition, Integer state, String beginTime, String endTime) {
+        // 计算分页位置
+        page = ConditionUtil.extractPageIndex(page, limit);
+        String where = extractLimitWhere(condition, state, beginTime, endTime);
+        List<UserDetailInfo> list = userMapper.selectLimit(page, limit, state, beginTime, endTime, where);
+        return list;
+    }
+
+    /**
+     * 加载总记录数 韦德 2018年8月30日11:29:11
+     *
+     * @return
+     */
+    @Override
+    public Integer getCount() {
+        return userMapper.selectCount(new Users());
+    }
+
+    /**
+     * 加载分页记录数 韦德 2018年8月30日11:29:22
+     *
+     * @param condition
+     * @param state
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public Integer getLimitCount(String condition, Integer state, String beginTime, String endTime) {
+        String where = extractLimitWhere(condition, state, beginTime, endTime);
+        return userMapper.selectLimitCount(state, beginTime, endTime, where);
+    }
+
+    /**
+     * 更新密码 韦德 2018年9月1日00:23:54
+     *
+     * @param users
+     */
+    @Override
+    public int updatePassword(Users users) {
+        Users model = userMapper.selectByPrimaryKey(users);
+        if(model == null) throw new MsgException("用户不存在");
+        model.setPassword(MD5Util.md5(model.getPhone() + users.getPassword().trim()));
+        model.setUpdateDate(new Date());
+        int count = userMapper.updateByPrimaryKey(model);
+        if(count == 0) throw new MsgException("更新失败");
+        return count;
+    }
+
+    /**
+     * 冻结用户 韦德 2018年9月1日00:28:07
+     *
+     * @param users
+     */
+    @Override
+    public int updateEnable(Users users) {
+        Users model = userMapper.selectByPrimaryKey(users);
+        if(model == null) throw new MsgException("用户不存在");
+        model.setUpdateDate(new Date());
+        model.setIsEnable(users.getIsEnable());
+        model.setIsDelete(users.getIsDelete());
+        int count = userMapper.updateByPrimaryKey(model);
+        if(count == 0) throw new MsgException("更新失败");
+        return count;
     }
 
     /**
@@ -293,5 +375,97 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserServ
         Long expire = redisTemplate.getExpire(key);
         if(expire <= 0) throw new MsgException("登录令牌失效");
         return true;
+    }
+
+    /**
+     * 删除数据 韦德 2018年8月13日13:28:16
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public int updateAvailability(Users param) {
+        Users model = userMapper.selectByPrimaryKey(param);
+        if(model == null) throw new MsgException("用户不存在");
+        /*model.setIsDelete(1);
+        model.setIsEnable(0);*/
+        model.setUpdateDate(new Date());
+        model.setIsEnable(param.getIsEnable());
+        model.setIsDelete(param.getIsDelete());
+        int count = userMapper.updateByPrimaryKey(model);
+        if(count == 0) throw new MsgException("更新失败");
+        return count;
+    }
+
+    @Override
+    @Transactional
+    public int changeBalance(String username, Double amount) {
+        Users user = this.getUserByUserName(username);
+        if(user == null) throw new MsgException("用户不存在");
+        user.setUpdateDate(new Date());
+        userMapper.updateByPrimaryKey(user);
+        Wallets wallets = walletMapper.selectByUid(user.getUserId());
+        if(wallets == null) throw new MsgException("查询钱包失败");
+        wallets.setBalance(wallets.getBalance() + amount);
+        wallets.setUpdateTime(new Date());
+        int count = walletMapper.updateByPrimaryKey(wallets);
+        if(count == 0) throw new MsgException("更新失败");
+        return count;
+    }
+
+
+    /**
+     * 提取分页条件
+     * @return
+     */
+    private String extractLimitWhere(String condition, Integer isEnable,  String beginTime, String endTime) {
+        // 查询模糊条件
+        String where = " 1=1";
+        if(condition != null) {
+            condition = condition.trim();
+            where += " AND (" + ConditionUtil.like("user_id", condition, true, "t1");
+            if (condition.split("-").length == 2){
+                where += " OR " + ConditionUtil.like("add_time", condition, true, "t1");
+                where += " OR " + ConditionUtil.like("update_time", condition, true, "t1");
+            }
+            where += " OR " + ConditionUtil.like("phone", condition, true, "t1");
+            where += " OR " + ConditionUtil.like("panda_id", condition, true, "t1") + ")";
+        }
+
+        // 查询全部数据或者只有一类数据
+        // where = extractQueryAllOrOne(isEnable, where);
+
+        // 取两个日期之间或查询指定日期
+        where = extractBetweenTime(beginTime, endTime, where);
+        return where.trim();
+    }
+
+
+    /**
+     * 提取两个日期之间的条件
+     * @return
+     */
+    private String extractBetweenTime(String beginTime, String endTime, String where) {
+        if ((beginTime != null && beginTime.contains("-")) &&
+                endTime != null && endTime.contains("-")){
+            where += " AND t1.add_date BETWEEN #{beginTime} AND #{endTime}";
+        }else if (beginTime != null && beginTime.contains("-")){
+            where += " AND t1.add_date BETWEEN #{beginTime} AND #{endTime}";
+        }else if (endTime != null && endTime.contains("-")){
+            where += " AND t1.add_date BETWEEN #{beginTime} AND #{endTime}";
+        }
+        return where;
+    }
+
+
+    /**
+     * 查询全部数据或者只有一类数据
+     * @return
+     */
+    private String extractQueryAllOrOne(Integer isEnable, String where) {
+        if (isEnable != null && isEnable != 0){
+            where += " AND t1.is_enable = #{isEnable}";
+        }
+        return where;
     }
 }

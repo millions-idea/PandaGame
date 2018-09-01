@@ -10,6 +10,7 @@ package com.panda.game.management.entity.db;
 import lombok.*;
 import tk.mybatis.mapper.annotation.Version;
 
+import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -20,6 +21,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Wallets {
+    @Id
     private Integer walletId;
     private Integer userId;
     private Double balance;
