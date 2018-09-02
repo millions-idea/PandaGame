@@ -21,7 +21,7 @@ public interface IWithdrawService extends IBaseService<Withdraw> {
      * @param amount
      * @param systemRecordId
      */
-    void addWithdraw(String token, Double amount, Long systemRecordId);
+    void addWithdraw(String token, Double withdrawAmount, Double amount, Long systemRecordId);
 
     /**
      * 根据id查询提现信息 韦德 2018年8月21日13:39:01

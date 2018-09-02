@@ -10,11 +10,13 @@ package com.panda.game.management.biz.impl;
 import com.panda.game.management.biz.ISettlementService;
 import com.panda.game.management.entity.db.Settlement;
 import com.panda.game.management.entity.dbExt.SettlementDetailInfo;
+import com.panda.game.management.exception.InfoException;
 import com.panda.game.management.repository.SettlementMapper;
 import com.panda.game.management.repository.utils.ConditionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 
@@ -81,7 +83,8 @@ public class SettlementServiceImpl extends BaseServiceImpl<Settlement> implement
      * @param roomCode
      */
     @Override
-    public void editGrade(Integer userId, Long grade, Long roomCode) {
+    @Transactional
+    public void editGrade(Integer userId, Double grade, Long roomCode) {
         settlementMapper.updateGrade(userId, grade, roomCode);
     }
 
@@ -96,6 +99,26 @@ public class SettlementServiceImpl extends BaseServiceImpl<Settlement> implement
     @Transactional
     public int updateStatusByRoomCode(Long roomCode, int status) {
         return settlementMapper.updateStatusByRoomCode(roomCode, status);
+    }
+
+    /**
+     * 根据房间id和用户id查询成绩 韦德 2018年9月2日13:26:24
+     *
+     * @param userId
+     * @param roomCode
+     */
+    @Override
+    public Settlement getMemberGrade(Integer userId, Long roomCode) {
+        Example example = new Example(Settlement.class);
+        Example.Criteria criteria = example.createCriteria();
+        Settlement settlement = new  Settlement();
+        settlement.setUserId(userId);
+        settlement.setRoomCode(roomCode);
+        criteria.andEqualTo("userId", userId);
+        criteria.andEqualTo("roomCode", roomCode);
+        Settlement result = settlementMapper.selectOneByExample(example);
+        if(result == null) throw new InfoException("查询成绩失败");
+        return result;
     }
 
 

@@ -7,46 +7,7 @@ var tableIndex;
 
     // 加载数据表
     initDataTable(route + "/getRoomCardLimit", function (form, table, layer, vipTable, tableIns) {
-        // 动态注册事件getSign
-        var $tableDelete = $("#my-data-table-delete"),
-            $tableAdd = $("#my-data-table-add");
-        $tableDelete.click(function () {
-            layer.confirm('您确定要删除这些数据？', {
-                title: "敏感操作提示",
-                btn: ['确定','取消'],
-                shade: 0.3,
-                shadeClose: true
-            },function () {
-                var data = table.checkStatus('my-data-table').data;
-                var idArr = new Array();
-                data.forEach(function (value) {
-                    idArr.push(value.business_id);
-                });
-                var param = {
-                    id: idArr.join(",")
-                };
-                service.deleteBy(param, function (data) {
-                    if(!isNaN(data.error) || data.code == 1){
-                        layer.msg("删除失败");
-                        return
-                    }
-                    layer.msg("删除成功");
-                    tableIndex.reload();
-                })
-            })
-        })
-        $tableAdd.click(function () {
-            service.getAddView(function (data) {
-                layer.open({
-                    type: 1,
-                    skin: 'layui-layer-rim',
-                    title: '添加',
-                    area: ['420px', 'auto'],
-                    shadeClose: true,
-                    content: data
-                });
-            })
-        })
+
     },function (table, res, curr, count) {
         // 监听工具条
         table.on('tool(my-data-table)', function(obj){

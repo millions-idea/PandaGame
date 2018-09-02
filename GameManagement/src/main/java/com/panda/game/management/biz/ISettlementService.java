@@ -41,12 +41,12 @@ public interface ISettlementService extends IBaseService<Settlement> {
     int getSettlementCount();
 
     /**
-     * 更新时间 韦德 2018年8月29日20:31:57
+     * 修改成绩 韦德 2018年8月29日20:31:57
      * @param userId
      * @param grade
      * @param roomCode
      */
-    void editGrade(Integer userId, Long grade, Long roomCode);
+    void editGrade(Integer userId, Double grade, Long roomCode);
 
     /**
      * 更新房间内成员状态 韦德 2018年8月29日22:11:17
@@ -55,4 +55,11 @@ public interface ISettlementService extends IBaseService<Settlement> {
      * @return
      */
     int updateStatusByRoomCode(Long roomCode, int status);
+
+    /**
+     * 根据房间id和用户id查询成绩 韦德 2018年9月2日13:26:24
+     * @param userId
+     * @param roomCode
+     */
+    Settlement getMemberGrade(Integer userId, Long roomCode);
 }

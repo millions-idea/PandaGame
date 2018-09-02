@@ -75,7 +75,7 @@ public interface SettlementMapper extends MyMapper<Settlement>{
      * @param userId
      * @param grade
      */
-    int updateGrade(@Param("userId") Integer userId, @Param("grade") Long grade, @Param("roomCode") Long roomCode);
+    int updateGrade(@Param("userId") Integer userId, @Param("grade") Double grade, @Param("roomCode") Long roomCode);
 
     @Update("UPDATE tb_settlement SET update_time=NOW(),state=#{state} WHERE room_code=#{roomCode}")
     int updateByRoomCode(Settlement settlement);

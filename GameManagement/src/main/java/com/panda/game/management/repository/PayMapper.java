@@ -14,6 +14,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper
@@ -33,23 +34,17 @@ public interface PayMapper extends  MyMapper<Pays>{
     Double selectNotWithdrawAmount(@Param("userId") Integer userId, @Param("remark") String remark);
 
 
-    @Select("SELECT \n" +
-            "after_balance \n" +
-            "- \n" +
-            "(\n" +
-            "\tSELECT \n" +
-            "\tCOALESCE(SUM(amount),0) \n" +
-            "\t- \n" +
-            "\t(SELECT COALESCE(SUM(amount),0) FROM `tb_accounts` WHERE trade_account_id = #{userId} AND currency = 1 AND accounts_type = 2)\n" +
-            "\tFROM `tb_accounts` WHERE trade_account_id = #{userId} AND accounts_type = 1 AND currency = 1 \n" +
-            ")\n" +
-            "FROM `tb_accounts` WHERE trade_account_id = #{userId} ORDER BY add_time DESC LIMIT 1;")
+    @Select("SELECT  after_balance - (" +
+            "SELECT  COALESCE(SUM(amount),0)  - (" +
+            " SELECT COALESCE(SUM(amount),0) FROM `tb_accounts` WHERE trade_account_id = #{userId} AND currency = 1 AND accounts_type = 2) " +
+            "   FROM `tb_accounts` WHERE trade_account_id = #{userId} AND accounts_type = 1 AND currency = 1 " +
+            ") FROM `tb_accounts` WHERE trade_account_id = #{userId} ORDER BY add_time DESC LIMIT 1;")
     /**
      * 统计可提现金额 韦德 2018年8月21日11:17:17
      * @param userId
      * @return
      */
-    Double selectWithdrawAmount(@Param("userId") Integer userId, @Param("remark") String remark);
+    Double selectWithdrawAmount(@Param("userId") Integer userId);
 
     @Select("SELECT t1.*,t2.phone,t3.* FROM tb_pays t1 LEFT JOIN tb_users t2 ON t1.from_uid = t2.user_id " +
             " LEFT JOIN tb_pays t3 ON t1.to_uid = t2.user_id " +

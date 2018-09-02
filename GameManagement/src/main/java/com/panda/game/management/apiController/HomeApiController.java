@@ -78,8 +78,15 @@ public class HomeApiController {
 
     @PostMapping("/withdraw")
     public JsonResult withdraw(String token, Double amount){
-        //financeFacadeService.addWithdraw(token, amount);
-        withdrawService.addWithdraw(token ,amount, 0L);
+        // 加载用户信息
+        Map<String, String> map = TokenUtil.validate(token);
+        if(map.isEmpty()) JsonResult.failing();
+        String userId = map.get("userId");
+        if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
+        //Double withdrawAmount = payService.getWithdrawAmount(Integer.valueOf(userId));
+
+        financeFacadeService.addWithdraw(token, amount);
+        //withdrawService.addWithdraw(token ,amount, 0L);
         return JsonResult.successful();
     }
 

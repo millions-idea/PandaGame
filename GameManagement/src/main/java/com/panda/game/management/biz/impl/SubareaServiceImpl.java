@@ -48,4 +48,15 @@ public class SubareaServiceImpl extends BaseServiceImpl<Subareas> implements ISu
         return subareaMapper.selectRelations(subareaId);
     }
 
+    /**
+     * 查询分区 韦德 2018年9月2日14:14:52
+     *
+     * @param areaId
+     * @return
+     */
+    @Override
+    public Subareas getSubarea(Integer areaId) {
+        return subareaMapper.selectByPrimaryKey(areaId);
+    }
+
 }

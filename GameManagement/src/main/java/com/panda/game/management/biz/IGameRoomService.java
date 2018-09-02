@@ -90,4 +90,24 @@ public interface IGameRoomService extends IBaseService<GameRoom> {
     Integer getPersonCount(String roomCode);
 
     int updateStatusByRoomCode(Long roomCode, int status);
+
+    /**
+     * 强制结算 韦德 2018年9月2日12:58:00
+     * @param roomCode
+     * @return
+     */
+    void executeCloseAccounts(Long roomCode, Consumer<GameRoomCallbackResp> callback);
+
+    /**
+     * 根据房间号查询房间 韦德 2018年9月2日14:13:30
+     * @param roomCode
+     * @return
+     */
+    GameRoom getRoom(Long roomCode);
+
+    /**
+     * 强制解散房间 韦德 2018年9月2日20:13:45
+     * @param roomCode
+     */
+    void disbandRoom(Long roomCode);
 }

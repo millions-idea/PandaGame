@@ -44,6 +44,8 @@ public class RoomController extends BaseController {
     private IRoomCardService roomCardService;
     @Autowired
     private IMessageService messageService;
+    @Autowired
+    private IGameRoomService gameRoomService;
 
     @GetMapping("/close-accounts")
     public String  closeAccounts(){
@@ -89,15 +91,16 @@ public class RoomController extends BaseController {
 
     @PostMapping("/editGrade")
     @ResponseBody
-    public JsonResult editGrade(Integer userId, Long grade, Long roomCode){
+    public JsonResult editGrade(Integer userId, Double grade, Long roomCode){
         settlementService.editGrade(userId, grade, roomCode);
+        //gameRoomFacadeService.editGrade(userId, grade, roomCode);
         return JsonResult.successful();
     }
 
     @PostMapping("/executeCloseAccounts")
     @ResponseBody
     public JsonResult executeCloseAccounts(Long roomCode){
-        gameRoomFacadeService.closeAccounts(roomCode);
+        gameRoomFacadeService.executeCloseAccounts(roomCode);
         return JsonResult.successful();
     }
 
@@ -138,6 +141,14 @@ public class RoomController extends BaseController {
     public JsonResult pass(RoomCard roomCard){
         roomCardService.pass(roomCard);
         messageService.pushMessage(new Messages(null, roomCard.getUserId(), "领取熊猫麻将30张房卡失败！", 0, new Date()));
+        return JsonResult.successful();
+    }
+
+
+    @PostMapping("/disbandRoom")
+    @ResponseBody
+    public JsonResult disbandRoom(Long roomCode){
+        gameRoomService.disbandRoom(roomCode);
         return JsonResult.successful();
     }
 }

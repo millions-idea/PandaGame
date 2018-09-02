@@ -7,6 +7,7 @@
  */
 package com.panda.game.management.biz.impl;
 
+import com.panda.game.management.biz.IPayService;
 import com.panda.game.management.biz.IWithdrawService;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.GameMemberGroup;
@@ -21,7 +22,9 @@ import com.panda.game.management.utils.PropertyUtil;
 import com.panda.game.management.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +55,8 @@ public class WithdrawServiceImpl extends BaseServiceImpl<Withdraw> implements IW
      * @param systemRecordId
      */
     @Override
-    public void addWithdraw(String token, Double amount, Long systemRecordId) {
+    @Transactional
+    public void addWithdraw(String token, Double withdrawAmount, Double amount, Long systemRecordId) {
         // 加载用户信息
         Map<String, String> map = TokenUtil.validate(token);
         if(map.isEmpty()) JsonResult.failing();
@@ -65,15 +69,13 @@ public class WithdrawServiceImpl extends BaseServiceImpl<Withdraw> implements IW
         PropertyUtil.clone(userInfo, userResp);
         userResp.setToken(token);
 
+        if(withdrawAmount <= 0 || (amount > withdrawAmount)) throw new MsgException("余额不足");
+
         // 查询账户资金是否被冻结
         List<GameMemberGroup> memberGroupList = gameMemberGroupMapper.selectGoodRoomList(userInfo.getUserId());
         List<GameMemberGroup> gameMemberGroupList =  gameMemberGroupMapper.selectByUid(userInfo.getUserId());
         if((memberGroupList != null && memberGroupList.size() > 0)
                || (gameMemberGroupList != null && gameMemberGroupList.size() > 0)) throw new MsgException("您有未结算的游戏，暂时不可以提现！");
-
-        // 查询可提现余额
-        Double withdrawAmount = payMapper.selectWithdrawAmount(Integer.valueOf(userId),  "新用户注册奖励");
-        if(withdrawAmount <= 0 || (amount > withdrawAmount)) throw new MsgException("余额不足");
 
         Withdraw withdraw = new Withdraw();
         withdraw.setUserId(Integer.valueOf(userId));

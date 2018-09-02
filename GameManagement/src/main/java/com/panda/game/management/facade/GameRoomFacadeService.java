@@ -23,4 +23,18 @@ public interface GameRoomFacadeService {
      * @param roomCode
      */
     void  closeAccounts(Long roomCode);
+
+    /**
+     * 强制结算 韦德 2018年9月2日12:56:44
+     * @param roomCode
+     */
+    void executeCloseAccounts(Long roomCode);
+
+    /**
+     * 修改成绩 韦德 2018年8月29日20:31:57
+     * @param userId
+     * @param grade
+     * @param roomCode
+     */
+    void editGrade(Integer userId, Double grade, Long roomCode);
 }

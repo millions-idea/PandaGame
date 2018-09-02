@@ -341,7 +341,7 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserServ
 
         // 计算不可提现金额、可提现金额
         Double notWithdrawAmount = payMapper.selectNotWithdrawAmount(Integer.valueOf(userId),  "新用户注册奖励");
-        Double withdrawAmount = payMapper.selectWithdrawAmount(Integer.valueOf(userId),  "新用户注册奖励");
+        Double withdrawAmount = payMapper.selectWithdrawAmount(Integer.valueOf(userId));
         if(withdrawAmount == null) withdrawAmount = 0D;
         userResp.setCanWithdrawAmount(withdrawAmount);
         userResp.setCanNotWithdrawAmount(notWithdrawAmount);

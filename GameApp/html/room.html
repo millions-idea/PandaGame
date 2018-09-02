@@ -65,7 +65,7 @@
 					      height:'50px',//可选,默认50px.下拉刷新控件的高度,
 					      range:'100px', //可选 默认100px,控件可下拉拖拽的范围
 					      offset:'0px', //可选 默认0px,下拉刷新控件的起始位置
-					      auto: true,//可选,默认false.首次加载自动上拉刷新一次
+					      auto: false,//可选,默认false.首次加载自动上拉刷新一次
 					      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
 					      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
 					      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
@@ -84,7 +84,10 @@
 					
 					var currentWebView = plus.webview.currentWebview();
 					
-					currentWebView.addEventListener("show", function(){ 
+					
+					plus.webview.currentWebview().addEventListener("show", function(){ 
+						console.log("进入了页面");
+						mui('#refreshContainer').pullRefresh().endPulldown(true);
 						refresh();
 					})
 					
@@ -94,18 +97,25 @@
 			})(mui, document);
 			
 			
-			function refresh(callback){
+			function refresh(){
+				
+					
 				var localCache = plus.storage.getItem('userInfo');
 				if(!(localCache != null && localCache.length > 0)) return false; 
 				room.getRoomList({
 					"token": JSON.parse(localCache).token.toString()
 				}, function(data){
-					mui('#refreshContainer').pullRefresh().endPulldown();
+					
+					mui('#refreshContainer').pullRefresh().endPulldown(true);
+					
 					
 					if(gDoc.getElementById("loading-text") != null)	gDoc.getElementById("loading-text").innerText = "您还没有创建或加入房间";
 		
 		
-					if(data == null || data.code != 200) return plus.nativeUI.toast("加载列表失败");
+					if(data == null || data.code == 500 || data.code == 400) {
+						//mui('#refreshContainer').pullRefresh().endPulldown();
+						return plus.nativeUI.toast("加载列表失败");
+					}
 					
 					for (var i = 0; i < data.data.length; i++) {
 						var item = data.data[i];
@@ -169,12 +179,12 @@
 					
 					
 				}, function(){
-					mui('#refreshContainer').pullRefresh().endPulldown();
-					plus.nativeUI.toast("加载列表失败");
-					gDoc.getElementById("loading-text").innerText = "加载列表失败";
-					
-					
+					mui('#refreshContainer').pullRefresh().endPulldown(true);
+					plus.nativeUI.toast("加载超时");
 				})
+				
+				
+				//mui('#refreshContainer').pullRefresh().endPulldown();
 			}
 			 
 		</script>

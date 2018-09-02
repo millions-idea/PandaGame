@@ -153,7 +153,11 @@
 							
 							home.withdraw(param, function(data){
 								if(data.code == 500 || data.code == 300){
-									plus.nativeUI.toast("申请失败"); 
+									if(data.msg.indexOf("余额不足")){
+										plus.nativeUI.toast("余额不足"); 
+									}else{
+										plus.nativeUI.toast("申请失败"); 
+									}
 									return false;
 								}
 								

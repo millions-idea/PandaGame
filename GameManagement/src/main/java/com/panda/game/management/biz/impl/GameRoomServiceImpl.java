@@ -11,6 +11,7 @@ import com.panda.game.management.biz.IGameRoomService;
 import com.panda.game.management.entity.db.*;
 import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
 import com.panda.game.management.entity.resp.GameRoomCallbackResp;
+import com.panda.game.management.exception.InfoException;
 import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.repository.*;
 import com.panda.game.management.utils.IdWorker;
@@ -223,13 +224,16 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         count = settlementMapper.insert(settlement);
         if(count == 0) throw new MsgException("申请结算失败");
 
-        List<GameMemberGroup> memberGroupList = gameMemberGroupMapper.selectNotSettlementByRoomCode(roomCode);
-        if(memberGroupList == null || memberGroupList.isEmpty()){
-            count = gameRoomMapper.updateStatusByRoomCode(roomCode,4);
-            if(count == 0) throw new MsgException("解散房间失败");
-            GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(Integer.valueOf(userId), room, subareas);
-            lastPersonCallback.accept(gameRoomCallbackResp);
+        synchronized (this){
+            List<GameMemberGroup> memberGroupList = gameMemberGroupMapper.selectNotSettlementByRoomCode(roomCode);
+            if(memberGroupList == null || memberGroupList.isEmpty()){
+                count = gameRoomMapper.updateStatusByRoomCode(roomCode,4);
+                if(count == 0) throw new MsgException("解散房间失败");
+                GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(Integer.valueOf(userId), room, subareas);
+                lastPersonCallback.accept(gameRoomCallbackResp);
+            }
         }
+
     }
 
     /**
@@ -242,33 +246,36 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
     @Transactional
     public void closeAccounts(Long roomCode, Consumer<GameRoomCallbackResp> callback) {
         GameRoom room = gameRoomMapper.selectByRoomCode(roomCode);
-        if(room == null) throw new MsgException("房间不存在");
-        if(room.getStatus() == 0) throw new MsgException("游戏未开始");
-        if(room.getStatus() == 5) throw new MsgException("该房间已结算");
+        if(room == null) throw new InfoException("房间不存在");
+        if(room.getStatus() == 0) throw new InfoException("游戏未开始");
+        if(room.getStatus() == 5) throw new InfoException("该房间已结算");
 
         Subareas subareas = subareaMapper.selectByPrimaryKey(room.getParentAreaId());
-        if(subareas == null) throw new MsgException("游戏分区不存在");
+        if(subareas == null) throw new InfoException("游戏分区不存在");
 
         GameMemberGroup gameMemberGroup = new GameMemberGroup();
         gameMemberGroup.setRoomCode(roomCode);
         gameMemberGroup.setIsConfirm(1);
         int count = gameMemberGroupMapper.updateByRoomCode(gameMemberGroup);
-        if(count == 0) throw new MsgException("更新结算状态失败[A01]");
+        if(count == 0) throw new InfoException("更新结算状态失败[A01]");
 
         Settlement settlement = new Settlement();
         settlement.setRoomCode(roomCode);
         settlement.setState(1);
         count = 0;
         count = settlementMapper.updateByRoomCode(settlement);
-        if(count == 0) throw new MsgException("更新结算状态失败[A02]");
+        if(count == 0) throw new InfoException("更新结算状态失败[A02]");
 
-        List<GameMemberGroup> memberGroupList = gameMemberGroupMapper.selectNotSettlementByRoomCode(roomCode);
-        if(memberGroupList == null || memberGroupList.isEmpty()){
-            count = gameRoomMapper.updateStatusByRoomCode(roomCode,4);
-            if(count == 0) throw new MsgException("解散房间失败");
-            GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(0, room, subareas);
-            callback.accept(gameRoomCallbackResp);
+        synchronized (this){
+            List<GameMemberGroup> memberGroupList = gameMemberGroupMapper.selectNotSettlementByRoomCode(roomCode);
+            if(memberGroupList == null || memberGroupList.isEmpty()){
+                count = gameRoomMapper.updateStatusByRoomCode(roomCode,4);
+                if(count == 0) throw new InfoException("解散房间失败");
+                GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(0, room, subareas);
+                callback.accept(gameRoomCallbackResp);
+            }
         }
+
     }
 
 
@@ -414,5 +421,81 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
     @Transactional
     public int updateStatusByRoomCode(Long roomCode, int status) {
         return gameRoomMapper.updateStatusByRoomCode(roomCode,status);
+    }
+
+    /**
+     * 强制结算 韦德 2018年9月2日12:58:00
+     *
+     * @param roomCode
+     * @return
+     */
+    @Override
+    @Transactional
+    public void executeCloseAccounts(Long roomCode, Consumer<GameRoomCallbackResp> callback) {
+        // 验证数据有效性
+        GameRoom room = gameRoomMapper.selectByRoomCode(roomCode);
+        if(room == null) throw new InfoException("房间不存在");
+        if(room.getStatus() == 0) throw new InfoException("游戏未开始");
+        Subareas subareas = subareaMapper.selectByPrimaryKey(room.getParentAreaId());
+        if(subareas == null) throw new InfoException("游戏分区不存在");
+
+
+        // 修改游戏房间状态
+        GameMemberGroup gameMemberGroup = new GameMemberGroup();
+        gameMemberGroup.setRoomCode(roomCode);
+        gameMemberGroup.setIsConfirm(1);
+        int count = gameMemberGroupMapper.updateByRoomCode(gameMemberGroup);
+        if(count == 0) throw new InfoException("更新结算状态失败[A01]");
+
+        // 修改票单状态
+        Settlement settlement = new Settlement();
+        settlement.setRoomCode(roomCode);
+        settlement.setState(1);
+        count = 0;
+        count = settlementMapper.updateByRoomCode(settlement);
+        if(count == 0) throw new InfoException("更新结算状态失败[A02]");
+
+        // 解散房间
+        count = 0;
+        count = gameRoomMapper.updateStatusByRoomCode(roomCode,5);
+
+        GameRoomCallbackResp gameRoomCallback = new GameRoomCallbackResp();
+        gameRoomCallback.setGameRoom(room);
+        gameRoomCallback.setSubareas(subareas);
+        callback.accept(gameRoomCallback);
+    }
+
+    /**
+     * 根据房间号查询房间 韦德 2018年9月2日14:13:30
+     *
+     * @param roomCode
+     * @return
+     */
+    @Override
+    public GameRoom getRoom(Long roomCode) {
+        return gameRoomMapper.selectByRoomCode(roomCode);
+    }
+
+    /**
+     * 强制解散房间 韦德 2018年9月2日20:13:45
+     *
+     * @param roomCode
+     */
+    @Override
+    @Transactional
+    public void disbandRoom(Long roomCode) {
+        int count = gameMemberGroupMapper.updateMemberExit(roomCode);
+
+        // 修改票单状态
+        Settlement settlement = new Settlement();
+        settlement.setRoomCode(roomCode);
+        settlement.setState(2);
+        count = 0;
+        count = settlementMapper.updateByRoomCode(settlement);
+        if(count == 0) throw new InfoException("拒绝结算失败");
+
+        count = 0;
+        count = gameRoomMapper.updateStatusByRoomCode(roomCode, 6);
+        if(count == 0) throw new InfoException("解散房间失败");
     }
 }

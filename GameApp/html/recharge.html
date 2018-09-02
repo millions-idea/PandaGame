@@ -76,6 +76,7 @@
 					
 					
 					plus.webview.currentWebview().addEventListener("show", function(){
+						console.log(groupInfo.payQRCodeUrl)
 						doc.getElementById("qcode").src = groupInfo.payQRCodeUrl;
 						 
 					})
@@ -139,7 +140,6 @@
 					
 					doc.getElementById("alipayButton").addEventListener("tap",function(){
 						
-						console.log(groupInfo.payCode)
 						var urlCode = groupInfo.payCode;
 						plus.nativeUI.showWaiting( "准备前往支付页面……" );
 						if(document.getElementById("amount").value == null || document.getElementById("amount").value.length == 0) {

@@ -45,15 +45,14 @@ public class FinanceFacadeServiceImpl implements FinanceFacadeService {
         if(map.isEmpty()) JsonResult.failing();
         String userId = map.get("userId");
         if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
-
+        Double withdrawAmount = payService.getWithdrawAmount(Integer.valueOf(userId));
         // 转账
         PayParam payParam = new PayParam();
         payParam.setFromUid(Integer.valueOf(userId));
         payParam.setAmount(amount);
         payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
         long  systemRecordId = payService.withdraw(payParam);
-
-        withdrawService.addWithdraw(token, amount, systemRecordId);
+        withdrawService.addWithdraw(token,withdrawAmount, amount, systemRecordId);
     }
 
     /**

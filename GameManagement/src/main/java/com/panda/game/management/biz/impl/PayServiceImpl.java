@@ -253,7 +253,7 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
      */
     @Override
     public Double getWithdrawAmount(Integer userId) {
-        return payMapper.selectWithdrawAmount(userId, "新用户注册奖励");
+        return payMapper.selectWithdrawAmount(userId);
     }
 
     /**
@@ -566,7 +566,10 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
         payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
 
         // 查询交易主体信息
-        List<UserDetailInfo> userDetailInfoList = this.getUsersInfo(payParam);
+        String userId = payParam.getFromUid().toString().concat(",").concat(payParam.getToUid().toString());
+        List<UserDetailInfo> userDetailInfoList = userMapper.selectInUid(userId);
+        if(userDetailInfoList.isEmpty() || userDetailInfoList.size() != 2) throw new InfoException("查询交易主体账户信息不完整");
+
         UserDetailInfo fromUserInfo = userDetailInfoList.stream().filter(u -> u.getUserId().equals(payParam.getFromUid())).findFirst().get();
         UserDetailInfo toUserInfo =userDetailInfoList.stream().filter(u -> u.getUserId().equals(payParam.getToUid())).findFirst().get();
 

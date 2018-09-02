@@ -141,8 +141,8 @@
 								
 								plus.nativeUI.toast("申请成功");
 								$.openWindow({
-									url: 'room.html',
-									id: 'room',
+									url: 'my.html',
+									id: 'my',
 									preload: true,
 									show: {
 										aniShow: 'pop-in',
@@ -158,13 +158,12 @@
 								});
 								
 								for (var i = 0 ; i < pages.length ; i ++) {
-									if (i != 2) { 
+									if (i != 3) { 
 										plus.webview.hide(pages[i].id, "fade-out", 200);
 									}
 								}
-								
-								
 								plus.webview.getWebviewById("room-detail-" + roomCode).close();
+								//plus.webview.getWebviewById("room").reload();
 								plus.webview.currentWebview().close();
 								
 							}, function(){

@@ -24,4 +24,11 @@ public interface ISubareaService extends IBaseService<Subareas> {
      * @return
      */
     List<Subareas> getSubareas(Integer subareaId);
+
+    /**
+     * 查询分区 韦德 2018年9月2日14:14:52
+     * @param areaId
+     * @return
+     */
+    Subareas getSubarea(Integer areaId);
 }

@@ -21,6 +21,7 @@ layui.use(['form', 'layer'], function () {
 
     // 提交监听
     form.on('submit(sub)', function (data) {
+        localStorage.setItem("username", data.field.username);
         $.post("./api/login", {
             "username": data.field.username,
             "password": data.field.password,
@@ -39,4 +40,11 @@ layui.use(['form', 'layer'], function () {
     });
 
     // you code ...
+})
+
+$(function () {
+    var username = localStorage.getItem("username");
+    if(username != null){
+        $("input[name='username']").val(username);
+    }
 })
