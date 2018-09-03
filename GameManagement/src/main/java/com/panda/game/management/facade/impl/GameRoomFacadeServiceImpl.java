@@ -109,11 +109,20 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
                 Double finalGrade = memberGrade;
                 if(memberGrade < 0) finalGrade = memberGrade - memberGrade * 2;
 
+
                 // 体验区计算公式：80*0.1-0.1=+7.9, 80*0.1+0.1=-8.1
                 // 1元区计算公式：80-1=+79, 80+1=-81
-                // 2元区计算公式：80*1-1=+79, 80*1+1=-81
-                // 5元区计算公式：80*2-2=+158, 80*2+2=-162
-                price = finalGrade * subarea.getReducePrice();
+                // 2元区计算公式：80*2-1=+79, 80*5+1=-81
+                // 5元区计算公式：80*5-2=+158, 80*5+2=-162
+
+
+                // 2元区和5元区的计算公式与其他分区的不同
+                if(parentAreaId == 3 || parentAreaId == 4){
+                    price = finalGrade * subarea.getLimitPrice();
+                }else {
+                    price = finalGrade * subarea.getReducePrice();
+                }
+
 
                 // 优先扣减不可用余额
                 PayParam payParam = new PayParam();
@@ -221,9 +230,16 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
 
                 // 体验区计算公式：80*0.1-0.1=+7.9, 80*0.1+0.1=-8.1
                 // 1元区计算公式：80-1=+79, 80+1=-81
-                // 2元区计算公式：80*1-1=+79, 80*1+1=-81
-                // 5元区计算公式：80*2-2=+158, 80*2+2=-162
-                price = finalGrade * subarea.getReducePrice();
+                // 2元区计算公式：80*2-1=+79, 80*5+1=-81
+                // 5元区计算公式：80*5-2=+158, 80*5+2=-162
+
+
+                // 2元区和5元区的计算公式与其他分区的不同
+                if(parentAreaId == 3 || parentAreaId == 4){
+                    price = finalGrade * subarea.getLimitPrice();
+                }else {
+                    price = finalGrade * subarea.getReducePrice();
+                }
 
 
                 // 优先扣减不可用余额
