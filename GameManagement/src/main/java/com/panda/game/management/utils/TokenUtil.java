@@ -34,7 +34,7 @@ public class TokenUtil {
         // 加密算法
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
         // 创建发布者
-        JWTCreator.Builder builder = JWT.create().withIssuer(ISSUER).withExpiresAt(DateUtil.getDateAdd(new Date(), 1));
+        JWTCreator.Builder builder = JWT.create().withIssuer(ISSUER).withExpiresAt(DateUtil.getDateAdd(new Date(), 60));
         map.forEach((k,v) -> builder.withClaim(k, v));
         return builder.sign(algorithm).toString();
     }

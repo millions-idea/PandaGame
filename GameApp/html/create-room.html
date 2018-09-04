@@ -78,7 +78,7 @@
 					home.getSubareas({
 						subareaId: subareaId
 					}, function(data){
-						if(data == null || data.code != 200) return plus.nativeUI.toast("加载列表失败");
+						if(data == null || data.code != 200) return plus.nativeUI.toast("服务器开小差了,请您稍后重试!");
 							 	
 						var html = template("subareasTemplate", {
 							list: data.data
@@ -124,7 +124,7 @@
 		                }
 		                
 					}, function(){
-						plus.nativeUI.toast("加载列表失败");
+						plus.nativeUI.toast("服务器开小差了,请您稍后重试!");
 						
 		                 //关闭等待框
 		                plus.nativeUI.closeWaiting();

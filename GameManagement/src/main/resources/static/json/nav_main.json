@@ -63,6 +63,10 @@
           "icon": "&#xe63c;",
           "href": "/management/member/index"
         },{
+          "text": "分区管理",
+          "icon": "&#xe63c;",
+          "href": "/management/area/index"
+        },{
           "text": "基础设置",
           "icon": "&#xe63c;",
           "href": "/management/config/index"

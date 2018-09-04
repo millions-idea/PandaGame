@@ -29,6 +29,7 @@ public class WithdrawDetailInfo {
     private String remark;
     private Long systemRecordId;
     private String channelRecordId;
+    private String financeId;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date addTime;

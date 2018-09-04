@@ -37,4 +37,41 @@ public interface SubareaMapper extends MyMapper<Subareas> {
      * @return
      */
     List<Subareas> selectRelations(@Param("subareaId") Integer subareaId);
+
+
+    @Select("SELECT t1.*  FROM tb_subareas t1 " +
+            "LEFT JOIN tb_subarea_relations t2 ON t1.subarea_id = t2.subarea_id " +
+            "WHERE ${condition} GROUP BY t1.subarea_id ORDER BY t1.is_relation DESC LIMIT #{page},${limit}")
+    /**
+     * 分页查询 韦德 2018年8月30日11:33:22
+     * @param page
+     * @param limit
+     * @param state
+     * @param beginTime
+     * @param endTime
+     * @param where
+     * @return
+     */
+    List<Subareas> selectLimit(@Param("page") Integer page, @Param("limit") String limit
+            , @Param("isEnable") Integer isEnable
+            , @Param("beginTime") String beginTime
+            , @Param("endTime") String endTime
+            , @Param("condition") String condition);
+
+    @Select("SELECT COUNT(t1.subarea_id) FROM tb_subareas t1\n" +
+            "LEFT JOIN tb_subarea_relations t2 ON t1.subarea_id = t2.subarea_id \n" +
+            "WHERE ${condition}")
+    /**
+     * 分页查询记录数 韦德 2018年8月30日11:33:30
+     * @param state
+     * @param beginTime
+     * @param endTime
+     * @param where
+     * @return
+     */
+    Integer selectLimitCount(@Param("isEnable") Integer isEnable
+            , @Param("beginTime") String beginTime
+            , @Param("endTime") String endTime
+            , @Param("condition") String condition);
+
 }

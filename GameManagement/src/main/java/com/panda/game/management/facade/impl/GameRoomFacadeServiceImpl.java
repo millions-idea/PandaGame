@@ -118,7 +118,7 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
 
                 // 2元区和5元区的计算公式与其他分区的不同
                 if(parentAreaId == 3 || parentAreaId == 4){
-                    price = finalGrade * subarea.getLimitPrice();
+                    price = finalGrade * subarea.getPrice();
                 }else {
                     price = finalGrade * subarea.getReducePrice();
                 }
@@ -236,7 +236,7 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
 
                 // 2元区和5元区的计算公式与其他分区的不同
                 if(parentAreaId == 3 || parentAreaId == 4){
-                    price = finalGrade * subarea.getLimitPrice();
+                    price = finalGrade * subarea.getPrice();
                 }else {
                     price = finalGrade * subarea.getReducePrice();
                 }

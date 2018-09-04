@@ -59,24 +59,25 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         if(map.isEmpty()) return 0;
 
         String userId = map.get("userId");
-        if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
+        if(userId == null || userId.isEmpty()) throw new InfoException("身份校验失败");
 
         // 每位用户只能同时创建1个房间
         int playingCount = gameMemberGroupMapper.selectPlayingCount(Integer.valueOf(userId));
-        if(playingCount >= 1) throw new MsgException("存在未结束的游戏，创建新房间失败！");
+        if(playingCount >= 1) throw new InfoException("存在未结束的游戏，创建新房间失败！");
 
         // 加载游戏分区
         Subareas subareas = subareaMapper.selectByPrimaryKey(param.getSubareaId());
-        if(subareas == null || subareas.getIsRelation() == 1) throw new MsgException("游戏分区不存在");
+        if(subareas == null || subareas.getIsRelation() == 1) throw new InfoException("游戏分区不存在");
+        if(subareas.getIsEnable() == 0) throw new InfoException("此游戏区暂未对外开放");
 
         // 加载游戏大区
         Subareas area = subareaMapper.selectByPrimaryKey(param.getParentAreaId());
-        if(area == null) throw new MsgException("游戏大区不存在");
+        if(area == null) throw new InfoException("游戏大区不存在");
 
         Wallets wallets = walletMapper.selectByUid(Integer.valueOf(userId));
-        if(wallets == null) throw new MsgException("查询钱包数据异常");
+        if(wallets == null) throw new InfoException("查询钱包数据异常");
         Double balance = wallets.getBalance();
-        if(balance < area.getLimitPrice()) throw new MsgException("金币" + area.getLimitPrice().intValue() + "枚以上才可以创建哟~");
+        if(balance < area.getLimitPrice()) throw new InfoException("金币" + area.getLimitPrice().intValue() + "枚以上才可以创建哟~");
 
         // 创建房间
         param.setOwnerId(Integer.valueOf(userId));
@@ -84,7 +85,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         param.setAddTime(new Date());
         param.setUpdateTime(new Date());
         param.setIsEnable(1);
-
+        param.setVersion(0);
         long roomCode = 0;
         try {
             roomCode = IdWorker.getFlowIdWorkerInstance().nextId(8);
@@ -95,7 +96,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         param.setName(subareas.getName());
 
         int count = gameRoomMapper.insert(param);
-        if(count == 0) throw new MsgException("创建房间失败");
+        if(count == 0) throw new InfoException("创建房间失败");
 
 
         // 加入成员
@@ -168,7 +169,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
             int onLineCount = gameRoomMapper.selectRoomOnLineCount(gameRoom.getRoomCode());
             onLineCount -= 1;
             if(onLineCount < subareas.getMaxPersonCount()) {
-                count = gameRoomMapper.updateStatusByRoomCode(gameRoom.getRoomCode(), 0);
+                count = gameRoomMapper.updateStatusByRoomCode(gameRoom.getRoomCode(), 0, gameRoom.getVersion() == null ? 0 : gameRoom.getVersion());
                 if(count == 0) throw new MsgException("更改显示状态失败");
             }
             return;
@@ -181,7 +182,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         if(count == 0) throw new MsgException("清空成员失败");
 
         count = 0;
-        count = gameRoomMapper.updateStatusByRoomCode(gameRoom.getRoomCode(), 6);
+        count = gameRoomMapper.updateStatusByRoomCode(gameRoom.getRoomCode(), 6,  gameRoom.getVersion() == null ? 0 : gameRoom.getVersion());
         if(count == 0) throw new MsgException("解散房间失败");
 
     }
@@ -224,14 +225,13 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         count = settlementMapper.insert(settlement);
         if(count == 0) throw new MsgException("申请结算失败");
 
-        synchronized (this){
-            List<GameMemberGroup> memberGroupList = gameMemberGroupMapper.selectNotSettlementByRoomCode(roomCode);
-            if(memberGroupList == null || memberGroupList.isEmpty()){
-                count = gameRoomMapper.updateStatusByRoomCode(roomCode,4);
-                if(count == 0) throw new MsgException("解散房间失败");
-                GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(Integer.valueOf(userId), room, subareas);
-                lastPersonCallback.accept(gameRoomCallbackResp);
-            }
+        // TODO 加锁
+        List<GameMemberGroup> memberGroupList = gameMemberGroupMapper.selectNotSettlementByRoomCode(roomCode);
+        if(memberGroupList == null || memberGroupList.isEmpty()){
+            count = gameRoomMapper.updateStatusByRoomCode(roomCode,4, room.getVersion());
+            if(count == 0) throw new MsgException("解散房间失败");
+            GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(Integer.valueOf(userId), room, subareas);
+            lastPersonCallback.accept(gameRoomCallbackResp);
         }
 
     }
@@ -266,14 +266,13 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         count = settlementMapper.updateByRoomCode(settlement);
         if(count == 0) throw new InfoException("更新结算状态失败[A02]");
 
-        synchronized (this){
-            List<GameMemberGroup> memberGroupList = gameMemberGroupMapper.selectNotSettlementByRoomCode(roomCode);
-            if(memberGroupList == null || memberGroupList.isEmpty()){
-                count = gameRoomMapper.updateStatusByRoomCode(roomCode,4);
-                if(count == 0) throw new InfoException("解散房间失败");
-                GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(0, room, subareas);
-                callback.accept(gameRoomCallbackResp);
-            }
+        // TODO 加锁
+        List<GameMemberGroup> memberGroupList = gameMemberGroupMapper.selectNotSettlementByRoomCode(roomCode);
+        if(memberGroupList == null || memberGroupList.isEmpty()){
+            count = gameRoomMapper.updateStatusByRoomCode(roomCode,4, room.getVersion());
+            if(count == 0) throw new InfoException("解散房间失败");
+            GameRoomCallbackResp gameRoomCallbackResp = new GameRoomCallbackResp(0, room, subareas);
+            callback.accept(gameRoomCallbackResp);
         }
 
     }
@@ -313,6 +312,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         // 加载游戏大区
         Subareas area = subareaMapper.selectByPrimaryKey(room.getParentAreaId());
         if(area == null) throw new MsgException("游戏大区不存在");
+        if(area.getIsEnable() == 0) throw new InfoException("此游戏区暂未对外开放");
 
         // 加载钱包信息
         Wallets wallets = walletMapper.selectByUid(Integer.valueOf(userId));
@@ -328,7 +328,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         if(onLineCount > subareas.getMaxPersonCount()) throw new MsgException("该房间人数已满！");
         // 更改状态为已开始
         if(onLineCount == subareas.getMaxPersonCount()){
-            int count = gameRoomMapper.updateStatusByRoomCode(gameRoom.getRoomCode(), 2);
+            int count = gameRoomMapper.updateStatusByRoomCode(gameRoom.getRoomCode(), 2, room.getVersion());
             if(count == 0) throw new MsgException("更改显示状态失败");
         }
 
@@ -420,7 +420,8 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
     @Override
     @Transactional
     public int updateStatusByRoomCode(Long roomCode, int status) {
-        return gameRoomMapper.updateStatusByRoomCode(roomCode,status);
+        GameRoom gameRoom = gameRoomMapper.selectByRoomCode(roomCode);
+        return gameRoomMapper.updateStatusByRoomCode(roomCode,status,  gameRoom.getVersion() == null ? 0 : gameRoom.getVersion());
     }
 
     /**
@@ -457,7 +458,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
 
         // 解散房间
         count = 0;
-        count = gameRoomMapper.updateStatusByRoomCode(roomCode,5);
+        count = gameRoomMapper.updateStatusByRoomCode(roomCode,5, room.getVersion());
 
         GameRoomCallbackResp gameRoomCallback = new GameRoomCallbackResp();
         gameRoomCallback.setGameRoom(room);
@@ -494,8 +495,10 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         count = settlementMapper.updateByRoomCode(settlement);
         if(count == 0) throw new InfoException("拒绝结算失败");
 
+        GameRoom gameRoom = gameRoomMapper.selectByRoomCode(roomCode);
+
         count = 0;
-        count = gameRoomMapper.updateStatusByRoomCode(roomCode, 6);
+        count = gameRoomMapper.updateStatusByRoomCode(roomCode, 6,  gameRoom.getVersion() == null ? 0 : gameRoom.getVersion());
         if(count == 0) throw new InfoException("解散房间失败");
     }
 }

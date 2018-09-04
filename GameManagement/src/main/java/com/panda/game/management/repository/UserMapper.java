@@ -47,7 +47,6 @@ public interface UserMapper extends MyMapper<Users> {
     UserDetailInfo selectUserDetail(@Param("userId") String userId);
 
 
-
     @Select("SELECT t1.*, t2.balance,t3.permission_role FROM tb_users t1 " +
             "LEFT JOIN tb_wallets t2 ON t1.user_id = t2.user_id " +
             "LEFT JOIN tb_permission_relation t3 ON t1.user_id = t3.user_id " +

@@ -93,6 +93,7 @@
 				// 注册TAB触摸事件
 				mui(".mui-bar-tab").on("tap", "a", function(e){
 					var tabindex = this.getAttribute("tabindex");
+					plus.nativeUI.closeWaiting();
 					plus.webview.show(pages[tabindex].id, "fade-in", 200);
 					for (var i = 0 ; i < pages.length ; i ++) {
 						if (i != tabindex) { 

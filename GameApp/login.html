@@ -131,6 +131,7 @@
 					loginButton.addEventListener("tap",function(){
 						loginButton.disabled = true;
 						loginButton.classList.add("button-disabled");
+						plus.nativeUI.showWaiting( "正在登录,请稍后……" );
 						
 						app.login({
 							phone: phoneInput.value,
@@ -164,7 +165,8 @@
 						}, function(){
 							loginButton.disabled = false;
 							loginButton.classList.remove("button-disabled");
-							plus.nativeUI.toast("登录失败");
+							plus.nativeUI.toast("登录超时,请您稍后重试!");
+							plus.nativeUI.closeWaiting();
 						})
 					}, false) 
 				});
@@ -180,15 +182,21 @@
 				if(isAutoLogin == null || isAutoLogin != "true") localCache =  null;
 				console.log("自动登录:" + localCache);
 				if(localCache != null && localCache.length > 0){
+					plus.nativeUI.showWaiting( "正在获取信息,请稍后……" );
+					
 					app.getUserInfo({
 						"token": JSON.parse(localCache).token.toString()
 					}, function(data){
+						plus.nativeUI.closeWaiting();
+						
 						if(data.code == 200){
 							 toHome($);
 						}else{
 							plus.nativeUI.toast("自动登录失败");
 						}
-					}, function(){ })
+					}, function(){ 
+						plus.nativeUI.closeWaiting();
+					})
 				}
 			}
 			

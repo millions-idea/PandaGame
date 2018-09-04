@@ -39,13 +39,13 @@ public interface GameRoomMapper extends MyMapper<GameRoom> {
     GameRoom selectByRoomCode(@Param("roomCode") Long roomCode);
 
 
-    @Update("UPDATE tb_game_room SET `status`=#{status} WHERE room_code=#{roomCode}")
+    @Update("UPDATE tb_game_room SET `status`=#{status},version = version + 1 WHERE room_code=#{roomCode} AND version = #{version}")
     /**
      * 根据roomCode更新状态值 韦德 2018年8月20日10:57:19
      * @param roomCode
      * @param status
      */
-    int updateStatusByRoomCode(@Param("roomCode") Long roomCode,@Param("status") int status);
+    int updateStatusByRoomCode(@Param("roomCode") Long roomCode,@Param("status") int status,@Param("version") Integer version);
 
     @Select("SELECT t1.* " +
             ",(SELECT COUNT(*) FROM tb_game_member_group WHERE room_code = t1.room_code AND is_confirm = 0) AS personCount " +

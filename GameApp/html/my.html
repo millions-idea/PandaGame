@@ -148,8 +148,12 @@
 						messageButton = doc.getElementById("messageButton"),
 						logoutButton = doc.getElementById("logoutButton");
 					
+					plus.nativeUI.closeWaiting();
+					
+					
 					// 刷新
 					plus.webview.currentWebview().addEventListener("show", function(){
+						plus.nativeUI.closeWaiting();
 						console.log("刷新")
 						refreshUserInfo();
 					})
@@ -248,7 +252,7 @@
 					
 				}, function(){
 					mui('#refreshContainer').pullRefresh().endPulldown();
-					plus.nativeUI.toast("刷新失败，网络超时！");
+					plus.nativeUI.toast("服务器开小差了,请您稍后重试!");
 				})
 				
 			}

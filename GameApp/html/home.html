@@ -106,7 +106,7 @@
 				<ul id="subareas" class="subareas"></ul>
 				<script id="subareasTemplate" type="text/html">
 					{{each list as item index}}
-					    <li name="subareas-item" data-id="{{item.subareaId}}" >
+					    <li name="subareas-item" data-id="{{item.subareaId}}" data-state="{{item.isEnable}}">
 							<img src="{{item.backgroundImage}}"  alt="{{item.name}}" />
 						</li>
 					{{/each}}
@@ -248,7 +248,7 @@
 		
 										plus.nativeUI.toast("已提交申请，请等待客服审核！");
 									}, function(){
-										plus.nativeUI.toast("操作失败");
+										plus.nativeUI.toast("服务器开小差了,请您稍后重试!"); 
 									}) 
 								}
 							})
@@ -284,9 +284,9 @@
 				
 				// 加载聚合AD信息
 				home.getGroupInformation({}, function(data){
-					mui('#refreshContainer').pullRefresh().endPulldown();
-					
-					if(data == null || data.code != 200) return plus.nativeUI.toast("获取首页信息失败");
+					mui('#refreshContainer').pullRefresh().endPulldown(); 
+							
+					if(data == null || data.code != 200) return plus.nativeUI.toast("服务器开小差了,请您稍后重试!");
 					
 					var html = template("runnerImageTemplate", {
 						list: data.msg.topRunnerAds
@@ -316,14 +316,14 @@
 					
 					plus.storage.setItem("groupInfo", JSON.stringify(data.msg));
 				}, function(){
-					plus.nativeUI.toast("获取首页信息失败");
+					plus.nativeUI.toast("服务器开小差了,请您稍后重试!");
 					mui('#refreshContainer').pullRefresh().endPulldown();
 					
 				});
 			
 				// 加载游戏分区 
 				home.getLevelSubareas({}, function(data){
-					if(data == null || data.code != 200 || data.count == 0) return plus.nativeUI.toast("获取游戏分区失败");
+					if(data == null || data.code != 200 || data.count == 0) return plus.nativeUI.toast("服务器开小差了,请您稍后重试!");
 					var html = template("subareasTemplate", {
 						list: data.data
 					});
@@ -336,6 +336,8 @@
 					for (var i = 0; i < items.length; i++) {
 						items[i].addEventListener("tap", function(){
 							var id = this.getAttribute("data-id");
+							var state = this.getAttribute("data-state");
+							if(state == 0) return plus.nativeUI.toast("此游戏区暂未对外开放");
 							mui.openWindow({
 			                    url: "/html/create-room.html",
 			                    id: "create-room",
@@ -354,7 +356,7 @@
 					}
 					
 				},function(){
-					plus.nativeUI.toast("获取游戏分区失败");
+					plus.nativeUI.toast("服务器开小差了,请您稍后重试!");
 				});
 			 
 			}
