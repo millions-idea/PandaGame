@@ -8,8 +8,11 @@
 package com.panda.game.management.facade.impl;
 
 import com.panda.game.management.entity.Constant;
+import com.panda.game.management.entity.DataDictionary;
+import com.panda.game.management.entity.db.Dictionary;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.param.PayParam;
+import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.facade.UserFacadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,13 +35,16 @@ public class UserFacadeServiceImpl implements UserFacadeService {
     @Override
     @Transactional
     public boolean register(Users param) {
+        Dictionary dictionary = DataDictionary.DATA_DICTIONARY.get("finance.give.amount");
+        if(dictionary == null) throw new MsgException("注册异常，请稍后重试！");
+
         // 注册用户、开通钱包
         userService.register(param);
 
         // 赠送5枚金币
         PayParam payParam = new PayParam();
         payParam.setFromUid(Constant.SYSTEM_ACCOUNTS_ID);
-        payParam.setAmount(5D);
+        payParam.setAmount(Double.valueOf(dictionary.getValue()));
         payParam.setToUid(param.getUserId());
         payParam.setRemark("新用户注册奖励");
         payParam.setCurrency(1);

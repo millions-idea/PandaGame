@@ -55,10 +55,11 @@ public class UserApiController {
      * 绑定财务账户 韦德 2018年8月17日00:34:25
      * @param token
      * @param account
+     * @param accountName
      * @return
      */
-    public JsonResult bindFinanceAccount(String token, String account){
-        IUserService.bindFinanceAccount(token, account);
+    public JsonResult bindFinanceAccount(String token, String account, String accountName){
+        IUserService.bindFinanceAccount(token, account, accountName);
         return JsonResult.successful();
     }
 }

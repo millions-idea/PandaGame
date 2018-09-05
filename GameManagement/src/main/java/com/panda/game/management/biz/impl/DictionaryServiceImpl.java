@@ -91,6 +91,18 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
 
         String payCode = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("finance.pays.qrcode.payCode")).findFirst().get().getValue();
         groupInformation.setPayCode(payCode);
+
+        String giveAmount = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("finance.give.amount")).findFirst().get().getValue();
+        groupInformation.setGiveAmount(giveAmount);
+
+        String version = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("version")).findFirst().get().getValue();
+        groupInformation.setVersion(version);
+
+        String iosDownload = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("ios.download")).findFirst().get().getValue();
+        groupInformation.setIosDownload(iosDownload);
+
+        String androidDownload = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("android.download")).findFirst().get().getValue();
+        groupInformation.setAndroidDownload(androidDownload);
         return groupInformation;
     }
 
@@ -143,9 +155,30 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
      * @param html
      */
     @Override
-    public void updateConsumeServiceHtml(String html) {
+    @Transactional
+    public void updateConfiguration(String html, String giveAmount, String version, String iosDownload, String androidDownload) {
         Dictionary dictionary = DataDictionary.DATA_DICTIONARY.get("my.consume.service.html");
         int count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), html);
-        if(count == 0) throw new MsgException("更新失败");
+        if(count == 0) throw new MsgException("更新失败[A01]");
+
+        dictionary = DataDictionary.DATA_DICTIONARY.get("finance.give.amount");
+        count = 0;
+        count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), giveAmount);
+        if(count == 0) throw new MsgException("更新失败[A02]");
+
+        dictionary = DataDictionary.DATA_DICTIONARY.get("version");
+        count = 0;
+        count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), version);
+        if(count == 0) throw new MsgException("更新失败[A03]");
+
+        dictionary = DataDictionary.DATA_DICTIONARY.get("ios.download");
+        count = 0;
+        count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), iosDownload);
+        if(count == 0) throw new MsgException("更新失败[A04]");
+
+        dictionary = DataDictionary.DATA_DICTIONARY.get("android.download");
+        count = 0;
+        count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), androidDownload);
+        if(count == 0) throw new MsgException("更新失败[A05]");
     }
 }

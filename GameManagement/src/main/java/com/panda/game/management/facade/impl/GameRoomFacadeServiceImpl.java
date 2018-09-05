@@ -10,7 +10,6 @@ package com.panda.game.management.facade.impl;
 import com.panda.game.management.biz.*;
 import com.panda.game.management.entity.Constant;
 import com.panda.game.management.entity.db.*;
-import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
 import com.panda.game.management.entity.dbExt.SettlementDetailInfo;
 import com.panda.game.management.entity.param.PayParam;
 import com.panda.game.management.entity.resp.GameRoomCallbackResp;
@@ -19,6 +18,7 @@ import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.facade.GameRoomFacadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -40,6 +40,8 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
     @Autowired
     private ISubareaService subareaService;
 
+    private Integer lock =111697367;
+
     /**
      * 结算 韦德 2018年8月21日01:02:27
      *
@@ -48,109 +50,108 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
      * @param grade
      */
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void closeAccounts(String token, Long roomCode, Double grade) {
         // 结算
-        gameRoomService.closeAccounts(token, roomCode, grade, (callback) -> {
-            if(callback == null || callback.getGameRoom() == null || callback.getSubareas() == null)
-                throw new InfoException("回调参数有误");
+        GameRoomCallbackResp callback = gameRoomService.closeAccounts(token, roomCode, grade);
+        if(callback.getUserId() ==  -1) return;
 
-            // 计算房间内所有人的成绩
-            // 如果所有人的成绩相加运算后得到结果是0，系统自动进行结算
+        // 计算房间内所有人的成绩
+        // 如果所有人的成绩相加运算后得到结果是0，系统自动进行结算
 
-            // 扣除此房间内所有人的金币
-            List<GameMemberGroup> memberList = gameMemberGroupService.getListByRoom(callback.getGameRoom().getRoomCode());
-            if(memberList == null || memberList.isEmpty()) throw new InfoException("加载房间成员列表失败");
-            // 查询所有人的成绩信息
-            List<SettlementDetailInfo> settlementList = settlementService.getMemberList(roomCode);
-            if(settlementList == null || settlementList.isEmpty()) throw new InfoException("加载房间成员成绩失败");
+        // 扣除此房间内所有人的金币
+        List<GameMemberGroup> memberList = gameMemberGroupService.getListByRoom(callback.getGameRoom().getRoomCode());
+        if(memberList == null || memberList.isEmpty()) throw new InfoException("加载房间成员列表失败");
+        // 查询所有人的成绩信息
+        List<SettlementDetailInfo> settlementList = settlementService.getMemberList(roomCode);
+        if(settlementList == null || settlementList.isEmpty()) throw new InfoException("加载房间成员成绩失败");
 
 
-            List<PayParam> reduceRoomCostPayParams = new ArrayList<>();
-            memberList.forEach(member -> {
-                PayParam payParam = new PayParam();
-                // 扣除房费
-                Double price = callback.getSubareas().getReducePrice();
-                // 优先扣减不可用余额
-                Double notWithdrawAmount = payService.getNotWithdrawAmount(member.getUserId());
-                if (notWithdrawAmount > price) payParam.setCurrency(1);
-                payParam.setFromUid(member.getUserId());
-                payParam.setAmount(price);
-                payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
-                reduceRoomCostPayParams.add(payParam);
-            });
-            payService.batchConsume(reduceRoomCostPayParams);
+        List<PayParam> reduceRoomCostPayParams = new ArrayList<>();
+        memberList.forEach(member -> {
+            PayParam payParam = new PayParam();
+            // 扣除房费
+            Double price = callback.getSubareas().getReducePrice();
+            // 优先扣减不可用余额
+            Double notWithdrawAmount = payService.getNotWithdrawAmount(member.getUserId());
+            if (notWithdrawAmount > price) payParam.setCurrency(1);
+            payParam.setFromUid(member.getUserId());
+            payParam.setAmount(price);
+            payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
+            reduceRoomCostPayParams.add(payParam);
+        });
+        payService.batchConsume(reduceRoomCostPayParams);
 
-            // 1、计算房间总成绩
-            Double countGrade = settlementList.stream().map(s -> s.getGrade()).reduce(0D, (acc, element) -> acc + element);
-            if(settlementList == null || settlementList.isEmpty() || countGrade != 0) return;// 说明有人误报成绩，交给后台人工复审成绩
+        // 1、计算房间总成绩
+        Double countGrade = settlementList.stream().map(s -> s.getGrade()).reduce(0D, (acc, element) -> acc + element);
+        if(settlementList == null || settlementList.isEmpty() || countGrade != 0) return;// 说明有人误报成绩，交给后台人工复审成绩
 
-            int count = gameRoomService.updateStatusByRoomCode(roomCode, 5);
-            if(count == 0) throw new MsgException("更新结算状态失败[A00]");
+        int count = gameRoomService.updateStatusCodeVersion(roomCode, 5);
+        if(count == 0) throw new MsgException("更新结算状态失败[A00]");
 
-            count = 0;
-            count = settlementService.updateStatusByRoomCode(roomCode, 1);
-            if(count == 0) throw new MsgException("更新结算状态失败[A02]");
+        count = 0;
+        count = settlementService.updateStatusByRoomCode(roomCode, 1);
+        if(count == 0) throw new MsgException("更新结算状态失败[A02]");
 
-            // 扣游戏金币
-            List<PayParam> consumePayParams = new ArrayList<>();
-            memberList.forEach(member -> {
-                Double price = callback.getSubareas().getReducePrice();
-                GameRoom gameRoom = callback.getGameRoom();
-                Subareas subarea = callback.getSubareas();
-                Integer parentAreaId = gameRoom.getParentAreaId();
-                SettlementDetailInfo memberSettlement = settlementList.stream()
+
+        // 扣游戏金币
+        List<PayParam> consumePayParams = new ArrayList<>();
+        memberList.forEach(member -> {
+            Double price = callback.getSubareas().getReducePrice();
+            GameRoom gameRoom = callback.getGameRoom();
+            Subareas subarea = callback.getSubareas();
+            Integer parentAreaId = gameRoom.getParentAreaId();
+            SettlementDetailInfo memberSettlement = settlementList.stream()
                     .filter(settlementDetailInfo -> settlementDetailInfo.getUserId() == member.getUserId())
                     .findFirst().get();
-                Double memberGrade = memberSettlement.getGrade();
+            Double memberGrade = memberSettlement.getGrade();
 
-                // 判断是否为负数，如果是负数，要先转为正数，方便计算
+            // 判断是否为负数，如果是负数，要先转为正数，方便计算
 
-                Double finalGrade = memberGrade;
-                if(memberGrade < 0) finalGrade = memberGrade - memberGrade * 2;
-
-
-                // 体验区计算公式：80*0.1-0.1=+7.9, 80*0.1+0.1=-8.1
-                // 1元区计算公式：80-1=+79, 80+1=-81
-                // 2元区计算公式：80*2-1=+79, 80*5+1=-81
-                // 5元区计算公式：80*5-2=+158, 80*5+2=-162
+            Double finalGrade = memberGrade;
+            if(memberGrade < 0) finalGrade = memberGrade - memberGrade * 2;
 
 
-                // 2元区和5元区的计算公式与其他分区的不同
-                if(parentAreaId == 3 || parentAreaId == 4){
-                    price = finalGrade * subarea.getPrice();
-                }else {
-                    price = finalGrade * subarea.getReducePrice();
-                }
+            // 体验区计算公式：80*0.1-0.1=+7.9, 80*0.1+0.1=-8.1
+            // 1元区计算公式：80-1=+79, 80+1=-81
+            // 2元区计算公式：80*2-1=+79, 80*5+1=-81
+            // 5元区计算公式：80*5-2=+158, 80*5+2=-162
 
 
-                // 优先扣减不可用余额
-                PayParam payParam = new PayParam();
-                Double notWithdrawAmount = payService.getNotWithdrawAmount(member.getUserId());
-                if (notWithdrawAmount > price) payParam.setCurrency(1);
-
-                if(memberGrade < 0){
-                    payParam.setFromUid(member.getUserId());
-                    payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
-                } else {
-                    payParam.setFromUid(Constant.SYSTEM_ACCOUNTS_ID);
-                    payParam.setToUid(member.getUserId());
-                }
-                payParam.setAmount(price);
-
-                consumePayParams.add(payParam);
-
-            });
-            payService.batchConsume(consumePayParams);
+            // 2元区和5元区的计算公式与其他分区的不同
+            if(parentAreaId == 3 || parentAreaId == 4){
+                price = finalGrade * subarea.getPrice();
+            }else {
+                price = finalGrade * subarea.getReducePrice();
+            }
 
 
-            List<Messages> messagesList = new ArrayList<>();
-            memberList.forEach(member -> {
-                messagesList.add(new Messages(null, member.getUserId()
-                        ,  callback.getGameRoom().getExternalRoomId() + "房间结算审核通过通知", 0, new Date()));
-            });
-            messageService.pushMessage(messagesList);
+            // 优先扣减不可用余额
+            PayParam payParam = new PayParam();
+            Double notWithdrawAmount = payService.getNotWithdrawAmount(member.getUserId());
+            if (notWithdrawAmount > price) payParam.setCurrency(1);
+
+            if(memberGrade < 0){
+                payParam.setFromUid(member.getUserId());
+                payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
+            } else {
+                payParam.setFromUid(Constant.SYSTEM_ACCOUNTS_ID);
+                payParam.setToUid(member.getUserId());
+            }
+            payParam.setAmount(price);
+
+            consumePayParams.add(payParam);
+
         });
+        payService.batchConsume(consumePayParams);
+
+
+        List<Messages> messagesList = new ArrayList<>();
+        memberList.forEach(member -> {
+            messagesList.add(new Messages(null, member.getUserId()
+                    ,  callback.getGameRoom().getExternalRoomId() + "房间结算审核通过通知", 0, new Date()));
+        });
+        messageService.pushMessage(messagesList);
     }
 
     /**
@@ -163,35 +164,37 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
     @Deprecated
     public void closeAccounts(Long roomCode) {
         // 结算
-        gameRoomService.closeAccounts(roomCode, (callback) -> {
-            if(callback == null || callback.getGameRoom() == null || callback.getSubareas() == null)
-                throw new InfoException("回调参数有误");
+        GameRoomCallbackResp callback = gameRoomService.closeAccounts(roomCode);
+        if(callback.getUserId() ==  -1) return;
 
-            // 计算房间内所有人的成绩
-            // 如果所有人的成绩相加运算后得到结果是0，系统自动进行结算
+        // 计算房间内所有人的成绩
+        // 如果所有人的成绩相加运算后得到结果是0，系统自动进行结算
 
-            // 1、计算房间总成绩
+        // 1、计算房间总成绩
+
+        synchronized (lock) {
             List<SettlementDetailInfo> settlementList = settlementService.getMemberList(roomCode);
             Double countGrade = settlementList.stream().map(s -> s.getGrade()).reduce(0D, (acc, element) -> acc + element);
             if(settlementList == null || settlementList.isEmpty() || countGrade != 0) throw new InfoException("房间总成绩有误，请重新计算！");// 说明有人误报成绩，交给后台人工复审成绩
 
-            int count = gameRoomService.updateStatusByRoomCode(roomCode, 5);
-            if(count == 0) throw new InfoException("更新结算状态失败[A00]");
+            GameRoom room = gameRoomService.getRoom(roomCode);
+            int count = gameRoomService.updateStatusCodeVersion(roomCode, 5);
+            if(count == 0) throw new MsgException("更新结算状态失败[A00]");
 
             count = 0;
             count = settlementService.updateStatusByRoomCode(roomCode, 1);
             if(count == 0) throw new MsgException("更新结算状态失败[A02]");
+        }
 
-            List<GameMemberGroup> memberList = gameMemberGroupService.getListByRoom(callback.getGameRoom().getRoomCode());
-            if(memberList == null || memberList.isEmpty()) throw new InfoException("加载房间成员列表失败");
+        List<GameMemberGroup> memberList = gameMemberGroupService.getListByRoom(callback.getGameRoom().getRoomCode());
+        if(memberList == null || memberList.isEmpty()) throw new InfoException("加载房间成员列表失败");
 
-            List<Messages> messagesList = new ArrayList<>();
-            memberList.forEach(member -> {
-                messagesList.add(new Messages(null, member.getUserId()
-                        ,  callback.getGameRoom().getExternalRoomId() + "房间结算审核通过通知", 0, new Date()));
-            });
-            messageService.pushMessage(messagesList);
+        List<Messages> messagesList = new ArrayList<>();
+        memberList.forEach(member -> {
+            messagesList.add(new Messages(null, member.getUserId()
+                    ,  callback.getGameRoom().getExternalRoomId() + "房间结算审核通过通知", 0, new Date()));
         });
+        messageService.pushMessage(messagesList);
     }
 
     /**

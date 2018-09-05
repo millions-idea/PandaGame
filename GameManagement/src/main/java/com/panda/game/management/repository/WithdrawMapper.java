@@ -18,7 +18,7 @@ import java.util.List;
 
 @Mapper
 public interface WithdrawMapper extends MyMapper<Withdraw> {
-    @Select("SELECT t1.*, t2.phone, t2.finance_id AS financeId FROM tb_withdraw t1 " +
+    @Select("SELECT t1.*, t2.phone, t2.finance_id AS financeId, t2.finance_name AS financeName FROM tb_withdraw t1 " +
             "LEFT JOIN tb_users t2 ON t1.user_id = t2.user_id " +
             "WHERE ${condition} ORDER BY t1.add_time DESC LIMIT #{page},${limit}")
     /**

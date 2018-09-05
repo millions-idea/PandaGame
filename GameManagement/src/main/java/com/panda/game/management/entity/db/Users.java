@@ -38,6 +38,7 @@ public class Users {
     private String ip;
     private String pandaId;
     private String financeId;
+    private String financeName;
     private Integer isEnable;
     private Integer isDelete;
     private Integer level;

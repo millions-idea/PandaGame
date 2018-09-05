@@ -192,6 +192,8 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
     @Transactional
     @AspectLog(description = "R转账")
     public Long recharge(PayParam payParam) {
+        logger.info("转账参数:" + JsonUtil.getJson(payParam));
+
         // 查询交易主体信息
         List<UserDetailInfo> userDetailInfoList = this.getUsersInfo(payParam);
         UserDetailInfo fromUserInfo = userDetailInfoList.stream().filter(u -> u.getUserId().equals(payParam.getFromUid())).findFirst().get();
@@ -637,6 +639,7 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
     private List<UserDetailInfo> getUsersInfo(PayParam payParam){
         String userId = payParam.getFromUid().toString().concat(",").concat(payParam.getToUid().toString());
         List<UserDetailInfo> users = userMapper.selectInUid(userId);
+        System.out.println("交易参数:" + JsonUtil.getJson(payParam));
         if(users.isEmpty() || users.size() != 2) throw new InfoException("查询交易主体账户信息不完整");
         return users;
     }

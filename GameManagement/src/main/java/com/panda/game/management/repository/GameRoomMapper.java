@@ -18,6 +18,12 @@ import java.util.List;
 
 @Mapper
 public interface GameRoomMapper extends MyMapper<GameRoom> {
+    @Update("UPDATE tb_game_room SET `status`=#{status} WHERE room_code=#{roomCode}")
+    /**
+     * 解散房间 韦德 2018年9月4日15:47:09
+     */
+    int updateStatusByRoomCode(@Param("roomCode") Long roomCode, @Param("status") Integer status);
+
 
     @Select("SELECT t1.* " +
             ",(SELECT COUNT(*) FROM tb_game_member_group WHERE room_code = t1.room_code AND is_confirm = 0) AS personCount " +
@@ -38,14 +44,6 @@ public interface GameRoomMapper extends MyMapper<GameRoom> {
      */
     GameRoom selectByRoomCode(@Param("roomCode") Long roomCode);
 
-
-    @Update("UPDATE tb_game_room SET `status`=#{status},version = version + 1 WHERE room_code=#{roomCode} AND version = #{version}")
-    /**
-     * 根据roomCode更新状态值 韦德 2018年8月20日10:57:19
-     * @param roomCode
-     * @param status
-     */
-    int updateStatusByRoomCode(@Param("roomCode") Long roomCode,@Param("status") int status,@Param("version") Integer version);
 
     @Select("SELECT t1.* " +
             ",(SELECT COUNT(*) FROM tb_game_member_group WHERE room_code = t1.room_code AND is_confirm = 0) AS personCount " +
@@ -76,4 +74,49 @@ public interface GameRoomMapper extends MyMapper<GameRoom> {
      * @return
      */
     GameRoomDetailInfo getLimitRoom(@Param("parentAreaId") String parentAreaId , @Param("subareasId") String subareasId);
+
+    @Update("UPDATE tb_game_room SET `status`=#{status},`is_enable`=#{isEnable}, version = version + 1 WHERE room_code=#{roomCode} AND version = #{version}")
+    /**
+     * 解散房间 韦德 2018年9月4日15:47:09
+     */
+    int update(GameRoom room);
+
+
+
+
+    @Select("SELECT t1.*,t2.name AS parentAreaName,t3.name AS subareaName FROM tb_game_room t1 " +
+            "LEFT JOIN tb_subareas t2 ON t1.parent_area_id = t2.subarea_id " +
+            "LEFT JOIN tb_subareas t3 ON t1.subarea_id = t3.subarea_id " +
+            "WHERE ${condition} GROUP BY t1.room_id ORDER BY t1.add_time DESC LIMIT #{page},${limit}")
+    /**
+     * 分页查询 韦德 2018年8月30日11:33:22
+     * @param page
+     * @param limit
+     * @param state
+     * @param beginTime
+     * @param endTime
+     * @param where
+     * @return
+     */
+    List<GameRoomDetailInfo> selectLimit(@Param("page") Integer page, @Param("limit") String limit
+            , @Param("isEnable") Integer isEnable
+            , @Param("beginTime") String beginTime
+            , @Param("endTime") String endTime
+            , @Param("condition") String condition);
+
+    @Select("SELECT COUNT(t1.room_id) FROM tb_game_room t1 " +
+            "WHERE ${condition}")
+    /**
+     * 分页查询记录数 韦德 2018年8月30日11:33:30
+     * @param state
+     * @param beginTime
+     * @param endTime
+     * @param where
+     * @return
+     */
+    Integer selectLimitCount(@Param("isEnable") Integer isEnable
+            , @Param("beginTime") String beginTime
+            , @Param("endTime") String endTime
+            , @Param("condition") String condition);
+
 }

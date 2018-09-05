@@ -28,6 +28,7 @@ public class RoomApiController {
     private IGameRoomService gameRoomService;
     @Autowired
     private GameRoomFacadeService gameRoomFacadeService;
+    private static Integer lock = 103697367;
 
     @PostMapping("/create")
     public JsonResult create(String token, GameRoom gameRoom){
@@ -55,7 +56,9 @@ public class RoomApiController {
 
     @PostMapping("/closeAccounts")
     public JsonResult closeAccounts(String token, Long roomCode, Double grade){
-        gameRoomFacadeService.closeAccounts(token, roomCode, grade);
+        synchronized(lock){
+            gameRoomFacadeService.closeAccounts(token, roomCode, grade);
+        }
         return JsonResult.successful();
     }
 

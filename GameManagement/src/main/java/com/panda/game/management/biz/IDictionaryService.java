@@ -30,8 +30,8 @@ public interface IDictionaryService extends IBaseService<Dictionary> {
     void refresh();
 
     /**
-     * 更新联系方式 韦德 2018年9月2日01:44:08
+     * 更新基础配置信息 韦德 2018年9月2日01:44:08
      * @param html
      */
-    void updateConsumeServiceHtml(String html);
+    void updateConfiguration(String html, String give, String version, String iosDownload, String androidDownload);
 }

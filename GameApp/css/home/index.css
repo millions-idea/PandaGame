@@ -1,5 +1,9 @@
 *{margin:0;padding:0ï¼›}
 
+body>.mui-progressbar{
+	top:0
+}
+
 .runnerAd{
 	display: block;
 	background-color: #fff;

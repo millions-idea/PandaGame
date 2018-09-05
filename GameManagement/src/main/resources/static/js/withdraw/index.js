@@ -203,6 +203,9 @@ function getTableColumns() {
         , {field: 'financeId', title: '支付宝账户', width: 180, templet: function (d) {
                 return d.financeId == null ? "未绑定支付宝账户" : d.financeId;
             }}
+        , {field: 'financeName', title: '支付宝姓名', width: 180, templet: function (d) {
+                return d.financeName == null ? "未绑定支付宝账户" : d.financeName;
+            }}
         , {field: 'amount', title: '金额', width: 150, templet: function (d) {
                 return "<span style='color: #c2330f;'>" + d.amount + "</span>";
             }}

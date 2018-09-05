@@ -10,6 +10,7 @@ package com.panda.game.management.biz;
 import com.panda.game.management.entity.db.GameRoom;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
+import com.panda.game.management.entity.dbExt.UserDetailInfo;
 import com.panda.game.management.entity.resp.GameRoomCallbackResp;
 
 import java.util.List;
@@ -44,16 +45,15 @@ public interface IGameRoomService extends IBaseService<GameRoom> {
      * @param token
      * @param roomCode
      * @param grade
-     * @param lastPersonCallback
      */
-    void closeAccounts(String token, Long roomCode, Double grade, Consumer<GameRoomCallbackResp> lastPersonCallback);
+    GameRoomCallbackResp closeAccounts(String token, Long roomCode, Double grade);
 
     /**
      * 申请结算 韦德 2018年8月29日20:54:47
      * @param roomCode
      * @param callback
      */
-    void closeAccounts(Long roomCode, Consumer<GameRoomCallbackResp> callback);
+    GameRoomCallbackResp closeAccounts(Long roomCode);
 
     /**
      * 获取所有游戏房间 韦德 2018年8月20日21:20:09
@@ -89,7 +89,13 @@ public interface IGameRoomService extends IBaseService<GameRoom> {
      */
     Integer getPersonCount(String roomCode);
 
-    int updateStatusByRoomCode(Long roomCode, int status);
+    /**
+     * 乐观锁更新房间状态 韦德 2018年9月4日20:07:31
+     * @param roomCode
+     * @param status
+     * @return
+     */
+    int updateStatusCodeVersion(Long roomCode, int status);
 
     /**
      * 强制结算 韦德 2018年9月2日12:58:00
@@ -110,4 +116,33 @@ public interface IGameRoomService extends IBaseService<GameRoom> {
      * @param roomCode
      */
     void disbandRoom(Long roomCode);
+
+    /**
+     * 分页加载 韦德 2018年8月30日11:29:00
+     * @param page
+     * @param limit
+     * @param condition
+     * @param state
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    List<GameRoomDetailInfo> getLimit(Integer page, String limit, String condition, Integer state, String beginTime, String endTime);
+
+    /**
+     * 加载总记录数 韦德 2018年8月30日11:29:11
+     * @return
+     */
+    Integer getCount();
+
+    /**
+     * 加载分页记录数 韦德 2018年8月30日11:29:22
+     * @param condition
+     * @param state
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    Integer getLimitCount(String condition, Integer state, String beginTime, String endTime);
+
 }

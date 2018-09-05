@@ -37,6 +37,7 @@ public class WithdrawResp {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
     private String financeId;
+    private String financeName;
 
     /*users*/
     private String phone;

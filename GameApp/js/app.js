@@ -241,6 +241,28 @@
 	} 
 
 
+
+	owner.getVersion = function(param, callback, errorCallback){ 
+		callback = callback || $.noop; 
+		$.ajax(toUrl("api/bootstrap/version"), {
+			type: "get",
+			data: param,	
+			success: function(data){
+				console.log(JSON.stringify(data))
+				if(data != null && data.code != null && data.code == 200){
+					plus.storage.setItem('messageList',JSON.stringify(data.data));
+				}
+							
+				return callback(data);
+			},
+			error: function(xhr,type,errorThrown){
+				ajaxError(xhr, type, errorThrown, errorCallback);
+			}
+		})
+		
+	} 
+
+
 	/**
 	 * 获取当前状态
 	 **/
@@ -318,4 +340,7 @@
         s = date.getSeconds();
         return Y+M+D+h+m+s;
     }
+	
+	
+	
 }(mui, window.app = {}));

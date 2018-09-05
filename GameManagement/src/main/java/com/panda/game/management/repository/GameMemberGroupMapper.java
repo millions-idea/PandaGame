@@ -71,7 +71,7 @@ public interface GameMemberGroupMapper extends MyMapper<GameMemberGroup> {
     List<GameMemberGroup> getListByRoom(@Param("roomCode") Long roomCode);
 
     @Select("SELECT t1.*,t2.* FROM tb_game_member_group t1\n" +
-            "LEFT JOIN tb_game_room t2 ON t1.room_code = t2.room_code WHERE t1.user_id = #{userId} AND (t2.status != 5 AND t1.is_confirm != 0)")
+            "LEFT JOIN tb_game_room t2 ON t1.room_code = t2.room_code WHERE t1.user_id = #{userId} AND (t2.status != 5 AND t2.status != 6 AND t1.is_confirm != 0)")
     /**
      * 查询未结束的游戏房间 韦德 2018年8月21日17:34:15
      * @param userId
@@ -95,13 +95,18 @@ public interface GameMemberGroupMapper extends MyMapper<GameMemberGroup> {
      */
     int selectPersonCount(@Param("roomCode") String roomCode);
 
-    @Select("SELECT COUNT(*) FROM tb_game_room WHERE owner_id = #{userId} AND (`status` != 6 AND `status` != 5) AND is_enable = 1")
+    @Select("SELECT COUNT(*) FROM tb_game_room WHERE owner_id = #{userId} AND (`status` != 6 AND `status` != 5  AND `status` != 0) AND is_enable = 1")
     /**
      * 查询正在游戏中的房间数量 韦德 2018年8月24日22:45:38
      * @param userId
      * @return
      */
     int selectPlayingCount(@Param("userId") Integer userId);
+
+    @Select("SELECT COUNT(*) FROM tb_game_member_group t1 " +
+            "LEFT JOIN tb_game_room t2 ON t1.room_code = t2.room_code " +
+            "WHERE t1.user_id = #{userId} AND (t2.is_enable = 1 OR t2.`status` = 4);")
+    int selectRoomCount(@Param("userId") Integer userId);
 
     @Select("SELECT COUNT(*) FROM tb_game_member_group WHERE user_id = #{userId} AND room_code = #{roomCode} AND is_confirm = 1")
     /**

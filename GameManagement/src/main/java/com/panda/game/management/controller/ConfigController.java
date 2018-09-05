@@ -43,13 +43,17 @@ public class ConfigController extends BaseController {
     @GetMapping("/index")
     public String configuration(final Model model){
         model.addAttribute("consumeServiceHtml", dictionaryService.getGroupInformation().getConsumeServiceHtml());
+        model.addAttribute("newUserGive", dictionaryService.getGroupInformation().getGiveAmount());
+        model.addAttribute("version", dictionaryService.getGroupInformation().getVersion());
+        model.addAttribute("ios", dictionaryService.getGroupInformation().getIosDownload());
+        model.addAttribute("android", dictionaryService.getGroupInformation().getAndroidDownload());
         return "config/index";
     }
 
-    @PostMapping("/updateConsumeServiceHtml")
+    @PostMapping("/updateConfiguration")
     @ResponseBody
-    public JsonResult updateConsumeServiceHtml(String html){
-        dictionaryService.updateConsumeServiceHtml(html);
+    public JsonResult updateConfiguration(String html, String giveAmount, String version, String iosDownload, String androidDownload){
+        dictionaryService.updateConfiguration(html, giveAmount, version, iosDownload, androidDownload);
         dictionaryService.refresh();
         return JsonResult.successful();
     }

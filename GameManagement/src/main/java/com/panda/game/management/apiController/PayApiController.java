@@ -26,4 +26,15 @@ public class PayApiController {
         payService.transfer(payParam);
         return JsonResult.successful();
     }
+
+    /**
+     * 前台统一支付接口 韦德 2018年9月5日18:12:21
+     * @param payId 支付id：alipay、wxpay
+     * @param total 支付总额
+     * @return
+     */
+    @PostMapping("/payment")
+    public JsonResult payment(String payId, Double total){
+        return JsonResult.successful();
+    }
 }

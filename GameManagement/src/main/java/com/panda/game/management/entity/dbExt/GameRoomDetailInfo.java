@@ -38,4 +38,7 @@ public class GameRoomDetailInfo {
     private Integer personCount;
     private Integer isOwner;
 
+    /*subareas*/
+    private String parentAreaName;
+    private String subareaName;
 }

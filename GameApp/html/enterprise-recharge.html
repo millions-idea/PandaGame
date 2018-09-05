@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/ui.css" rel="stylesheet" />
+		<link href="../css/room/closeAccounts.css" rel="stylesheet" />
+		<link href="../css/home/recharge.css" rel="stylesheet" />
+		<script type="text/javascript" src="../js/common.js"></script>
+		<link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8"/>
+		<style type="text/css">
+			#total{
+				-webkit-user-select:text;
+				text-align:right;
+				padding:0 1em;
+				border: 0px;
+				border-bottom:1px solid #ECB100;
+				border-radius: 0;
+				font-size:16px;
+				outline:none;
+			}
+		</style>
+		
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav my-title" >
+			<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" style="color: #fff;"></a>
+			<h1 class="mui-title my-title-color" id="title">充值中心</h1>
+		</header>
+		
+		<div class="mui-content">
+		 	<div class="form-placeholder-50"></div>
+
+			<div id="dcontent" class="form-item dcontent">
+				<label style="color:red;font-size: 14px;">如遇到支付问题请及时联系客服</label>
+		 		<div class="form-placeholder-10"></div>
+		 		<div class="form-item form-item-full">
+					<input type="number" class="form-input" id="total" style="text-align: center;"  maxlength="8" placeholder="请输入充值金额" value=""/>
+				</div>
+				<!--<a id="alipayButton" class="mui-btn mui-btn-block mui-btn-orange" style="color:#fff" href="alipays://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/FKX01971FVU2LCLFRYARF4">去支付宝充值</a>-->
+			</div>
+			
+			<div id="output" style="display: none;">
+			</div>
+		</div>
+		
+		
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/config.js"></script>
+		<script src="../js/app.js"></script> 
+		<script src="../js/home/index.js"></script> 
+		<script type="text/javascript" src="../js/immersed.js" ></script>
+		
+		<script type="text/javascript">
+			var pages = window.config.pages;
+			var groupInfo ;
+			var qrcode ;
+			
+			
+			(function($, doc){
+				$.init({
+					statusBarStyle: "light",
+					statusBarBackground: '#fe5a2f'
+				});
+				
+				$.plusReady(function(){
+					// 设置顶部状态栏样式
+					plus.navigator.setStatusBarStyle("light");
+					plus.navigator.setStatusBarBackground("#FE532A");
+					
+					// 禁止屏幕翻转
+					plus.screen.lockOrientation("portrait-primary");
+					
+					groupInfo = JSON.parse(plus.storage.getItem("groupInfo"));
+					var self = plus.webview.currentWebview();
+					var beforeSelf = self.self;
+					var roomCode = self.room_code;
+					
+					
+					plus.webview.currentWebview().addEventListener("show", function(){
+						// refresh
+						 
+					})
+							
+					   
+					
+				});
+
+			})(mui, document)
+			
+			
+			
+			var pays={};
+			function plusReady(){
+				// 获取支付通道
+				plus.payment.getChannels(function(channels){
+					var content=document.getElementById('dcontent');
+					var info=document.getElementById('info');
+					var txt='支付通道信息：';
+					for(var i in channels){
+						var channel=channels[i];
+						if(channel.id=='qhpay'||channel.id=='qihoo'||channel.id=='wxpay'){	// 过滤掉不支持的支付通道：暂不支持360相关支付
+							continue;
+						}
+						pays[channel.id]=channel;
+						txt += 'id:'+channel.id+', ';
+						txt += 'description:'+channel.description+', ';
+						txt += 'serviceReady:'+channel.serviceReady+'； ';
+						var de=document.createElement('button');
+						de.setAttribute('class', 'mui-btn mui-btn-block mui-btn-orange');
+						de.setAttribute('onclick', 'pay(this.id)');
+						de.id=channel.id;
+						de.innerText=channel.description+'支付';
+						content.appendChild(de);
+						checkServices(channel);
+					}
+					console.log("INFO:" + txt)
+				},function(e){
+					outLine('获取支付通道失败：'+e.message);
+				});
+			}
+			document.addEventListener('plusready', plusReady, false);
+			// 检测是否安装支付服务
+			function checkServices(pc){
+				if(!pc.serviceReady){
+					var txt=null;
+					switch(pc.id){
+						case 'alipay':
+						txt='检测到系统未安装“支付宝快捷支付服务”，无法完成支付操作，是否立即安装？';
+						break;
+						default:
+						txt='系统未安装“'+pc.description+'”服务，无法完成支付，是否立即安装？';
+						break;
+					}
+					plus.nativeUI.confirm(txt, function(e){
+						if(e.index==0){
+							pc.installService();
+						}
+					}, pc.description);
+				}
+			}
+			
+			var w=null;
+			var PAYSERVER='http://demo.dcloud.net.cn/payment/?payid=';
+			// 支付
+			function pay(id){
+				console.log("支付id:" + id)
+				if(w){return;}//检查是否请求订单中
+				if(id==='appleiap'){
+					outSet('应用内支付');
+					clicked('payment_iap.html');
+					return;
+				}
+				outSet('----- 请求支付 -----');
+				var url=PAYSERVER;
+				if(id=='alipay'||id=='wxpay'){
+					url+=id;
+				}else{
+					plus.nativeUI.alert('当前环境不支持此支付通道！', null, '捐赠');
+					return;
+				}
+				var appid=plus.runtime.appid;
+				if(navigator.userAgent.indexOf('StreamApp')>=0){
+					appid='Stream';
+				}
+				url+='&appid='+appid+'&total=';
+				
+				w=plus.nativeUI.showWaiting();
+				// 请求支付订单
+				var amount = document.getElementById('total').value;
+				var xhr=new XMLHttpRequest();
+				xhr.onreadystatechange=function(){
+					switch(xhr.readyState){
+						case 4:
+						w.close();w=null;
+						if(xhr.status==200){
+							outLine('----- 请求订单成功 -----');
+							outLine(xhr.responseText);
+							var order=xhr.responseText;
+							plus.payment.request(pays[id],order,function(result){
+								outLine('----- 支付成功 -----');
+								outLine(JSON.stringify(result));
+								plus.nativeUI.alert('支付成功：感谢你的支持，我们会继续努力完善产品。',function(){
+									back();
+								},'捐赠');
+							},function(e){
+								outLine('----- 支付失败 -----');
+								outLine('['+e.code+']：'+e.message);
+								// plus.nativeUI.alert('更多错误信息请参考支付(Payment)规范文档：http://www.html5plus.org/#specification#/specification/Payment.html', null, '支付失败：'+e.code);
+							});
+						}else{
+							outLine('----- 请求订单失败 -----');
+							outLine( xhr.status );
+							plus.nativeUI.alert('获取订单信息失败！', null, '捐赠');
+						}
+						break;
+						default:
+						break;
+					}
+				}
+				xhr.open('GET',url+amount);
+				outLine('请求支付订单：'+url+amount);
+				xhr.send();
+			}
+		
+		</script>
+	</body>
+
+</html>

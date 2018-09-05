@@ -29,4 +29,8 @@ public class GroupInformation {
     private String consumeServiceHtml;
     private String payQRCodeUrl;
     private String payCode;
+    private String giveAmount;
+    private String version;
+    private String iosDownload;
+    private String androidDownload;
 }

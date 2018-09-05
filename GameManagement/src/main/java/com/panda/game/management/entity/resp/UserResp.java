@@ -34,6 +34,8 @@ public class UserResp {
     private String pandaId;
     @JsonView(SecurityView.class)
     private String financeId;
+    @JsonView(SecurityView.class)
+    private String financeName;
 
     @JsonView(FinanceView.class)
     private Double balance;

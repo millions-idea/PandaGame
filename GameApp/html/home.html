@@ -5,7 +5,7 @@
 		<meta charset="UTF-8">
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
-		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/mui.css" rel="stylesheet" />
 		<link rel="stylesheet" href="../css/ui.css" />
 		<link rel="stylesheet" href="../css/home/index.css" />
 		<script src="../js/frame/template-web.js"></script>
@@ -111,7 +111,7 @@
 						</li>
 					{{/each}}
 				</script>
-				<!--subareas end-->
+				<!--subareas end--> 
 				
 				<!--popular begin-->
 				<div class="popular">
@@ -120,6 +120,8 @@
 					<img id="centerBottomAdQCode" src="../images/QRCode.png" alt="" />
 				</div>
 				<!--popular end-->
+			
+			
 				
 			</div>
 			<!--container end-->
@@ -169,7 +171,11 @@
 					plus.navigator.setStatusBarBackground("#FE532A");
 					
 					// 禁止屏幕翻转
-					plus.screen.lockOrientation("portrait-primary");  
+					plus.screen.lockOrientation("portrait-primary"); 
+					
+					
+					// 检测更新版本
+					checkVersion(plus);
 					
 					// 推送消息被点击
 						if(bindMessageClick == 0) {
@@ -194,12 +200,13 @@
 					
 					plus.webview.currentWebview().addEventListener("show", function(){
 						console.log("页面刷新"); 
+						
 					})
 					
 					doc.getElementById("recharge").addEventListener("tap", function(){
 						mui.openWindow({
-		                    url: "recharge.html",
-		                    id: "recharge",
+		                    url: "enterprise-recharge.html",
+		                    id: "enterprise-recharge",
 		                    preload: false,
 		                    waiting: {
 		                        autoShow: true,
@@ -309,6 +316,9 @@
 					
 					centerRightAdTitle.innerText = data.msg.centerRightAdTitle;
 					centerRightAdDesc.innerText = data.msg.centerRightAdDesc;
+					
+					
+					gDoc.getElementById("centerBottomAdQCode").src = data.msg.centerBottomAdQCode;
 					 
 					gallery.slider({
 					  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
@@ -380,6 +390,99 @@
 				
 			}
 			 
+			 
+			function checkVersion(plugin){
+				var btn = ["确定升级", "取消"];
+		        plugin.runtime.getProperty(plugin.runtime.appid, function (inf) {
+			        ver = inf.version;
+			        try{
+			        	app.getVersion({}, function(data){
+							ver = ver.trim();
+							var ua = navigator.userAgent.toLowerCase();
+							var groupInfo = JSON.parse(plus.storage.getItem("groupInfo"));
+	         				console.log("IOS:" + groupInfo.iosDownload);
+	         				console.log("Android:" + groupInfo.androidDownload);
+			         		if (data.version.trim().toString() != ver.toString()) {
+								if (/iphone|ipad|ipod/.test(ua)) return plus.runtime.openURL(groupInfo.iosDownload);
+			         			console.log("update版本号" + data.update);
+			         			if(data.update == 0){
+			         				var _msg = "发现新版本:V" + data.version;
+					                mui.confirm(_msg, '升级确认', btn,
+					                function(e) {
+					                    if (e.index == 0) { //执行升级操作
+											createDownload(plugin, groupInfo.androidDownload);
+					                    }
+					                });
+			         			}else{
+									if (/iphone|ipad|ipod/.test(ua)) return plus.runtime.openURL(groupInfo.iosDownload);
+			         				console.log("开始自动下载……");
+	                            	plugin.nativeUI.toast('正在为您自动下载最新版本……');
+			         				createDownload(plugin, groupInfo.androidDownload);
+			         			}
+				                
+				            } else {
+	                            plugin.nativeUI.toast('当前版本为最新版本');
+	                            mui("body").progressbar().hide();
+				                return;
+				            }
+				         })
+			        }catch(e){
+			        	//TODO handle the exception
+			        	console.log("自动下载抛出异常: " + JSON.stringify(e))
+			        }
+			         
+		        });
+			}
+			
+			function createDownload(plugin, url){
+				// 初始化下载进度
+				mui("body").progressbar({progress:0}).show();
+	            plugin.nativeUI.toast("正在准备环境，请稍后！"); 
+	            var dtask = plugin.downloader.createDownload(url, {}, function(d, status) {
+	                console.log("下载响应码:" + status)
+	                if (status == 200) {
+	                    var path = d.filename; //下载apk
+	                    plugin.runtime.install(path); // 自动安装apk文件
+	    				mui("body").progressbar().hide();
+	                } else {
+	                    plugin.nativeUI.alert('版本更新失败:' + status);
+	    				mui("body").progressbar().hide();
+	                }
+	            });
+	            dtask.addEventListener( "statechanged", onStateChanged, false );
+	            dtask.start();
+			}
+			
+			
+			// 监听下载任务状态 
+			function onStateChanged(download, status ) {
+				switch(download.state){
+					case 0:
+						console.log("下载任务开始调度");
+						break;
+					case 1:
+						console.log("下载任务开始请求");
+						break;
+					case 2:
+						console.log("下载任务请求已经接收");                   
+						break;
+					case 3:
+						console.log("下载任务接收数据");
+						 var percent = download.downloadedSize / download.totalSize * 100;
+                            mui("body").progressbar().setProgress(parseInt(percent));    
+						break;
+					case 4:
+						console.log("下载任务已完成");
+						break;
+					case 5:
+						console.log("下载任务已暂停");
+						break;
+				}
+				if ( download.state == 4 && status == 200 ) {
+					// 下载完成 
+					alert( "Download success: " + download.getFileName() );  
+				}  
+			}
 		</script>
 		 
 	</body>

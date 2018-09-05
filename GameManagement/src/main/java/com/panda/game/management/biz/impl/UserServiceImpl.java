@@ -420,7 +420,7 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserServ
      * @param account
      */
     @Override
-    public void bindFinanceAccount(String token, String account) {
+    public void bindFinanceAccount(String token, String account, String accountName) {
         Map<String, String> map = TokenUtil.validate(token);
         if(map.isEmpty()) throw new MsgException("请重新登录");
         Integer userId = Integer.valueOf(map.get("userId"));
@@ -429,6 +429,7 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserServ
         if(users == null) throw new MsgException("用户不存在");
 
         users.setFinanceId(account);
+        users.setFinanceName(accountName);
         users.setUpdateDate(new Date());
 
         int count = userMapper.updateByPrimaryKey(users);

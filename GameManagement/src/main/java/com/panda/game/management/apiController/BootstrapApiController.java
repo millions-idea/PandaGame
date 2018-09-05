@@ -12,15 +12,19 @@ import com.panda.game.management.biz.IBadBoyService;
 import com.panda.game.management.biz.IMessageService;
 import com.panda.game.management.biz.ISmsService;
 import com.panda.game.management.biz.IUserService;
+import com.panda.game.management.entity.DataDictionary;
 import com.panda.game.management.entity.JsonArrayResult;
 import com.panda.game.management.entity.JsonResult;
+import com.panda.game.management.entity.db.Dictionary;
 import com.panda.game.management.entity.db.Messages;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.resp.UserResp;
+import com.panda.game.management.entity.resp.VersionResp;
 import com.panda.game.management.facade.UserFacadeService;
 import com.panda.game.management.utils.MD5Util;
 import com.panda.game.management.utils.RequestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,7 +48,8 @@ public class BootstrapApiController {
     private UserFacadeService userFacadeService;
     @Autowired
     private IMessageService messageService;
-
+    @Autowired
+    private RedisTemplate redisTemplate;
     @PostMapping("/register")
     public JsonResult register(HttpServletRequest request, Users user, String smsCode){
         if(user.getPandaId().isEmpty()) return new JsonResult().normalExceptionAsString("熊猫麻将ID是必填项");
@@ -133,5 +138,20 @@ public class BootstrapApiController {
     public JsonArrayResult<Messages> getMessageNotification(String token){
         List<Messages> list = messageService.getMessageList(token);
         return new JsonArrayResult<>(list);
+    }
+
+
+
+    @GetMapping("/version")
+    public VersionResp version(){
+        Dictionary version = DataDictionary.DATA_DICTIONARY.get("version");
+        String value = version.getValue();
+        return new VersionResp(value.contains("U") ? 1 : 0, value.replace("U","").trim());
+    }
+
+    @GetMapping("/cache")
+    public Object cache(){
+        redisTemplate.opsForValue().set("init", "hello redis");
+        return redisTemplate.opsForValue().get("init");
     }
 }

@@ -22,6 +22,10 @@
 		 	<div class="form-placeholder-10"></div>
 		 	<div class="form-placeholder-5"></div>
 			
+			<div class="form-item form-item-full">
+				<input type="text" class="form-input" id="accountName" placeholder="请输入要绑定的支付宝账户姓名" value=""/>
+			</div> 
+			
 			 
 			<div class="form-item form-item-full">
 				<input type="text" class="form-input" id="account" placeholder="请输入要绑定的支付宝账户" value=""/>
@@ -61,7 +65,8 @@
 					
 					
 					var okButton = doc.getElementById("okButton"),
-						valueInput = doc.getElementById("account");
+						valueInput = doc.getElementById("account"),
+						accountNameInput = doc.getElementById("accountName");
 						
 					okButton.addEventListener("tap", function(){
 						
@@ -77,7 +82,8 @@
 						
 						my.bindFinanceAccount({
 							token: JSON.parse(localCache).token.toString(),
-							account: valueInput.value
+							account: valueInput.value,
+							accountName: accountNameInput.value
 						}, function(data){
 							okButton.disabled = false;
 							okButton.classList.remove("disabled");

@@ -49,6 +49,10 @@
           "text": "充值房卡",
           "icon": "&#xe63c;",
           "href": "/management/room/room-card"
+        },{
+          "text": "房间管理",
+          "icon": "&#xe63c;",
+          "href": "/management/room/index"
         }]
     },{
       "text": "网站配置",

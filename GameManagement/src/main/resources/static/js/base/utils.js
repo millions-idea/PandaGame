@@ -4,10 +4,10 @@ window.utils = {
             return data == null || data.error == null || data.error == 1;
         },
         isErrorByCode: function (data) {
-            return data == null || data.code == null || data.code == 500 || data.code == 400;
+            return data == null || data.code == null || data.code == 500 || data.code == 300;
         },
         isException: function (data) {
-            return data != null && data.code != null && data.code == 300 ;
+            return data != null && data.code != null && data.code == 400 ;
         }
     },
     date: {

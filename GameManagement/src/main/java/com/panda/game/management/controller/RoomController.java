@@ -13,10 +13,8 @@ import com.panda.game.management.biz.IRoomCardService;
 import com.panda.game.management.biz.ISettlementService;
 import com.panda.game.management.entity.JsonArrayResult;
 import com.panda.game.management.entity.JsonResult;
-import com.panda.game.management.entity.db.Accounts;
-import com.panda.game.management.entity.db.Messages;
-import com.panda.game.management.entity.db.RoomCard;
-import com.panda.game.management.entity.db.Settlement;
+import com.panda.game.management.entity.db.*;
+import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
 import com.panda.game.management.entity.dbExt.RoomCardDetailInfo;
 import com.panda.game.management.entity.dbExt.SettlementDetailInfo;
 import com.panda.game.management.entity.resp.AccountsResp;
@@ -151,4 +149,29 @@ public class RoomController extends BaseController {
         gameRoomService.disbandRoom(roomCode);
         return JsonResult.successful();
     }
+
+
+    @GetMapping("/index")
+    public String  index(){
+        return "room/index";
+    }
+
+    @GetMapping("/getGameRoomLimit")
+    @ResponseBody
+    public JsonArrayResult<GameRoomDetailInfo> getGameRoomLimit(Integer page, String limit, String condition, Integer state, String beginTime, String endTime){
+        Integer count = 0;
+        List<GameRoomDetailInfo> list = gameRoomService.getLimit(page, limit, condition, state, beginTime, endTime);
+        JsonArrayResult jsonArrayResult = new JsonArrayResult(0, list);
+        if (StringUtil.isBlank(condition)
+                && StringUtil.isBlank(beginTime)
+                && StringUtil.isBlank(endTime)
+                && (state == null || state == 0)){
+            count = gameRoomService.getCount();
+        }else{
+            count = gameRoomService.getLimitCount(condition, state, beginTime, endTime);
+        }
+        jsonArrayResult.setCount(count);
+        return jsonArrayResult;
+    }
+
 }

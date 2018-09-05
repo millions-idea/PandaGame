@@ -2,7 +2,7 @@
 profiles: pub
 
 app:
-  domain: "http://193.112.151.148:59845"
+  domain: "http://132.232.61.181:59845"
 
 #数据库配置
 spring:
@@ -13,19 +13,19 @@ spring:
     encoding: UTF-8
     cache: false
   datasource:
-    url: jdbc:mysql://193.112.151.148/panda?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://127.0.0.1/panda?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
     driver-class-name: com.mysql.jdbc.Driver
     username: root
-    password: 123456
+    password: ikyOedVzV4bpXeWl
     type: com.alibaba.druid.pool.DruidDataSource
     dbcp2:
       max-wait-millis: 60000
 #缓存数据库配置
   redis:
-    host: 193.112.151.148
+    host: 132.232.61.181
     port: 6379
-    password: 123456
-    database: 1
+    password: ikyOedVzV4bpXeWl
+    database: 0
     jedis:
       pool:
         max-active: 8
@@ -50,5 +50,5 @@ server:
 #日志配置
 logging:
   level:
-    root: info
+    root: debug
   file: c:boot.log
