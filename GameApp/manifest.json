@@ -7,7 +7,7 @@
 	"id": "H5B2B8FB5",/*应用的标识，创建应用时自动生成，勿手动修改*/
 	"name": "宜乐互战",/*应用名称，程序桌面图标名称*/
 	"version": {
-		"name": "1.0.1",/*应用版本名称*/
+		"name": "1.0.3",/*应用版本名称*/
 		"code": "83"
 	},
 	"description": "",/*应用描述信息*/
@@ -42,7 +42,7 @@
 		"Speech": {
 			"description": "管理语音识别插件"
 		},
-		"Push": {}
+		"Push": {},"Payment":{}
 	},
 	"plus": {
 		"splashscreen": {
@@ -52,7 +52,7 @@
 		"runmode": "liberate",/*应用的首次启动运行模式，可取liberate或normal，liberate模式在第一次启动时将解压应用资源（Android平台File API才可正常访问_www目录）*/
 		"signature": "Sk9JTiBVUyBtYWlsdG86aHIyMDEzQGRjbG91ZC5pbw==",/*可选，保留给应用签名，暂不使用*/
 		"distribute": {
-			"plugins": {
+			"plugins": {"payment":{"alipay":{"description":"阿里支付","scheme":""}},
 				"push": {
 					"igexin": {
 						"appid": "wbqODIXmdr5YjvYE5Kx5x3",
@@ -257,7 +257,12 @@
 				"priority": 0
 			},
 			"html/home.html": {
-				"resources": [],
+				"resources": [
+					"images/subareas/2.png",
+					"images/subareas/1.png",
+					"images/subareas/4.png",
+					"images/subareas/3.png"
+				],
 				"refer": [
 					"html/create-room.html",
 					"html/recharge.html",
@@ -307,6 +312,13 @@
 				"resources": [],
 				"refer": [
 					"html/bind-finance-account.html"
+				],
+				"priority": 0
+			},
+			"html/new-room.html": {
+				"resources": [],
+				"refer": [
+					"html/room-detail.html"
 				],
 				"priority": 0
 			}

@@ -91,6 +91,8 @@
 					
 					var self = plus.webview.currentWebview();
 					self.addEventListener("show", function(){
+						plus.nativeUI.closeWaiting();
+						
 						console.log("注册页返回的信息" + JSON.stringify(self))
 						if(self.phone != null){
 							phoneInput.value = self.phone;

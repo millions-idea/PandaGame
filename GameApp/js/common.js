@@ -1,4 +1,6 @@
 ﻿(function(w){
+
+	
 // 空函数
 function shield(){
 	return false;

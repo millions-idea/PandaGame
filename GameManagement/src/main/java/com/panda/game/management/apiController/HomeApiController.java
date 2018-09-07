@@ -78,6 +78,7 @@ public class HomeApiController {
 
     @PostMapping("/withdraw")
     public JsonResult withdraw(String token, Double amount){
+        if(amount == null) return JsonResult.failing();
         // 加载用户信息
         Map<String, String> map = TokenUtil.validate(token);
         if(map.isEmpty()) JsonResult.failing();

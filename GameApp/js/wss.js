@@ -187,6 +187,8 @@ window.wss = {
 		
 		CHAT.init();
 		
+		console.log("打开聊天页面："  +  roomCode + "," + name + "," + externalRoomId);
+		
 		
 		mui.openWindow({
             url: "/html/room-detail.html",

@@ -341,6 +341,14 @@
         return Y+M+D+h+m+s;
     }
 	
-	
+	owner:readCopy = function(){
+		
+		var Context = plus.android.importClass("android.content.Context");
+	    var main = plus.android.runtimeMainActivity();
+	    var clip = main.getSystemService(Context.CLIPBOARD_SERVICE);
+	    return plus.android.invoke(clip,"getText");
+	    
+	}
+	 
 	
 }(mui, window.app = {}));

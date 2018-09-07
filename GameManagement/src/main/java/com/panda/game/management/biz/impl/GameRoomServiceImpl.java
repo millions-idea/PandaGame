@@ -159,9 +159,11 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         // 普通成员退出房间
         if(!gameRoom.getOwnerId().equals(Integer.valueOf(userId))) {
             // 如果游戏房间正处于游戏中，此时用户想要退出房间，必须要结算后才能退出去
-            if(gameRoom.getStatus() == 2){
+            if(gameRoom.getStatus()  == 2 || gameRoom.getStatus()  == 4) {
+                throw new MsgException("正在游戏中，请结算后再退出房间！");
+            }else if(gameRoom.getStatus() != 0){
                 int isConfirm = gameMemberGroupMapper.selectConfirm(Integer.valueOf(userId), param.getRoomCode());
-                if(isConfirm <= 0) throw new MsgException("正在游戏中，请结算后再退出房间！");
+                if(isConfirm == 0) throw new MsgException("正在游戏中，请结算后再退出房间！");
             }
 
             int count = gameMemberGroupMapper.deleteMember(Integer.valueOf(userId),param.getRoomCode());
@@ -170,6 +172,8 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
             // 加载游戏分区
             Subareas subareas = subareaMapper.selectByPrimaryKey(gameRoom.getSubareaId());
             if(subareas == null) throw new MsgException("游戏大区不存在");
+
+            // 如果退出后房间人数不够数，把状态再改成未开始
             int onLineCount = gameRoomMapper.selectRoomOnLineCount(gameRoom.getRoomCode());
             onLineCount -= 1;
             if(onLineCount < subareas.getMaxPersonCount()) {

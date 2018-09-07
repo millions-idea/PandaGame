@@ -1,18 +1,12 @@
 package com.panda.game.management;
 
 import com.panda.game.management.config.WebLogAspectConfiguration;
-import com.panda.game.management.entity.Constant;
-import com.panda.game.management.entity.DynamicConfiguration;
 import com.panda.game.management.utils.SpringApplicationContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
 

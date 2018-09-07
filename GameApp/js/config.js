@@ -3,17 +3,17 @@
 	window.config = {
 		title: "宜乐对战",
 		/*pub*/
-		/*api: "http://132.232.61.181:59845/",
+		api: "http://132.232.61.181:59845/",
 		file: "http://132.232.61.181:8090/",
-		wss: "ws://132.232.61.181:8088/ws",*/
+		wss: "ws://132.232.61.181:8088/ws",
 		
 		/*test*/
-		api: "http://193.112.151.148:59845/",
+		/*api: "http://9gt7zz.natappfree.cc/",
 		file: "http://193.112.151.148:8090/",
-		wss: "ws://193.112.151.148:8088/ws",
+		wss: "ws://193.112.151.148:8088/ws",*/
 		
 		/*dev*/
-		/*api: "http://sn5enx.natappfree.cc/",
+		/*api: "http://vwhwz6.natappfree.cc/",
 		file: "http://132.232.61.181:8090/",
 		wss: "ws://192.168.1.103:8088/ws",*/
 		pages: [{

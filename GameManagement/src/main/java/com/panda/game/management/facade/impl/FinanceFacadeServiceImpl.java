@@ -40,6 +40,8 @@ public class FinanceFacadeServiceImpl implements FinanceFacadeService {
     @Override
     @Transactional
     public void addWithdraw(String token, Double amount) {
+        if(amount == null || amount == 0) return;
+
         // 加载用户信息
         Map<String, String> map = TokenUtil.validate(token);
         if(map.isEmpty()) JsonResult.failing();
@@ -68,23 +70,23 @@ public class FinanceFacadeServiceImpl implements FinanceFacadeService {
         Withdraw model = withdrawService.getWithdrawById(withdraw);
         if(model == null) throw new MsgException("审批请求不存在");
 
-        PayParam payParam = new PayParam();
+        /*PayParam payParam = new PayParam();
         payParam.setFromUid(model.getUserId());
         payParam.setAmount(withdraw.getAmount());
         payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
-        long  systemRecordId = payService.withdraw(payParam);
+        long  systemRecordId = payService.withdraw(payParam);*/
 
         model.setUpdateTime(new Date());
         model.setState(1);
         model.setRemark(withdraw.getRemark());
-        model.setSystemRecordId(systemRecordId);
+        model.setSystemRecordId(withdraw.getSystemRecordId());
         model.setChannelRecordId(withdraw.getChannelRecordId());
         int count = withdrawService.update(model);
         if(count == 0) throw new MsgException("编辑提现状态失败");
 
         // 2、更新财务日志
         count = 0;
-        count = payService.updateChannelRecordId(systemRecordId,  withdraw.getChannelRecordId());
+        count = payService.updateChannelRecordId(withdraw.getSystemRecordId(),  withdraw.getChannelRecordId());
         if(count == 0) throw new MsgException("更新交易回执失败");
 
         withdraw.setUserId(model.getUserId());

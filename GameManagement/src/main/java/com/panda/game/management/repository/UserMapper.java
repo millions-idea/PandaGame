@@ -8,9 +8,7 @@
 package com.panda.game.management.repository;
 
 import com.panda.game.management.entity.db.Users;
-import com.panda.game.management.entity.dbExt.RechargeDetailInfo;
 import com.panda.game.management.entity.dbExt.UserDetailInfo;
-import jdk.nashorn.internal.objects.annotations.Setter;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

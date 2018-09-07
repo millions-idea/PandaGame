@@ -29,7 +29,7 @@
 				</ul>
 				<script id="subareasTemplate" type="text/html">
 					{{each list as item index}}
-					    <li name="create-room-item" data-id="{{item.subareaId}}">
+					    <li name="create-room-item" data-id="{{item.subareaId}}" data-name="{{item.name}}">
 							<img src="{{item.backgroundImage}}" alt="{{item.name}}" />
 						</li>
 					{{/each}}
@@ -96,6 +96,7 @@
 		                for (var i = 0; i < items.length; i++) {
 		                	items[i].addEventListener("tap", function(data){  
 		                		var itemId = this.getAttribute("data-id");
+		                		var itemName = this.getAttribute("data-name");
 		                		var parentAreaId = subareaId;
 		                		
 		                		 mui.openWindow({
@@ -115,7 +116,8 @@
 									},
 									extras:{
 										"parentAreaId": parentAreaId,
-										"subareaId": itemId
+										"subareaId": itemId,
+										"name": itemName
 								    }
 						        }); 
 								

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SubareaServiceImpl extends BaseServiceImpl<Subareas> implements ISubareaService {
@@ -47,7 +48,8 @@ public class SubareaServiceImpl extends BaseServiceImpl<Subareas> implements ISu
      */
     @Override
     public List<Subareas> getSubareas(Integer subareaId) {
-        return subareaMapper.selectRelations(subareaId);
+        List<Subareas> subareas = subareaMapper.selectRelations(subareaId);
+        return subareas.stream().filter(item -> item.getIsEnable() == 1).collect(Collectors.toList());
     }
 
     /**

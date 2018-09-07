@@ -591,7 +591,7 @@ public class PayServiceImpl extends BaseServiceImpl<Pays> implements IPayService
 
         // 变更钱包余额
         count = 0;
-        count = walletMapper.reduceBalance(fromUserInfo.getUserId(), payParam.getAmount(),fromUserInfo.getVersion());
+        count = walletMapper.reduceBalanceStrict(fromUserInfo.getUserId(), payParam.getAmount(),fromUserInfo.getVersion());
         if(count == 0) throw new InfoException("甲方账户扣款失败");
 
         count = 0;

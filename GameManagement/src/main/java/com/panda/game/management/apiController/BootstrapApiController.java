@@ -56,7 +56,7 @@ public class BootstrapApiController {
 
         // 1、检查是否在黑名单中
         String userIp = RequestUtil.getIp(request);
-        IBadBoyService.isRegisterBlackList(userIp);
+        //IBadBoyService.isRegisterBlackList(userIp);
 
         // 2、校验手机短信
         /*String currentMessage = smsService.getCurrentMessage(user.getPhone());
@@ -72,7 +72,7 @@ public class BootstrapApiController {
         user.setAddDate(new Date());
         user.setUpdateDate(new Date());
         userFacadeService.register(user);
-        IBadBoyService.addToRegisterBlackList(userIp);
+        //IBadBoyService.addToRegisterBlackList(userIp);
         return JsonResult.successful();
     }
 

@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.panda.game</groupId>
-	<artifactId>management</artifactId>
+	<artifactId>GameManagement</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
-	<name>management</name>
+	<name>GameManagement</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
@@ -114,9 +114,9 @@
 			<version>2.0.2</version>
 		</dependency>
 		<!--<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-data-redis</artifactId>
-		</dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -263,11 +263,19 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!--支付宝依赖关系-->
+		<dependency>
+			<groupId>com.alipay.sdk</groupId>
+			<artifactId>alipay-sdk-java</artifactId>
+			<version>3.3.49.ALL</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
 		<finalName>1LE</finalName>
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>

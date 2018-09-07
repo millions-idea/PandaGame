@@ -145,7 +145,7 @@
 							plus.nativeUI.closeWaiting();
 							return plus.nativeUI.toast("请输入充值金额"); 
 						}
-						plus.runtime.openURL("alipays://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/" + urlCode);
+						plus.runtime.openURL(encodeURI("alipays://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/" + urlCode));
 						plus.nativeUI.closeWaiting();
 					})
 					  

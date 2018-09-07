@@ -12,7 +12,10 @@ import com.panda.game.management.entity.JsonArrayResult;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.GameRoom;
 import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
+import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.facade.GameRoomFacadeService;
+import com.panda.game.management.utils.IdWorker;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/api/room")
@@ -33,7 +37,7 @@ public class RoomApiController {
     @PostMapping("/create")
     public JsonResult create(String token, GameRoom gameRoom){
         gameRoomService.insert(token, gameRoom);
-        return JsonResult.successful();
+        return new JsonResult().successful(gameRoom);
     }
 
     @GetMapping("/getRoomList")
@@ -45,12 +49,53 @@ public class RoomApiController {
     @GetMapping("/getAllRoomList")
     public JsonArrayResult<GameRoomDetailInfo> getAllRoomList(){
         List<GameRoomDetailInfo> list = gameRoomService.getAllRoomList();
+
+        String[] parentAreaNameList = {"两人麻将", "四人两房", "三人两房", "血战到底"};
+        Double[] priceList = {0.1, 1D, 2D, 0.1};
+
+
+        for (int i = 0; i < 100; i++) {
+            Random rand = new Random();
+            int randNum = rand.nextInt(4) + 1;
+            GameRoomDetailInfo roomDetailInfo = new GameRoomDetailInfo();
+            roomDetailInfo.setRoomId(i);
+            long roomCode = 0;
+            try {
+
+                roomCode = Long.valueOf(com.panda.game.management.utils.RandomUtils.generateNumberString(6));
+            } catch (Exception e) {
+
+            }
+            roomDetailInfo.setName(parentAreaNameList[randNum - 1]);
+            roomDetailInfo.setRoomCode(roomCode);
+            roomDetailInfo.setIsOwner(0);
+            roomDetailInfo.setExternalRoomId(0);
+            roomDetailInfo.setMaxPersonCount(4);
+            roomDetailInfo.setStatus(4);
+
+            /*randNum = rand.nextInt(3) + 1;*/
+            if(randNum-1 == 0){
+                roomDetailInfo.setPersonCount(2);
+            }else if(randNum-1 == 1){
+                roomDetailInfo.setPersonCount(4);
+            }else if(randNum-1 == 2){
+                roomDetailInfo.setPersonCount(3);
+            }else if(randNum-1 == 3){
+                roomDetailInfo.setPersonCount(4);
+            }
+            roomDetailInfo.setStatus(2);
+            roomDetailInfo.setParentPrice(priceList[randNum-1]);
+
+            list.add(roomDetailInfo);
+        }
         return new JsonArrayResult<>(list);
     }
 
     @PostMapping("/disband")
     public JsonResult disband(String token, GameRoom gameRoom){
-        gameRoomService.disband(token, gameRoom);
+        synchronized (lock){
+            gameRoomService.disband(token, gameRoom);
+        }
         return JsonResult.successful();
     }
 

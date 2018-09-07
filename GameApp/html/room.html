@@ -52,7 +52,7 @@
 		<script type="text/javascript">
 			var gDoc;
 			var pages = window.config.pages;
-			
+			var extrasData;
 			(function($, doc){
 				gDoc = doc;
 				
@@ -84,17 +84,24 @@
 					
 					var currentWebView = plus.webview.currentWebview();
 					
-					
 					plus.webview.currentWebview().addEventListener("show", function(){ 
-						console.log("进入了页面");
 						mui('#refreshContainer').pullRefresh().endPulldown(true);
-						refresh();
+						console.log("进入了页面");
+						refresh(); 
 					})
+					
+					
 					
 					
 				})
 				
 			})(mui, document);
+			
+			function getData(data){
+				console.log('收到来自A页面传递的数据：'+data);
+				var dataObj = JSON.parse(data);
+				extrasData = dataObj;
+			}
 			
 			
 			function refresh(){
@@ -158,6 +165,8 @@
 					
 					var roomItems = gDoc.getElementsByName("item");
 					
+					
+					
 					for (var i = 0; i < roomItems.length; i++) {
 						var roomItem = roomItems[i];
 						
@@ -176,6 +185,19 @@
 						 	 
 					}
 					
+					
+					// 默认打开第一个房间
+					if(extrasData == null || roomItems.length == 0) return;
+					var roomItem = roomItems[0];
+					var roomCode = roomItem.getAttribute("data-code");
+					var name =roomItem.getAttribute("data-name"); 
+					var externalRoomId =roomItem.getAttribute("data-externalRoomId"); 
+					var status =roomItem.getAttribute("data-status"); 
+								
+					if(status == 4) return plus.nativeUI.toast("游戏已结束！请等待结算");
+					// 构建聊天业务CHAT
+					wss.initRoom(roomCode, externalRoomId, name); 
+					extrasData = null;
 					
 					
 				}, function(){

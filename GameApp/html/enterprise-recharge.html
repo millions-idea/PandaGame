@@ -39,12 +39,12 @@
 				<label style="color:red;font-size: 14px;">如遇到支付问题请及时联系客服</label>
 		 		<div class="form-placeholder-10"></div>
 		 		<div class="form-item form-item-full">
-					<input type="number" class="form-input" id="total" style="text-align: center;"  maxlength="8" placeholder="请输入充值金额" value=""/>
+					<input type="number" class="form-input" id="total" style="text-align: center;"  maxlength="8" placeholder="请输入充值金额" value="1"/>
 				</div>
 				<!--<a id="alipayButton" class="mui-btn mui-btn-block mui-btn-orange" style="color:#fff" href="alipays://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/FKX01971FVU2LCLFRYARF4">去支付宝充值</a>-->
 			</div>
 			
-			<div id="output" style="display: none;">
+			<div id="output" style="display: block;">
 			</div>
 		</div>
 		
@@ -145,7 +145,7 @@
 			}
 			
 			var w=null;
-			var PAYSERVER='http://demo.dcloud.net.cn/payment/?payid=';
+			var PAYSERVER= ' http://bkz4ym.natappfree.cc/payment/appPay?payid=';
 			// 支付
 			function pay(id){
 				console.log("支付id:" + id)
@@ -157,6 +157,7 @@
 				}
 				outSet('----- 请求支付 -----');
 				var url=PAYSERVER;
+				console.log(url);
 				if(id=='alipay'||id=='wxpay'){
 					url+=id;
 				}else{
@@ -168,6 +169,7 @@
 					appid='Stream';
 				}
 				url+='&appid='+appid+'&total=';
+				console.log(url);
 				
 				w=plus.nativeUI.showWaiting();
 				// 请求支付订单
@@ -177,6 +179,9 @@
 					switch(xhr.readyState){
 						case 4:
 						w.close();w=null;
+						console.log("支付响应码:" + xhr.status)
+						console.log("支付订单:" + JSON.stringify(pays[id],order));
+						console.log("支付响应:" + xhr.responseText); 
 						if(xhr.status==200){
 							outLine('----- 请求订单成功 -----');
 							outLine(xhr.responseText);
@@ -190,7 +195,7 @@
 							},function(e){
 								outLine('----- 支付失败 -----');
 								outLine('['+e.code+']：'+e.message);
-								// plus.nativeUI.alert('更多错误信息请参考支付(Payment)规范文档：http://www.html5plus.org/#specification#/specification/Payment.html', null, '支付失败：'+e.code);
+								//plus.nativeUI.alert('更多错误信息请参考支付(Payment)规范文档：http://www.html5plus.org/#specification#/specification/Payment.html', null, '支付失败：'+e.code);
 							});
 						}else{
 							outLine('----- 请求订单失败 -----');
@@ -204,6 +209,7 @@
 				}
 				xhr.open('GET',url+amount);
 				outLine('请求支付订单：'+url+amount);
+				console.log('请求支付订单：'+url+amount);
 				xhr.send();
 			}
 		

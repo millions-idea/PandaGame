@@ -42,4 +42,17 @@ public interface WalletMapper extends MyMapper<Wallets> {
      * @return
      */
     Wallets selectByUid(@Param("userId") Integer userId);
+
+
+    @Update("UPDATE tb_wallets SET balance = balance - #{amount}, update_time = NOW(), version = version + 1 WHERE `user_id`=#{fromUid} AND balance > 0 AND (balance - #{amount}) > 0 AND version=#{version}")
+    /**
+     * 扣减余额[不支持负数增长] 韦德 2018年8月5日17:13:19
+     * @param formUid
+     * @param amount
+     * @param version
+     * @return
+     */
+    int reduceBalanceStrict(@Param("fromUid") Integer formUid, @Param("amount") Double amount, @Param("version") Integer version);
+
+
 }

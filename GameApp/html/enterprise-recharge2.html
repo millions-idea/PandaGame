@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <meta charset="UTF-8" /> 
+  <title></title> 
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" /> 
+  <link href="../css/mui.min.css" rel="stylesheet" /> 
+  <link href="../css/ui.css" rel="stylesheet" /> 
+  <link href="../css/room/closeAccounts.css" rel="stylesheet" /> 
+  <link href="../css/home/recharge.css" rel="stylesheet" /> 
+  <script type="text/javascript" src="../js/common.js"></script> 
+  <link rel="stylesheet" href="../css/common.css" type="text/css" charset="utf-8" /> 
+  <style type="text/css">
+			#total{
+				-webkit-user-select:text;
+				text-align:right;
+				padding:0 1em;
+				border: 0px;
+				border-bottom:1px solid #ECB100;
+				border-radius: 0;
+				font-size:16px;
+				outline:none;
+			}
+		</style> 
+ </head> 
+ <body> 
+  <header class="mui-bar mui-bar-nav my-title"> 
+   <a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" style="color: #fff;"></a> 
+   <h1 class="mui-title my-title-color" id="title">充值中心</h1> 
+  </header> 
+  <div class="mui-content"> 
+   <div class="form-placeholder-50"></div> 
+   <div id="dcontent" class="form-item dcontent"> 
+    <label style="color:red;font-size: 14px;">如遇到支付问题请及时联系客服</label> 
+    <div class="form-placeholder-10"></div> 
+    <div class="form-item form-item-full"> 
+     <input type="number" class="form-input" id="total" style="text-align: center;" maxlength="8" placeholder="请输入充值金额" value="1" /> 
+    </div> 
+    <!--<a id="alipayButton" class="mui-btn mui-btn-block mui-btn-orange" style="color:#fff" href="alipays://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/FKX01971FVU2LCLFRYARF4">去支付宝充值</a>--> 
+    <button id="payment">发起支付</button> 
+   </div> 
+   <div id="output" style="display: block;"> 
+   </div> 
+  </div> 
+  <script src="../js/mui.min.js"></script> 
+  <script src="../js/config.js"></script> 
+  <script src="../js/app.js"></script> 
+  <script src="../js/home/index.js"></script> 
+  <script type="text/javascript" src="../js/immersed.js"></script> 
+  <script type="text/javascript">
+			var pages = window.config.pages;
+			var groupInfo ;
+			var qrcode ;
+			
+			
+			(function($, doc){
+					
+					mui.init({
+					swipeBack: true //启用右滑关闭功能 
+					});
+					
+					var price; //总支付金额
+					var dingdan = {}; //订单对象
+					var wxChannel = null; //微信支付
+					var aliChannel = null; //支付宝支付
+					var channel = null; //支付通道
+					
+					var ALIPAYSERVER = ' http://ph8bhb.natappfree.cc/payment/mhkyzfby'; //支付宝支付接口
+					var WXPAYSERVER = ''; //微信支付接口
+					mui.plusReady(function() {
+					var self = plus.webview.currentWebview();
+					price = 0.01;
+					//$id('price').innerText = price;
+					
+					// 获取支付通道 
+					plus.payment.getChannels(function(channels) {
+					alert(channels[0].id);
+					for(var i in channels) {
+					if(channels[i].id == "wxpay") {
+					wxChannel = channels[i];
+					} else {
+					aliChannel = channels[i];
+					}
+					}
+					}, function(e) {
+					alert("获取支付通道失败：" + e.message);
+					});
+					
+					})
+					
+					doc.getElementById('payment').addEventListener('tap', function() {
+							console.log("发起支付宝支付")
+							pay('alipay');
+					
+					})
+					
+					function pay(id) {
+					var PAYSERVER = 'http://bkz4ym.natappfree.cc/payment/mhkyzfy?price';
+					
+					var xhr = new XMLHttpRequest(); //http请求对象
+					var amount = 0.01; //支付金额
+					//请求事件onreadystatechange 存储函数（或函数名），每当 readyState 属性改变时，就会调用该函数。
+					//readyState 存有 XMLHttpRequest 的状态。从 0 到 4 发生变化。
+					//0: 请求未初始化
+					//1: 服务器连接已建立
+					//2: 请求已接收
+					//3: 请求处理中
+					//4: 请求已完成，且响应已就绪
+					console.log("PAYSERVER:" + PAYSERVER)
+					
+					xhr.onreadystatechange = function() {
+						console.log("readyState:" + xhr.readyState)
+						console.log("status:" + xhr.status)
+					switch(xhr.readyState) {
+					case 4:
+					if(xhr.status == 200) {
+					
+					//channel 支付宝支付通道对象
+					
+					//xhr.responseText//向后端请求的支付字符串
+					console.log("channel:" + JSON.stringify(channel))
+					console.log("responseText:" + xhr.responseText)
+					plus.payment.request(channel, xhr.responseText, function(result) {
+					plus.nativeUI.alert("支付成功", function() {
+					back();
+					})
+					}, function(error) {
+						console.log(JSON.stringify(error))
+						plus.nativeUI.alert("支付失败", error.code);
+					})
+					}
+					
+					}
+					}
+					
+					//发送get请求
+					xhr.open('GET', PAYSERVER + price);
+					xhr.send();
+					
+					}
+				 
+
+			})(mui, document)
+			
+			 
+		</script>  
+ </body>
+</html>

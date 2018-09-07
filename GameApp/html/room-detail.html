@@ -94,18 +94,17 @@
 				roomCode = self.room_code;
 				externalRoomId = self.externalRoomId;
 				
+				if(externalRoomId != null && externalRoomId.length > 0) {
+					recvMessageFromRoom("熊猫麻将房间号：" + externalRoomId);
+				}else{
+					recvMessageFromRoom("获取熊猫麻将房间号失败，请退出重进！" );
+				}
+				
+				recvMessageFromRoom("游戏中遇到问题，请联系客服");
+				recvMessageFromRoom("结束游戏后请回到房间结算！");
 				
 				self.addEventListener("show", function(){  
 					titleComponent.innerHTML = self.title;
-
-					if(externalRoomId != null && externalRoomId.length > 0) {
-						recvMessageFromRoom("熊猫麻将房间号：" + externalRoomId);
-					}else{
-						recvMessageFromRoom("获取熊猫麻将房间号失败，请退出重进！" );
-					}
-					
-					recvMessageFromRoom("游戏中遇到问题，请联系客服");
-					
 					
 				})
 				
