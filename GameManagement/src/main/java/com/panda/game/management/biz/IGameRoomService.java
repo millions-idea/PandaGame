@@ -145,4 +145,10 @@ public interface IGameRoomService extends IBaseService<GameRoom> {
      */
     Integer getLimitCount(String condition, Integer state, String beginTime, String endTime);
 
+    /**
+     * 检查房间是否过期 韦德 2018年9月9日18:39:58
+     * @param roomCode
+     */
+    Boolean checkRoomExpire(Long roomCode);
+
 }

@@ -8,7 +8,7 @@
 		wss: "ws://132.232.61.181:8088/ws",*/
 		
 		/*test*/
-		api: "http://fjtkpk.natappfree.cc/",
+		api: "http://gt46jb.natappfree.cc/",
 		file: "http://193.112.151.148:8090/",
 		wss: "ws://193.112.151.148:8088/ws",
 		

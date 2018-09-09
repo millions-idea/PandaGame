@@ -9,6 +9,7 @@
 		<link href="../css/mui.poppicker.css" rel="stylesheet" />
 		<link href="../css/ui.css" rel="stylesheet" />
 		<link href="../css/room/detail.css" rel="stylesheet" /> 
+		<link href="../css/v2/alert.css" rel="stylesheet" /> 
 	</head>
 
 	<body>
@@ -56,13 +57,18 @@
 		</footer>
 		
 		
+
+		
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/mui.poppicker.js"></script>
 		<script src="../js/config.js"></script>
 		<script src="../js/app.js"></script> 
 		<script src="../js/wss.js"></script> 
+		<script src="../js/v2/alert.js"></script> 
 		<script src="../js/room/index.js"></script> 
 		<script type="text/javascript">
+			
+			
 			var pages = window.config.pages;
 			var firends;
 			var $ = mui;
@@ -94,6 +100,16 @@
 				roomCode = self.room_code;
 				externalRoomId = self.externalRoomId;
 				
+				
+				
+				game.message("由于5分钟内未拼桌成功，系统已自动将该房间解散！", function(){
+					var audioPlayer = plus.audio.createPlayer("/mp3/v2/message.mp3");
+					audioPlayer.play();
+				}, function(){
+					var audioPlayer = plus.audio.createPlayer("/mp3/v2/btnClick.mp3");
+					audioPlayer.play();
+				});
+				
 				if(externalRoomId != null && externalRoomId.length > 0) {
 					recvMessageFromRoom("熊猫麻将房间号：" + externalRoomId);
 				}else{
@@ -110,7 +126,7 @@
 				
 				
 				if(timerCountHand!=null) clearInterval(timerCountHand);
-				timerCountHand = setTimeout(getPersonCount, 100000);
+				timerCountHand = setInterval(getPersonCount, 3000);
 				getPersonCount();
 				
 				// 通知其他用户，我进入了房间
@@ -307,7 +323,6 @@
 				 plus.webview.getWebviewById("room").evalJS("CHAT.close()");
 			}
 			
-			
 			function sendMessageToRoom(content){
 				console.log("推送系统消息到房间：" + roomCode)
 				var wssView = plus.webview.getWebviewById("room");
@@ -334,7 +349,6 @@
 				var msg_list = document.getElementById("msg");
 				msg_list.insertAdjacentHTML("beforeend", msgHtml);
 			}
-			
 			
 			/**
 			 * 接收消息
@@ -389,7 +403,6 @@
 				var list = document.getElementById("msg");
 				list.insertAdjacentHTML("beforeend",str);
 			 }
-			 
 			 
 			 // 播放发送消息的铃声
 			function playSendMsgSound() {

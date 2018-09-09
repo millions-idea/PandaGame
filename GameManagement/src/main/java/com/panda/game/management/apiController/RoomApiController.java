@@ -114,6 +114,7 @@ public class RoomApiController {
 
     @PostMapping("/join")
     public JsonResult join(String token, GameRoom gameRoom){
+        gameRoomService.checkRoomExpire(gameRoom.getRoomCode());
         gameRoomService.join(token, gameRoom);
         return JsonResult.successful();
     }
@@ -127,6 +128,7 @@ public class RoomApiController {
 
     @GetMapping("/getPersonCount")
     public JsonResult<Integer> getPersonCount(String roomCode){
+        gameRoomService.checkRoomExpire(Long.valueOf(roomCode));
         Integer count = gameRoomService.getPersonCount(roomCode);
         return new JsonResult<>().successful(count);
     }

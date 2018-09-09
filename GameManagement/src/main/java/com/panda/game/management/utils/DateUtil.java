@@ -1,6 +1,8 @@
 
 package com.panda.game.management.utils;
 
+import com.panda.game.management.exception.MsgException;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.ParsePosition;
@@ -801,21 +803,29 @@ public final class DateUtil implements Serializable {
 	 *
 	 * @param startTime
 	 *            开始时间 yyyy-MM-dd HH:mm:ss
-	 * @param endTime
-	 *            结束时间 yyyy-MM-dd HH:mm:ss
+	 * 计算差多少天
+	 * long day = diff / nd;
+	 * 计算差多少小时
+	 * long hour = diff % nd / nh;
+	 * 计算差多少分钟
+	 * long min = diff % nd % nh / nm;
 	 * @return 两个时间的差值(秒)
 	 */
-	public static long getDiff(Date startTime, Date endTime) {
-		long diff = 0;
-		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		try {
-			Date startDate = ft.parse(startTime.toString());
-			Date endDate = ft.parse(endTime.toString());
-			diff = startDate.getTime() - endDate.getTime();
-			diff = diff / 1000;
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+	public static long getDiff(Date startTime) {
+		long nd = 1000 * 24 * 60 * 60;
+		long nh = 1000 * 60 * 60;
+		long nm = 1000 * 60;
+
+		Long currentTime = new Date().getTime();
+		Long addTime = startTime.getTime();
+		// 获得两个时间的毫秒时间差异
+		Long diff = currentTime - addTime;
+		// 计算差多少天
+		long day = diff / nd;
+		// 计算差多少小时
+		long hour = diff % nd / nh;
+		// 计算差多少分钟
+		long min = diff % nd % nh / nm;
 		return diff;
 	}
 

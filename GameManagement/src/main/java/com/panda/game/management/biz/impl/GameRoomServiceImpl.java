@@ -11,6 +11,7 @@ import com.panda.game.management.biz.IGameRoomService;
 import com.panda.game.management.entity.db.*;
 import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
 import com.panda.game.management.entity.resp.GameRoomCallbackResp;
+import com.panda.game.management.exception.InfoException;
 import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.repository.*;
 import com.panda.game.management.repository.utils.ConditionUtil;
@@ -355,18 +356,6 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         onLineCount += 1;
         if(onLineCount > subareas.getMaxPersonCount()) throw new MsgException("该房间人数已满！");
 
-        // 判断房间是否已经过期（每个房间的存活期只有5分钟，5分钟后房间如果还是只有房主，系统自动解散并且不扣金币）
-        Date systemCurrentTime = new Date();
-        long diff = DateUtil.getDiff(room.getAddTime(), systemCurrentTime);
-        if(diff > 300 && onLineCount <= 1) {
-            gameMemberGroupMapper.updateMemberExit(gameRoom.getRoomCode());
-            gameRoom.setStatus(6);
-            gameRoom.setIsEnable(0);
-            int count = gameRoomMapper.update(gameRoom);
-            if(count == 0) throw new MsgException("解散房间失败");
-            throw new MsgException("由于5分钟内未拼桌成功，系统已自动将该房间解散！");
-        }
-
 
         // 更改状态为已开始
         if(onLineCount == subareas.getMaxPersonCount()){
@@ -591,6 +580,41 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         return gameRoomMapper.selectLimitCount(state, beginTime, endTime, where);
     }
 
+    /**
+     * 检查房间是否过期 韦德 2018年9月9日18:39:58
+     *
+     * @param roomCode
+     */
+    @Override
+    public Boolean checkRoomExpire(Long roomCode) {
+        GameRoom gameRoom = gameRoomMapper.selectByRoomCode(roomCode);
+        if(gameRoom == null) throw new MsgException("查询房间失败");
+
+        int onLineCount = gameRoomMapper.selectRoomOnLineCount(gameRoom.getRoomCode());
+
+        // 判断房间是否已经过期（每个房间的存活期只有5分钟，5分钟后房间如果还是只有房主，系统自动解散并且不扣金币）
+        long nd = 1000 * 24 * 60 * 60;
+        long nh = 1000 * 60 * 60;
+        long nm = 1000 * 60;
+        // 获得两个时间的毫秒时间差异
+        long diff = DateUtil.getDiff(gameRoom.getAddTime());
+        // 计算差多少天
+        long day = diff / nd;
+        // 计算差多少小时
+        long hour = diff % nd / nh;
+        // 计算差多少分钟
+        long min = diff % nd % nh / nm;
+        if((day > 0 || hour > 0 || min > 5) && onLineCount <= 1) {
+            gameMemberGroupMapper.updateMemberExit(gameRoom.getRoomCode());
+            gameRoom.setStatus(6);
+            gameRoom.setIsEnable(0);
+            int count = gameRoomMapper.update(gameRoom);
+            if(count == 0) throw new InfoException("解散房间失败");
+            throw new InfoException("由于5分钟内未拼桌成功，系统已自动将该房间解散！");
+        }
+
+        return true;
+    }
 
 
     /**

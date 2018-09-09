@@ -1,0 +1,70 @@
+.warning-modal{
+	width:80%;
+	height:180px;
+	display: block;
+	position: fixed;
+	top:35%;
+	left:10%;
+	z-index: 999;
+	background-image: url(../../images/v2/alert/alert.png);
+	background-repeat:no-repeat; 
+	background-size:100% 100%;
+	-moz-background-size:100% 100%;
+}
+
+.warning-modal .closeButton{
+	display: block;
+	position: relative;
+	float:right;
+	top:-75px;
+	right:-20px;
+	width:60px;
+	height:92px;
+	background-image: url(../../images/v2/alert/close.png);
+	background-repeat:no-repeat; 
+	background-size:100% 100%;
+	-moz-background-size:100% 100%;
+}
+
+
+.warning-modal .titleLabel{
+	display: inline-block;
+	position: relative;
+	float: left;
+	width:163px;
+	height:46px;
+	left:35%;
+	top:-10px;
+	background-image: url(../../images/v2/alert/title.png);
+	background-repeat:no-repeat; 
+	background-size: 50% 80%;
+	-moz-background-size:100% 100%;
+	z-index: 2;
+}
+
+
+.warning-modal .titleBackground{
+	display: inline-block;
+	position: relative;
+	width: 200px;
+	height: 60px;
+	top:-66px;
+	left:20%;
+	background-image: url(../../images/v2/alert/golden_bottom_border.png);
+	background-repeat:no-repeat; 
+	background-size: 100% 100%;
+	-moz-background-size:100% 100%;
+	z-index: 1;
+}
+
+.warning-modal .textLabel{
+	display: inline-block;
+	position: relative;
+	top:-100px;
+	float: left;
+	padding: 30px;
+	color: #6f2009;
+	font-family: "微软雅黑";
+	font-weight: bold;
+	font-size: 20px;
+}
