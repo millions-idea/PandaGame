@@ -15,6 +15,7 @@ import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
 import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.facade.GameRoomFacadeService;
 import com.panda.game.management.utils.IdWorker;
+import com.panda.game.management.utils.StringUtil;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +37,10 @@ public class RoomApiController {
 
     @PostMapping("/create")
     public JsonResult create(String token, GameRoom gameRoom){
+        // 验证房间号格式是否正确
+        String roomId = String.valueOf(gameRoom.getExternalRoomId());
+        if(StringUtil.isBlank(roomId)) return new JsonResult().normalExceptionAsString("请输入房间号");
+        if(roomId.length() != 6) return new JsonResult().normalExceptionAsString("请输入正确的房间号");
         gameRoomService.insert(token, gameRoom);
         return new JsonResult().successful(gameRoom);
     }

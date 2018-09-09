@@ -29,3 +29,10 @@
 .form-link-button:hover{ 
 	background-color: #f1f1f17d !important;
 }
+
+
+.footer_tip{
+	color:#fe5a2f;
+	width: 100%;
+	display: block;
+}

@@ -14,6 +14,7 @@ import com.panda.game.management.entity.resp.GameRoomCallbackResp;
 import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.repository.*;
 import com.panda.game.management.repository.utils.ConditionUtil;
+import com.panda.game.management.utils.DateUtil;
 import com.panda.game.management.utils.IdWorker;
 import com.panda.game.management.utils.TokenUtil;
 import org.apache.commons.lang3.RandomUtils;
@@ -353,6 +354,20 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         int onLineCount = gameRoomMapper.selectRoomOnLineCount(gameRoom.getRoomCode());
         onLineCount += 1;
         if(onLineCount > subareas.getMaxPersonCount()) throw new MsgException("该房间人数已满！");
+
+        // 判断房间是否已经过期（每个房间的存活期只有5分钟，5分钟后房间如果还是只有房主，系统自动解散并且不扣金币）
+        Date systemCurrentTime = new Date();
+        long diff = DateUtil.getDiff(room.getAddTime(), systemCurrentTime);
+        if(diff > 300 && onLineCount <= 1) {
+            gameMemberGroupMapper.updateMemberExit(gameRoom.getRoomCode());
+            gameRoom.setStatus(6);
+            gameRoom.setIsEnable(0);
+            int count = gameRoomMapper.update(gameRoom);
+            if(count == 0) throw new MsgException("解散房间失败");
+            throw new MsgException("由于5分钟内未拼桌成功，系统已自动将该房间解散！");
+        }
+
+
         // 更改状态为已开始
         if(onLineCount == subareas.getMaxPersonCount()){
             int count = gameRoomMapper.updateStatusByRoomCode(gameRoom.getRoomCode(), 2);

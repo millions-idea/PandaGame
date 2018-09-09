@@ -797,6 +797,29 @@ public final class DateUtil implements Serializable {
 	}
 
 	/**
+	 * 获取两个时间串时间的差值，单位为秒
+	 *
+	 * @param startTime
+	 *            开始时间 yyyy-MM-dd HH:mm:ss
+	 * @param endTime
+	 *            结束时间 yyyy-MM-dd HH:mm:ss
+	 * @return 两个时间的差值(秒)
+	 */
+	public static long getDiff(Date startTime, Date endTime) {
+		long diff = 0;
+		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try {
+			Date startDate = ft.parse(startTime.toString());
+			Date endDate = ft.parse(endTime.toString());
+			diff = startDate.getTime() - endDate.getTime();
+			diff = diff / 1000;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return diff;
+	}
+
+	/**
 	 * 获取小时/分钟/秒
 	 * 
 	 * @param second
