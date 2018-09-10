@@ -1,4 +1,16 @@
-.warning-modal{
+.modal-shade{
+	position:absolute;left:0px;top:0px;
+    background:rgba(0, 0, 0, 0.9);
+    width:100%;  /*宽度设置为100%，这样才能使隐藏背景层覆盖原页面*/
+    height:100%;
+    filter:alpha(opacity=90);  /*设置透明度为60%*/
+    opacity:0.9;  /*非IE浏览器下设置透明度为60%*/
+    display:none; 
+    z-Index:998;  
+}
+
+
+.modal{
 	width:80%;
 	height:180px;
 	display: block;
@@ -12,7 +24,7 @@
 	-moz-background-size:100% 100%;
 }
 
-.warning-modal .closeButton{
+.modal .closeButton{
 	display: block;
 	position: relative;
 	float:right;
@@ -27,7 +39,7 @@
 }
 
 
-.warning-modal .titleLabel{
+.modal .titleLabel{
 	display: inline-block;
 	position: relative;
 	float: left;
@@ -43,7 +55,7 @@
 }
 
 
-.warning-modal .titleBackground{
+.modal .titleBackground{
 	display: inline-block;
 	position: relative;
 	width: 200px;
@@ -57,7 +69,7 @@
 	z-index: 1;
 }
 
-.warning-modal .textLabel{
+.modal .textLabel{
 	display: inline-block;
 	position: relative;
 	top:-100px;
@@ -68,3 +80,5 @@
 	font-weight: bold;
 	font-size: 20px;
 }
+
+

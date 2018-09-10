@@ -105,8 +105,7 @@
 			
 			
 			function refresh(){
-				
-					
+				console.log("刷新房间列表")
 				var localCache = plus.storage.getItem('userInfo');
 				if(!(localCache != null && localCache.length > 0)) return false; 
 				room.getRoomList({
@@ -124,39 +123,11 @@
 						return plus.nativeUI.toast("加载列表失败");
 					}
 					
-					for (var i = 0; i < data.data.length; i++) {
-						var item = data.data[i];
-						//状态(0=未开始,1=已就绪,2=已开始,3=已暂停,4=已结束,5=已结算,6=已失效)
-						switch (item.status){
-							case 0:
-								item.statusHtml = '<span class="mui-badge mui-badge-outlined">未开始</span>';
-								break;
-							case 1:
-								item.statusHtml = '<span class="mui-badge mui-badge-primary">已就绪</span>';
-								break;
-							case 2:
-								item.statusHtml = '<span class="mui-badge mui-badge-success">游戏中</span>';
-								break;
-							case 3:
-								item.statusHtml = '<span class="mui-badge">已暂停</span>';
-								break;
-							case 4:
-								item.statusHtml = '<span class="mui-badge mui-badge-danger ">已结束</span>';
-								break;
-							case 5:
-								item.statusHtml = '<span class="mui-badge mui-badge-royal ">已结算</span>';
-								break;
-							case 6:
-								item.statusHtml = '<span class="mui-badge ">已失效</span>';
-								break;
-						}
-
-					}
-					
 					if(data.data.length == 0) {
 						gDoc.getElementById("list").innerHTML = '<span class="loading" id="loading-text">您还没有创建或加入房间</span>';
 						return;
 					}
+
 					
 					var html = template("template", {
 						list: data.data

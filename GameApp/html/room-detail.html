@@ -8,8 +8,8 @@
 		<link href="../css/mui.min.css" rel="stylesheet" />
 		<link href="../css/mui.poppicker.css" rel="stylesheet" />
 		<link href="../css/ui.css" rel="stylesheet" />
-		<link href="../css/room/detail.css" rel="stylesheet" /> 
-		<link href="../css/v2/alert.css" rel="stylesheet" /> 
+		<link href="../css/room/detail.css" rel="stylesheet" />
+		<link href="../css/v2/alert.css" rel="stylesheet" />
 	</head>
 
 	<body>
@@ -21,32 +21,31 @@
 			</h1>
 			<a id="openMenu" class="mui-icon mui-icon-right-nav mui-pull-right" style="color: white;position: relative;top: 8px;right:5px">…</a>
 		</header>
-		
+
 		<div id="sheet" class="mui-popover mui-popover-bottom mui-popover-action ">
-		    <!-- 可选择菜单 -->
-		    <ul class="mui-table-view">
-		      <li class="mui-table-view-cell">
-		        <a id="toDisband" href="#">退出房间</a>
-		      </li> 
-		    </ul>
-		    <!-- 取消菜单 -->
-		    <ul class="mui-table-view">
-		      <li class="mui-table-view-cell">
-		        <a href="#sheet"><b>取消</b></a>
-		      </li>
-		    </ul>
+			<!-- 可选择菜单 -->
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a id="toDisband" href="#">退出房间</a>
+				</li>
+			</ul>
+			<!-- 取消菜单 -->
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#sheet"><b>取消</b></a>
+				</li>
+			</ul>
 		</div>
-		
+
 		<div id="msg-outter" class="mui-content">
 			<div class="header-text">
 				<span>请注意保管自己的隐私，祝您游戏愉快！<button id="toCloseAccounts">立即结算</button></span>
 			</div>
 			<div id='msg'>
 
-
 			</div>
 		</div>
-		
+
 		<footer>
 			<div class="footer-center">
 				<textarea id='msg-text' type="text" class='input-text'></textarea>
@@ -55,20 +54,15 @@
 				<button type="button" class="mui-btn mui-btn-gray" id="send">发送</button>
 			</label>
 		</footer>
-		
-		
 
-		
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/mui.poppicker.js"></script>
 		<script src="../js/config.js"></script>
-		<script src="../js/app.js"></script> 
-		<script src="../js/wss.js"></script> 
-		<script src="../js/v2/alert.js"></script> 
-		<script src="../js/room/index.js"></script> 
+		<script src="../js/app.js"></script>
+		<script src="../js/wss.js"></script>
+		<script src="../js/v2/alert.js"></script>
+		<script src="../js/room/index.js"></script>
 		<script type="text/javascript">
-			
-			
 			var pages = window.config.pages;
 			var firends;
 			var $ = mui;
@@ -76,96 +70,83 @@
 			var roomCode;
 			var externalRoomId;
 			var timerCountHand;
-			
+
 			$.init({
 				statusBarStyle: "light",
 				statusBarBackground: '#fe5a2f'
 			});
-			
-			$.plusReady(function(){
+
+			$.plusReady(function() {
 				// 设置顶部状态栏样式
 				plus.navigator.setStatusBarStyle("light");
 				plus.navigator.setStatusBarBackground("#FE532A");
-				
+
 				// 禁止屏幕翻转
 				plus.screen.lockOrientation("portrait-primary");
-				
-				
+
 				// 绑定动态标题事件
 				var self = plus.webview.currentWebview(),
 					titleComponent = doc.getElementById("title");
-					
-					
+
+
+
 				// 获取上一个页面传入的值 
 				roomCode = self.room_code;
 				externalRoomId = self.externalRoomId;
-				
-				
-				
-				game.message("由于5分钟内未拼桌成功，系统已自动将该房间解散！", function(){
-					var audioPlayer = plus.audio.createPlayer("/mp3/v2/message.mp3");
-					audioPlayer.play();
-				}, function(){
-					var audioPlayer = plus.audio.createPlayer("/mp3/v2/btnClick.mp3");
-					audioPlayer.play();
-				});
-				
+
 				if(externalRoomId != null && externalRoomId.length > 0) {
 					recvMessageFromRoom("熊猫麻将房间号：" + externalRoomId);
-				}else{
-					recvMessageFromRoom("获取熊猫麻将房间号失败，请退出重进！" );
+				} else {
+					recvMessageFromRoom("获取熊猫麻将房间号失败，请退出重进！");
 				}
-				
+
 				recvMessageFromRoom("游戏中遇到问题，请联系客服");
 				recvMessageFromRoom("结束游戏后请回到房间结算！");
-				
-				self.addEventListener("show", function(){  
+
+				self.addEventListener("show", function() {
 					titleComponent.innerHTML = self.title;
-					
+
 				})
-				
-				
-				if(timerCountHand!=null) clearInterval(timerCountHand);
+
+				if(timerCountHand != null) clearInterval(timerCountHand);
 				timerCountHand = setInterval(getPersonCount, 3000);
 				getPersonCount();
-				
+
 				// 通知其他用户，我进入了房间
-				var me = JSON.parse(plus.storage.getItem('userInfo')); 
+				var me = JSON.parse(plus.storage.getItem('userInfo'));
 				sendMessageToRoom('用户' + me.phone + '进入了房间');
-				
+
 				// 绑定选择菜单
 				var openMenu = doc.getElementById("openMenu"),
 					toDisband = doc.getElementById("toDisband"),
 					toCloseAccounts = doc.getElementById("toCloseAccounts");
-					
-					
-					
+
 				openMenu.addEventListener("tap", function() {
-					$("#sheet").popover("toggle");  
+					$("#sheet").popover("toggle");
 				});
-				
-				toDisband.addEventListener("tap", function(){
-					
-				 	plus.nativeUI.confirm("您确定要退出此房间？", function(e){
-				 		if(e.index == 1){
-				 			$("#sheet").popover("toggle"); 
-				 			
-				 			var localCache = plus.storage.getItem('userInfo');
-							if(!(localCache != null && localCache.length > 0)) return false; 
-				 			room.disband({
-				 				"token": JSON.parse(localCache).token.toString(),
-				 				"roomCode": roomCode
-				 			}, function(data){
+
+				toDisband.addEventListener("tap", function() {
+
+					plus.nativeUI.confirm("您确定要退出此房间？", function(e) {
+						if(e.index == 1) {
+							$("#sheet").popover("toggle");
+
+							var localCache = plus.storage.getItem('userInfo');
+							if(!(localCache != null && localCache.length > 0)) return false;
+							room.disband({
+								"token": JSON.parse(localCache).token.toString(),
+								"roomCode": roomCode
+							}, function(data) {
 								if(data == null || data.code == 500 || data.code == 300) return plus.nativeUI.toast("退出失败");
-				
+
 								if(data == null || data.code == 400) return plus.nativeUI.toast(data.msg);
-				
-				 				plus.nativeUI.toast("退出成功")
-				 				
-				 				var me = JSON.parse(plus.storage.getItem('userInfo')); 
+
+								plus.nativeUI.toast("退出成功")
+
+								var me = JSON.parse(plus.storage.getItem('userInfo'));
 								sendMessageToRoom('用户' + me.phone + '退出了房间');
-				 				
-				 				$.openWindow({
+
+								$.openWindow({
 									url: 'room.html',
 									id: 'room',
 									preload: true,
@@ -181,241 +162,250 @@
 										autoShow: true
 									}
 								});
-								
-								for (var i = 0 ; i < pages.length ; i ++) {
-									if (i != 2) { 
+
+								for(var i = 0; i < pages.length; i++) {
+									if(i != 2) {
 										plus.webview.hide(pages[i].id, "fade-out", 200);
 									}
 								}
-								
+
 								exitRoom();
-				 				plus.webview.currentWebview().close();
-				 			}, function(){
-				 				plus.nativeUI.toast("退出失败")
-				 			});
-				 		}
-				 	}, "敏感操作", ["取消","确定"]);
+								plus.webview.currentWebview().close();
+							}, function() {
+								plus.nativeUI.toast("退出失败")
+							});
+						}
+					}, "敏感操作", ["取消", "确定"]);
 				})
-				
-				toCloseAccounts.addEventListener("tap", function(){ 
-					plus.nativeUI.confirm("请您选择结算方式", function(e){
-						if(e.index == 1){
+
+				toCloseAccounts.addEventListener("tap", function() {
+					plus.nativeUI.confirm("请您选择结算方式", function(e) {
+						if(e.index == 1) {
 							mui.openWindow({
-			                    url: "close-accounts.html",
-			                    id: "close-accounts",
-			                    preload: false,
-			                    waiting: {
-			                        autoShow: true,
-		                          title:'正在加载...'
-			                    },
-			                    extras:{
+								url: "close-accounts.html",
+								id: "close-accounts",
+								preload: false,
+								waiting: {
+									autoShow: true,
+									title: '正在加载...'
+								},
+								extras: {
 									"room_code": roomCode,
 									"self": self
-							    },
-							    createNew:true
-			    
-			                });
-						}else if(e.index == 2){
+								},
+								createNew: true
+
+							});
+						} else if(e.index == 2) {
 							mui.openWindow({
-			                    url: "custom-service.html",
-			                    id: "custom-service",
-			                    preload: false,
-			                    waiting: {
-			                        autoShow: true,
-		                          title:'正在加载...'
-			                    },
-							    createNew:true
-			    
-			                });
+								url: "custom-service.html",
+								id: "custom-service",
+								preload: false,
+								waiting: {
+									autoShow: true,
+									title: '正在加载...'
+								},
+								createNew: true
+
+							});
 						}
-						
-					}, "结算", ["取消","正常结算","超时结算"]) 
+
+					}, "结算", ["取消", "正常结算", "超时结算"])
 				})
-				
-				
-				
+
 				var areaMsgList = document.getElementById("msg");
 				// 设置聊天记录进入页面的时候自动滚动到最后一条
 				areaMsgList.scrollTop = areaMsgList.scrollHeight + areaMsgList.offsetHeight;
-				
+
 				// 获取dom控件
 				var msg_text = document.getElementById("msg-text");
 				var send = document.getElementById("send");
-				
+
 				// 监听用户输入，使得send按钮变色
-				msg_text.addEventListener("input", function(){
+				msg_text.addEventListener("input", function() {
 					var msg_text_val = msg_text.value;
-					if (msg_text_val.length > 0) {
+					if(msg_text_val.length > 0) {
 						send.setAttribute("class", "mui-btn-green");
 					} else {
 						send.setAttribute("class", "mui-btn-gray");
 					}
 				});
-				
+
 				// 对当前的窗口监听resize事件
-				window.addEventListener("resize", function(){
+				window.addEventListener("resize", function() {
 					resizeScreen();
 					document.getElementById("msg-outter").style.paddingBottom = "50px";
 				});
-				
-				 
+
 				// 发送消息按钮的事件绑定
-				send.addEventListener("tap", function(){
-					
+				send.addEventListener("tap", function() {
+
 					// 发送之前判断网络的状态
 					var connectionStatus = plus.networkinfo.getCurrentType();
 					console.log("connectionStatus" + connectionStatus);
-					if (connectionStatus == 0 || connectionStatus == 1) {
+					if(connectionStatus == 0 || connectionStatus == 1) {
 						plus.nativeUI.toast("请打开网络连接");
 						return;
 					}
-					
+
 					// 获取消息内容
 					var msg_text_val = msg_text.value;
-					
+
 					// 判断消息内容，如果长度等于0，则return
-					if (msg_text_val.length === 0) {
+					if(msg_text_val.length === 0) {
 						return;
 					}
-					
+
 					// 发送消息, 渲染消息的html到msg div之下
 					sendMsg(msg_text_val);
 					// 情况消息文本框中的内容
 					msg_text.value = "";
 					// 发送消息完毕之后，把发送按钮的颜色改为灰白色
 					send.setAttribute("class", "mui-btn-gray");
-					
+
 					// 构建ChatMsg
-					var me = JSON.parse(plus.storage.getItem('userInfo')); 
+					var me = JSON.parse(plus.storage.getItem('userInfo'));
 					var chatMsg = new wss.ChatMsg(me.userId, roomCode, null, msg_text_val, null);
-					
+
 					// 构建DataContent
 					var dataContent = new wss.DataContent(wss.CHAT, chatMsg, null);
-					
+
 					// 调用websocket 发送消息到netty后端
-					console.log("调用发送接口:" + JSON.stringify(dataContent)) 
+					console.log("调用发送接口:" + JSON.stringify(dataContent))
 					var wssView = plus.webview.getWebviewById("room");
 					var msg = JSON.stringify(dataContent);
 					wssView.evalJS("CHAT.chat('" + msg + "')");
-					
-					
+
 					// 保存聊天历史记录到本地缓存
 					//app.saveUserChatHistory(me.id, friendUserId, msg_text_val, 1);
 					//app.saveUserChatSnapshot(me.id, friendUserId, msg_text_val, true);
 					// receiveMsg("模拟接受消息~~~~~~");
 				});
-				
-				
+
 			});
 
-			function getPersonCount(){
-				console.log("刷新" + roomCode +"在线人数")
+			function getPersonCount() {
+				console.log("刷新" + roomCode + "在线人数")
 				room.getPersonCount({
 					"roomCode": roomCode
-				}, function(data){
-					if(data.code == 200){
+				}, function(data) {
+					if(data.code == 200) {
 						doc.getElementById("personCount").innerHTML = data.msg;
+					} else if(data.code == 300) {
+						// 弹窗提醒
+						var modal = document.getElementById("modal");
+						if(modal == null) {
+							 game.message("由于5分钟内未拼桌成功，系统已自动将该房间解散！", function() {
+									var audioPlayer = plus.audio.createPlayer("/mp3/v2/message.mp3");
+									audioPlayer.play();
+								}, function() {
+									var audioPlayer = plus.audio.createPlayer("/mp3/v2/btnClick.mp3");
+									audioPlayer.play();
+									plus.webview.currentWebview().close();
+									plus.webview.getWebviewById("room").evalJS("refresh()");
+								});
+						}
+						// 弹窗提醒
 					}
-				}, function(){})
+				}, function() {})
 			}
 
-			function exitRoom(){
-				 plus.webview.getWebviewById("room").evalJS("CHAT.close()");
+			function exitRoom() {
+				plus.webview.getWebviewById("room").evalJS("CHAT.close()");
 			}
-			
-			function sendMessageToRoom(content){
+
+			function sendMessageToRoom(content) {
 				console.log("推送系统消息到房间：" + roomCode)
 				var wssView = plus.webview.getWebviewById("room");
-				var me = JSON.parse(plus.storage.getItem('userInfo')); 
+				var me = JSON.parse(plus.storage.getItem('userInfo'));
 				content = "系统消息" + content;
 				var chatMsg = new wss.ChatMsg(me.userId, roomCode, null, content, null);
 				var dataContent = new wss.DataContent(wss.CHAT, chatMsg, null);
 				var msg = JSON.stringify(dataContent);
 				wssView.evalJS("CHAT.chat('" + msg + "')");
-				content =  content.replace("系统消息","");
+				content = content.replace("系统消息", "");
 				sendMsgNoPlay(content);
 			}
-			
-			function recvMessageFromRoom(msg){
+
+			function recvMessageFromRoom(msg) {
 				var msgHtml = '<div class="friend_lists">' +
-									'<div class="header_img">' +
-										'<img src="../images/if_04_Costumer_Care_1871421.png" width="40px" height="40px" />' +
-									'</div>' +
-									'<div class="msg-wrapper right">' +
-										'<p class="msg-left-white">' + msg + '</p>' +
-									'</div>' +
-							  '</div>'; 
-				
+					'<div class="header_img">' +
+					'<img src="../images/if_04_Costumer_Care_1871421.png" width="40px" height="40px" />' +
+					'</div>' +
+					'<div class="msg-wrapper right">' +
+					'<p class="msg-left-white">' + msg + '</p>' +
+					'</div>' +
+					'</div>';
+
 				var msg_list = document.getElementById("msg");
 				msg_list.insertAdjacentHTML("beforeend", msgHtml);
 			}
-			
+
 			/**
 			 * 接收消息
 			 * @param {Object} msg
 			 */
 			function receiveMsg(msg) {
 				var msgHtml = '<div class="friend_lists">' +
-									'<div class="header_img">' +
-										'<img src="../images/if_unknown_403017.png" width="40px" height="40px" />' +
-									'</div>' +
-									'<div class="msg-wrapper right">' +
-										'<p class="msg-left-white">' + msg + '</p>' +
-									'</div>' +
-							  '</div>'; 
-				
+					'<div class="header_img">' +
+					'<img src="../images/if_unknown_403017.png" width="40px" height="40px" />' +
+					'</div>' +
+					'<div class="msg-wrapper right">' +
+					'<p class="msg-left-white">' + msg + '</p>' +
+					'</div>' +
+					'</div>';
+
 				var msg_list = document.getElementById("msg");
 				msg_list.insertAdjacentHTML("beforeend", msgHtml);
-				
+
 				playReceiveMsgSound();
 			}
-			
+
 			/**
 			 * 发送消息，渲染html
 			 * @param {Object} msg
 			 */
-			function sendMsg(msg){
-			 	var str  = '<div class="me_lists">' +
-								'<div class="header_img">' +
-									'<img src="../images/if_unknown_403017.png" width="40px" height="40px" />' + 
-								'</div>' + 
-								'<div class="msg-wrapper left">' +
-									'<p class="msg-right-green">' + msg + '</p>'
-								'</div>' + 
-							'</div>';
-							
+			function sendMsg(msg) {
+				var str = '<div class="me_lists">' +
+					'<div class="header_img">' +
+					'<img src="../images/if_unknown_403017.png" width="40px" height="40px" />' +
+					'</div>' +
+					'<div class="msg-wrapper left">' +
+					'<p class="msg-right-green">' + msg + '</p>'
+				'</div>' +
+				'</div>';
+
 				var list = document.getElementById("msg");
-				list.insertAdjacentHTML("beforeend",str);
-				
-				
+				list.insertAdjacentHTML("beforeend", str);
+
 				playSendMsgSound();
-			 }
-			
-			function sendMsgNoPlay(msg){
+			}
+
+			function sendMsgNoPlay(msg) {
 				var str = '<div class="friend_lists">' +
-									'<div class="header_img">' +
-										'<img src="../images/if_04_Costumer_Care_1871421.png" width="40px" height="40px" />' +
-									'</div>' +
-									'<div class="msg-wrapper right">' +
-										'<p class="msg-left-white">' + msg + '</p>' +
-									'</div>' +
-							  '</div>'; 
+					'<div class="header_img">' +
+					'<img src="../images/if_04_Costumer_Care_1871421.png" width="40px" height="40px" />' +
+					'</div>' +
+					'<div class="msg-wrapper right">' +
+					'<p class="msg-left-white">' + msg + '</p>' +
+					'</div>' +
+					'</div>';
 				var list = document.getElementById("msg");
-				list.insertAdjacentHTML("beforeend",str);
-			 }
-			 
-			 // 播放发送消息的铃声
+				list.insertAdjacentHTML("beforeend", str);
+			}
+
+			// 播放发送消息的铃声
 			function playSendMsgSound() {
 				var audioPlayer = plus.audio.createPlayer("/mp3/send.mp3");
 				audioPlayer.play();
 			}
-			
+
 			// 播放接受消息的铃声
 			function playReceiveMsgSound() {
 				var audioPlayer = plus.audio.createPlayer("/mp3/msn.mp3");
 				audioPlayer.play();
 			}
-			
+
 			// 重新调整聊天窗口
 			function resizeScreen() {
 				var areaMsgList = document.getElementById("msg");
