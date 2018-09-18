@@ -148,16 +148,17 @@
 							}
 							
 							if(data.code == 400){
+								plus.nativeUI.closeWaiting();
 								loginButton.disabled = false;
 								loginButton.classList.remove("button-disabled");
 								plus.nativeUI.toast(data.msg);
 								return false;
 							}
 							
+							plus.nativeUI.closeWaiting();
 							plus.nativeUI.toast("登录成功");
 							loginButton.disabled = false;
 							loginButton.classList.remove("button-disabled");
-							plus.nativeUI.closeWaiting();
 							
 							plus.storage.setItem('userInfo', JSON.stringify(data.msg));
 							plus.storage.setItem('isAutoLogin', "true");
@@ -167,10 +168,10 @@
 							toHome($);
 							
 						}, function(){
+							plus.nativeUI.closeWaiting();
 							loginButton.disabled = false;
 							loginButton.classList.remove("button-disabled");
 							plus.nativeUI.toast("登录超时,请您稍后重试!");
-							plus.nativeUI.closeWaiting();
 						})
 					}, false) 
 				});

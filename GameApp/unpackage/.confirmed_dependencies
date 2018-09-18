@@ -63,13 +63,17 @@
       "html/withdraw.html",
       "html/messages.html",
       "html/payment.html",
-      "html/enterprise-recharge.html"
+      "html/enterprise-recharge.html",
+      "html/enterprise-recharge2.html"
     ],
     "resources": [
       "images/subareas/2.png",
       "images/subareas/1.png",
       "images/subareas/4.png",
-      "images/subareas/3.png"
+      "images/subareas/3.png",
+      "images/subareas/download.png",
+      "images/wechat_ad.png",
+      "images/default_ad.png"
     ]
   },
   "html/room.html": {
@@ -106,11 +110,13 @@
   "html/withdraw.html": {
     "refer": [
       "html/bind-finance-account.html"
-    ]
+    ],
+    "resources": []
   },
   "html/new-room.html": {
     "refer": [
       "html/room-detail.html"
-    ]
+    ],
+    "resources": []
   }
 }

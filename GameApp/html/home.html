@@ -77,7 +77,7 @@
 					<div class="withdraw" id="withdraw">
 						<span id="centerRightAdTitle">赢了游戏来领钱啦~</span>
 						<p id="centerRightAdDesc">秒结算！真金白银带回家</p>
-						<button>我要提现</button>
+						<button id="centerRightAdButton">我要提现</button>
 					</div>
 				</div>
 				<!--finance begin-->
@@ -110,6 +110,9 @@
 							<img src="{{item.backgroundImage}}"  alt="{{item.name}}" />
 						</li>
 					{{/each}}
+					<li id="downloadApp">
+						<img src="../images/subareas/download.png"/>
+					</li>
 				</script>
 				<!--subareas end--> 
 				
@@ -178,24 +181,24 @@
 					checkVersion(plus);
 					
 					// 推送消息被点击
-						if(bindMessageClick == 0) {
-							console.log("注册推送消息事件");
-							
-							plus.push.addEventListener("click", function(){
-								console.log("推送消息被点击!");
-								bindMessageClick = 1;
-								if(plus.webview.getWebviewById("messages") != null) plus.webview.getWebviewById("messages").close();
-								mui.openWindow({
-				                    url: "/html/messages.html",
-				                    id: "messages",
-				                    preload: false,
-				                    waiting: {
-				                        autoShow: true,
-				                      title:'正在加载...'
-				                    },
-				                    createNew: true
-				                });
-						});
+					if(bindMessageClick == 0) {
+						console.log("注册推送消息事件");
+						
+						plus.push.addEventListener("click", function(){
+							console.log("推送消息被点击!");
+							bindMessageClick = 1;
+							if(plus.webview.getWebviewById("messages") != null) plus.webview.getWebviewById("messages").close();
+							mui.openWindow({
+			                    url: "/html/messages.html",
+			                    id: "messages",
+			                    preload: false,
+			                    waiting: {
+			                        autoShow: true,
+			                      title:'正在加载...'
+			                    },
+			                    createNew: true
+			                });
+					});
 					}
 					
 					plus.webview.currentWebview().addEventListener("show", function(){
@@ -203,8 +206,11 @@
 						
 					})
 					
+					
 					doc.getElementById("recharge").addEventListener("tap", function(){
-						mui.openWindow({
+						return plus.nativeUI.toast("暂未对外开放，正在申请审核");
+						
+						/*mui.openWindow({
 		                    url: "recharge.html",
 		                    id: "recharge",
 		                    preload: false,
@@ -214,7 +220,8 @@
 		                    },
 						    createNew:true
 		    
-		                });
+		                });*/
+
 					})
 					
 					
@@ -223,17 +230,22 @@
 					 * 申请提现
 					 */
 					doc.getElementById("withdraw").addEventListener("tap", function(){
-						mui.openWindow({
-		                    url: "withdraw.html",
-		                    id: "withdraw",
-		                    preload: false,
-		                    waiting: {
-		                        autoShow: true,
-	                          title:'正在加载...'
-		                    },
-						    createNew:true
-		    
-		                });
+						if(doc.getElementById("centerRightAdButton").textContent != "抢先预览"){
+							mui.openWindow({
+			                    url: "withdraw.html",
+			                    id: "withdraw",
+			                    preload: false,
+			                    waiting: {
+			                        autoShow: true,
+		                          title:'正在加载...'
+			                    },
+							    createNew:true
+			    
+			                });
+						}else{
+							plus.nativeUI.toast("暂未开放");
+						}
+						
 					})
 					 
 					 /**
@@ -284,7 +296,8 @@
 					centerLeftAdTitle = gDoc.getElementById("centerLeftAdTitle"),
 					centerLeftAdDesc = gDoc.getElementById("centerLeftAdDesc"),
 					centerRightAdTitle = gDoc.getElementById("centerRightAdTitle"),
-					centerRightAdDesc = gDoc.getElementById("centerRightAdDesc");
+					centerRightAdDesc = gDoc.getElementById("centerRightAdDesc"),
+					centerRightAdButton = gDoc.getElementById("centerRightAdButton");
 				
 				readMessage();
 				
@@ -316,6 +329,7 @@
 					
 					centerRightAdTitle.innerText = data.msg.centerRightAdTitle;
 					centerRightAdDesc.innerText = data.msg.centerRightAdDesc;
+					centerRightAdButton.innerText = data.msg.centerRightAdButton;
 					
 					
 					gDoc.getElementById("centerBottomAdQCode").src = data.msg.centerBottomAdQCode;
@@ -364,6 +378,13 @@
 			                });
 						})
 					}
+					
+					
+					// 打开下载熊猫麻将app地址
+					gDoc.getElementById("downloadApp").addEventListener("tap", function(){
+						//http://android.myapp.com/myapp/detail.htm?apkName=com.mahjong.sichuang&ADTAG=mobile
+						plus.runtime.openURL("http://android.myapp.com/myapp/detail.htm?apkName=com.mahjong.sichuang&ADTAG=mobile");
+					})
 					
 				},function(){
 					plus.nativeUI.toast("服务器开小差了,请您稍后重试!");
@@ -445,7 +466,7 @@
 	                    plugin.runtime.install(path); // 自动安装apk文件
 	    				mui("body").progressbar().hide();
 	                } else {
-	                    plugin.nativeUI.alert('版本更新失败:' + status);
+	                    plugin.nativeUI.msg('版本更新失败:' + status);
 	    				mui("body").progressbar().hide();
 	                }
 	            });

@@ -166,13 +166,13 @@
 				"ios": {
 					"iphone": {
 						"default": "", /*iPhone3启动图片选，分辨率：320x480*/
-						"retina35": "C:/Users/HongWei/Desktop/0805/ios_640_960.png",/*3.5英寸设备(iPhone4)启动图片，分辨率：640x960*/
-						"retina40": "C:/Users/HongWei/Desktop/0805/ios_640_1136.png",
-						"iphonex": "C:/Users/HongWei/Desktop/0805/ios_1125_2436.png",
-						"iphonexl": "C:/Users/HongWei/Desktop/0805/ios_2436_1124.png",
-						"retina47": "C:/Users/HongWei/Desktop/0805/ios_750_1334.png",
-						"retina55": "C:/Users/HongWei/Desktop/0805/ios_1242_2208.png",
-						"retina55l": "C:/Users/HongWei/Desktop/0805/ios_2208_1242.png"
+						"retina35": "images/ios_640_960.png",/*3.5英寸设备(iPhone4)启动图片，分辨率：640x960*/
+						"retina40": "images/ios_640_1136.png",
+						"iphonex": "images/ios_1125_2436.png",
+						"iphonexl": "images/ios_2436_1124.png",
+						"retina47": "images/ios_750_1334.png",
+						"retina55": "images/ios_1242_2208.png",
+						"retina55l": "images/ios_2208_1242.png"
 					},
 					"ipad": {
 						"portrait": "", /*iPad竖屏启动图片，分辨率：768x1004*/
@@ -188,9 +188,9 @@
 				"android": {
 					"mdpi": "", /*普通屏启动图片，分辨率：240x282*/
 					"ldpi": "", /*大屏启动图片，分辨率：320x442*/
-					"hdpi": "C:/Users/HongWei/Desktop/0805/android_480_762.png", /*高分屏启动图片，分辨率：480x762*/
-					"xhdpi": "C:/Users/HongWei/Desktop/0805/android_720_1242.png", /*720P高分屏启动图片，分辨率：720x1242*/
-					"xxhdpi": "C:/Users/HongWei/Desktop/0805/android_1080_1882.png"
+					"hdpi": "images/android_480_762.png", /*高分屏启动图片，分辨率：480x762*/
+					"xhdpi": "images/android_720_1242.png", /*720P高分屏启动图片，分辨率：720x1242*/
+					"xxhdpi": "images/android_1080_1882.png"
 				}
 			}
 		}
@@ -261,7 +261,10 @@
 					"images/subareas/2.png",
 					"images/subareas/1.png",
 					"images/subareas/4.png",
-					"images/subareas/3.png"
+					"images/subareas/3.png",
+					"images/subareas/download.png",
+					"images/wechat_ad.png",
+					"images/default_ad.png"
 				],
 				"refer": [
 					"html/create-room.html",
@@ -269,7 +272,8 @@
 					"html/withdraw.html",
 					"html/messages.html",
 					"html/payment.html",
-					"html/enterprise-recharge.html"
+					"html/enterprise-recharge.html",
+					"html/enterprise-recharge2.html"
 				],
 				"priority": 0
 			},

@@ -33,8 +33,6 @@ spring:
         min-idle: 0
         max-idle: 8
     timeout: 60000
-
-
 #数据库框架配置
 mybatis:
   configuration:
@@ -51,4 +49,4 @@ server:
 logging:
   level:
     root: debug
-  #file: c:boot.log
+  file: c:boot.log

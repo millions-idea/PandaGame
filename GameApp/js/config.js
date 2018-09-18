@@ -1,21 +1,21 @@
 (function(){
 	
 	window.config = {
-		title: "宜乐对战",
+		title: "宜乐互战",
 		/*pub*/
 		/*api: "http://132.232.61.181:59845/",
 		file: "http://132.232.61.181:8090/",
 		wss: "ws://132.232.61.181:8088/ws",*/
 		
 		/*test*/
-		api: "http://vsbx9t.natappfree.cc/",
+		/*api: "http://etw4uv.natappfree.cc/",
 		file: "http://193.112.151.148:8090/",
-		wss: "ws://193.112.151.148:8088/ws",
+		wss: "ws://193.112.151.148:8088/ws",*/
 		
 		/*dev*/
-		/*api: "http://vwhwz6.natappfree.cc/",
+		api: "http://193.112.151.148:59845/",
 		file: "http://132.232.61.181:8090/",
-		wss: "ws://192.168.1.103:8088/ws",*/
+		wss: "ws://193.112.151.148:8088/ws",
 		pages: [{
 			id: "home",
 			url: "html/home.html",

@@ -23,6 +23,7 @@ public class GroupInformation {
     private String centerLeftAdDesc;
     private String centerRightAdTitle;
     private String centerRightAdDesc;
+    private String centerRightAdButton;
     private String centerBottomAdTitle;
     private String centerBottomAdDesc;
     private String centerBottomAdQCode;

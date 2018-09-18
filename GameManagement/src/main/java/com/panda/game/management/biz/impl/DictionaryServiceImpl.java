@@ -74,6 +74,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
         String rightAdDesc = list.stream().filter(d -> d.getKey().contains("home.group.info.center.right-ad.desc")).findFirst().get().getValue();
         groupInformation.setCenterRightAdDesc(rightAdDesc);
 
+        String rightAdButton = list.stream().filter(d -> d.getKey().contains("home.group.info.center.right-ad.button")).findFirst().get().getValue();
+        groupInformation.setCenterRightAdButton(rightAdButton);
+
         String bottomAdTitle = list.stream().filter(d -> d.getKey().contains("home.group.info.center.bottom-ad.title")).findFirst().get().getValue();
         groupInformation.setCenterBottomAdTitle(bottomAdTitle);
 
