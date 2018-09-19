@@ -93,6 +93,9 @@ public class PaymentController extends BaseController {
     }
 
 
+
+    @GetMapping("/appPay")
+    @ResponseBody
     public String appPay(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String outtradeno = new String(OrderUtil.get().getBytes("ISO-8859-1"),"UTF-8");
         //实例化客户端
@@ -147,8 +150,6 @@ public class PaymentController extends BaseController {
     }
 
 
-    @GetMapping("/appPay")
-    @ResponseBody
     public String GetPayInfo(String total)//_amount:付款金额
     {
         String strJson = "";

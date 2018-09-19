@@ -20,30 +20,26 @@
 		    <!--runner ad begin-->
 		    <div class="runnerAd">
 		    	<!--runner image begin-->
-					<div class="runnerImage">
-						<!--image begin-->
+					<!-- <div class="runnerImage">
 				    	<div class="mui-slider">
 						  <div class="mui-slider-group" id="runnerImage">
-						    
 						  </div>
-						  <!--小圆点-->
 						  <div class="mui-slider-indicator">
 			                <div class="mui-indicator mui-active"></div>
 			                <div class="mui-indicator"></div>
 			                <div class="mui-indicator"></div>
 		            	  </div>
 						</div>
-				    	<!--image end-->
-					</div>
-					<script id="runnerImageTemplate" type="text/html">
+					</div>-->
+					<!--<script id="runnerImageTemplate" type="text/html">
 						{{each list as value index}}
 						    <div class="mui-slider-item"><a href="#"><img src="{{value}}" alt="{{index}}" /></a></div>
 						{{/each}}
-					</script>
+					</script>-->
 				<!--runner image end-->
 				
-				<div class="form-placeholder-10"></div>
-				<div class="form-placeholder-5"></div>
+				<!--<div class="form-placeholder-10"></div>
+				<div class="form-placeholder-5"></div>-->
 				
 		    	<!--text ad begin-->
 		    	<div class="textAd">
@@ -105,14 +101,14 @@
 				<!--subareas begin-->
 				<ul id="subareas" class="subareas"></ul>
 				<script id="subareasTemplate" type="text/html">
-					{{each list as item index}}
-					    <li name="subareas-item" data-id="{{item.subareaId}}" data-state="{{item.isEnable}}">
-							<img src="{{item.backgroundImage}}"  alt="{{item.name}}" />
-						</li>
-					{{/each}}
 					<li id="downloadApp">
 						<img src="../images/subareas/download.png"/>
 					</li>
+					{{each list as item index}}
+						<li name="subareas-item" data-id="{{item.subareaId}}" data-state="{{item.isEnable}}">
+							<img src="{{item.backgroundImage}}"  alt="{{item.name}}" />
+						</li>
+					{{/each}} 
 				</script>
 				<!--subareas end--> 
 				
@@ -208,9 +204,9 @@
 					
 					
 					doc.getElementById("recharge").addEventListener("tap", function(){
-						return plus.nativeUI.toast("暂未对外开放，正在申请审核");
+						//return plus.nativeUI.toast("暂未对外开放，正在申请审核");
 						
-						/*mui.openWindow({
+						mui.openWindow({
 		                    url: "recharge.html",
 		                    id: "recharge",
 		                    preload: false,
@@ -220,7 +216,7 @@
 		                    },
 						    createNew:true
 		    
-		                });*/
+		                });
 
 					})
 					
@@ -254,8 +250,37 @@
 					doc.getElementById("getRoomCard").addEventListener("tap", function(){
 						var localCache = plus.storage.getItem('userInfo');
 						if(localCache != null && localCache.length > 0){
-							console.log(localCache)
-							mui.confirm("确定为熊猫麻将ID为：" + JSON.parse(localCache).pandaId + "\r\n账户领取30张房卡吗？(金币>100)", "免费房卡", ["确定", "取消"], function(e){
+							home.getRoomCard({
+								"token": JSON.parse(localCache).token.toString()
+							}, function(data){
+								if(data == null || data.code == 500 || data.code == 300) return plus.nativeUI.toast("领取失败");
+								if(data.code == 400) {
+									if(data.msg.indexOf("未绑定") != -1){
+										plus.nativeUI.alert("请您先绑定熊猫麻将账户")
+										mui.openWindow({
+						                    url: "bind-panda-account.html",
+						                    id: "bind-panda-account",
+						                    preload: false,
+						                    waiting: {
+						                        autoShow: true,
+					                          title:'正在加载...'
+						                    },
+										    createNew:true
+						    
+						                });
+						                return;
+									}
+									return plus.nativeUI.toast(data.msg);
+								}
+
+								plus.nativeUI.toast("已提交申请，请等待客服审核！");
+							}, function(){
+								plus.nativeUI.toast("服务器开小差了,请您稍后重试!"); 
+							}) 
+							
+							
+							
+							/*mui.confirm("确定为熊猫麻将ID为：" + JSON.parse(localCache).pandaId + "\r\n账户领取30张房卡吗？(金币>100)", "免费房卡", ["确定", "取消"], function(e){
 								if(e.index == 0){
 									
 									home.getRoomCard({
@@ -270,7 +295,7 @@
 										plus.nativeUI.toast("服务器开小差了,请您稍后重试!"); 
 									}) 
 								}
-							})
+							})*/
 						}else{
 							plus.nativeUI.toast("请重新登录");
 						}
@@ -308,6 +333,9 @@
 							
 					if(data == null || data.code != 200) return plus.nativeUI.toast("服务器开小差了,请您稍后重试!");
 					
+					plus.storage.removeItem("groupInfo");
+					plus.storage.setItem("groupInfo", JSON.stringify(data.msg));
+					
 					var html = template("runnerImageTemplate", {
 						list: data.msg.topRunnerAds
 					}); 
@@ -338,7 +366,6 @@
 					  interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
 					});
 					
-					plus.storage.setItem("groupInfo", JSON.stringify(data.msg));
 				}, function(){
 					plus.nativeUI.toast("服务器开小差了,请您稍后重试!");
 					mui('#refreshContainer').pullRefresh().endPulldown();

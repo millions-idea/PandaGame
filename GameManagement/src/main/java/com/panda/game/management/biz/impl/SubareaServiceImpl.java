@@ -37,6 +37,7 @@ public class SubareaServiceImpl extends BaseServiceImpl<Subareas> implements ISu
     public List<Subareas> getLevelSubareas() {
         Subareas subareas = new Subareas();
         subareas.setIsRelation(1);
+        subareas.setIsEnable(1);
         return subareaMapper.select(subareas);
     }
 

@@ -1,21 +1,21 @@
 (function(){
 	
 	window.config = {
-		title: "宜乐互战",
+		title: "熊猫麻将拼桌",
 		/*pub*/
-		/*api: "http://132.232.61.181:59845/",
+		api: "http://132.232.61.181:59845/",
 		file: "http://132.232.61.181:8090/",
-		wss: "ws://132.232.61.181:8088/ws",*/
+		wss: "ws://132.232.61.181:8088/ws",
 		
 		/*test*/
-		/*api: "http://etw4uv.natappfree.cc/",
+		/*api: "http://nib9hu.natappfree.cc/",
 		file: "http://193.112.151.148:8090/",
 		wss: "ws://193.112.151.148:8088/ws",*/
 		
 		/*dev*/
-		api: "http://193.112.151.148:59845/",
+		/*api: "http://193.112.151.148:59845/",
 		file: "http://132.232.61.181:8090/",
-		wss: "ws://193.112.151.148:8088/ws",
+		wss: "ws://193.112.151.148:8088/ws",*/
 		pages: [{
 			id: "home",
 			url: "html/home.html",

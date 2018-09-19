@@ -5,12 +5,12 @@
 		"iPad"
 	],
 	"id": "H5B2B8FB5",/*应用的标识，创建应用时自动生成，勿手动修改*/
-	"name": "宜乐互战",/*应用名称，程序桌面图标名称*/
+	"name": "熊猫麻将拼桌",/*应用名称，程序桌面图标名称*/
 	"version": {
-		"name": "1.0.3",/*应用版本名称*/
+		"name": "1.0.4",/*应用版本名称*/
 		"code": "83"
 	},
-	"description": "",/*应用描述信息*/
+	"description": "为四川本地最火爆的麻将游戏提供拼桌服务",/*应用描述信息*/
 	"icons": {
 		"72": "icon.png"
 	},
@@ -273,7 +273,8 @@
 					"html/messages.html",
 					"html/payment.html",
 					"html/enterprise-recharge.html",
-					"html/enterprise-recharge2.html"
+					"html/enterprise-recharge2.html",
+					"html/bind-panda-account.html"
 				],
 				"priority": 0
 			},

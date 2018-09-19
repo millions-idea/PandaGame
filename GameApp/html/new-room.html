@@ -154,6 +154,11 @@
 							}
 							
 							if(data.code == 400){ 
+								if(data.msg == "没有匹配到合适的房间") {
+									plus.nativeUI.alert("没有匹配到合适房间请到熊猫麻将创建房间");
+        							return false;
+        						}
+								
 								plus.nativeUI.toast(data.msg);
 								return false;
 							}

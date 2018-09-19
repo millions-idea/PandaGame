@@ -47,12 +47,7 @@
 				<a class="form-link-button" href="javascript:void(0)" id="smsCodeButton">获取短信验证码</a>
 			</div>-->
 			<!--validate end-->
-			
-			<!--password begin-->
-			<div class="form-item form-item-full">
-				<input type="number" class="form-input" id="pandaId" maxlength="11"  maxlength="11"  oninput="if(value.length>11)value=value.slice(0,11)"  placeholder="请输入熊猫麻将ID" value="" />
-			</div>
-			<!--password end-->
+
 
 			<!--login button begin-->
 			<div class="form-placeholder-20"></div>
@@ -96,7 +91,6 @@
 						phoneInput = doc.getElementById("phone"),
 						passwordInput = doc.getElementById("password"),
 						password2Input = doc.getElementById("password2"),
-						pandaIdInput = doc.getElementById("pandaId"),
 						smsCodeInput = doc.getElementById("smsCode"),
 						smsCodeButton = doc.getElementById("smsCodeButton"),
 						registerButton = doc.getElementById("registerButton");
@@ -194,7 +188,6 @@
 							phone: phoneInput.value,
 							password: passwordInput.value,
 							password2: password2Input.value,
-							pandaId: pandaIdInput.value,
 							/*smsCode: smsCodeInput.value,*/
 						}, function(data) {
 							console.log(JSON.stringify(data))
