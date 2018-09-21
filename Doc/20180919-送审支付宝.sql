@@ -13,4 +13,7 @@ UPDATE `panda`.`tb_dictionary` SET `dictionary_id`='17', `key`='home.group.info.
 INSERT INTO `panda`.`tb_dictionary` (`dictionary_id`, `key`, `value`) VALUES ('28', 'home.group.info.center.right-ad.button', '我要提现');
 
 
+<<<<<<< HEAD
 UPDATE `panda`.`tb_subareas` SET `subarea_id`='1', `parent_id`='0', `is_leaf`='0', `is_relation`='1', `name`='0.1元体验区', `background_image`='../images/subareas/1.png', `price`='0.10', `add_time`='2018-08-17 23:06:05', `max_person_count`='0', `limit_price`='0.10', `reduce_price`='0.10', `is_enable`='0' WHERE (`subarea_id`='1');
+=======
+>>>>>>> 881bf00ee0818caafc0a5e0e8e87e3f6971583bb
