@@ -426,10 +426,32 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserServ
         Integer userId = Integer.valueOf(map.get("userId"));
 
         Users users = userMapper.selectByPrimaryKey(userId);
-        if(users == null) throw new MsgException("用户不存在");
+        if(users == null) throw new MsgException("查询用户信息失败");
 
         users.setFinanceId(account);
         users.setFinanceName(accountName);
+        users.setUpdateDate(new Date());
+
+        int count = userMapper.updateByPrimaryKey(users);
+        if(count == 0) throw  new MsgException("绑定失败");
+    }
+
+    /**
+     * 绑定熊猫麻将账户 韦德 2018年9月19日22:13:24
+     *
+     * @param token
+     * @param account
+     */
+    @Override
+    public void bindPandaAccount(String token, String account) {
+        Map<String, String> map = TokenUtil.validate(token);
+        if(map.isEmpty()) throw new MsgException("请重新登录");
+        Integer userId = Integer.valueOf(map.get("userId"));
+
+        Users users = userMapper.selectByPrimaryKey(userId);
+        if(users == null) throw new MsgException("查询用户信息失败");
+
+        users.setPandaId(account);
         users.setUpdateDate(new Date());
 
         int count = userMapper.updateByPrimaryKey(users);

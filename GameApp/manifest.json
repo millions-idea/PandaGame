@@ -5,12 +5,12 @@
 		"iPad"
 	],
 	"id": "H5B2B8FB5",/*应用的标识，创建应用时自动生成，勿手动修改*/
-	"name": "宜乐互战",/*应用名称，程序桌面图标名称*/
+	"name": "熊猫麻将拼桌",/*应用名称，程序桌面图标名称*/
 	"version": {
-		"name": "1.0.3",/*应用版本名称*/
+		"name": "1.0.4",/*应用版本名称*/
 		"code": "83"
 	},
-	"description": "",/*应用描述信息*/
+	"description": "为四川本地最火爆的麻将游戏提供拼桌服务",/*应用描述信息*/
 	"icons": {
 		"72": "icon.png"
 	},
@@ -166,13 +166,13 @@
 				"ios": {
 					"iphone": {
 						"default": "", /*iPhone3启动图片选，分辨率：320x480*/
-						"retina35": "images/ios_640_960.png",/*3.5英寸设备(iPhone4)启动图片，分辨率：640x960*/
-						"retina40": "images/ios_640_1136.png",
-						"iphonex": "images/ios_1125_2436.png",
-						"iphonexl": "images/ios_2436_1124.png",
-						"retina47": "images/ios_750_1334.png",
-						"retina55": "images/ios_1242_2208.png",
-						"retina55l": "images/ios_2208_1242.png"
+						"retina35": "F:/0805/ios_640_960.png",/*3.5英寸设备(iPhone4)启动图片，分辨率：640x960*/
+						"retina40": "F:/0805/ios_640_1136.png",
+						"iphonex": "F:/0805/ios_1125_2436.png",
+						"iphonexl": "F:/0805/ios_2436_1124.png",
+						"retina47": "F:/0805/ios_750_1334.png",
+						"retina55": "F:/0805/ios_1242_2208.png",
+						"retina55l": "F:/0805/ios_2208_1242.png"
 					},
 					"ipad": {
 						"portrait": "", /*iPad竖屏启动图片，分辨率：768x1004*/
@@ -188,9 +188,9 @@
 				"android": {
 					"mdpi": "", /*普通屏启动图片，分辨率：240x282*/
 					"ldpi": "", /*大屏启动图片，分辨率：320x442*/
-					"hdpi": "images/android_480_762.png", /*高分屏启动图片，分辨率：480x762*/
-					"xhdpi": "images/android_720_1242.png", /*720P高分屏启动图片，分辨率：720x1242*/
-					"xxhdpi": "images/android_1080_1882.png"
+					"hdpi": "F:/0805/android_480_762.png", /*高分屏启动图片，分辨率：480x762*/
+					"xhdpi": "F:/0805/android_720_1242.png", /*720P高分屏启动图片，分辨率：720x1242*/
+					"xxhdpi": "F:/0805/android_1080_1882.png"
 				}
 			}
 		}
@@ -273,7 +273,8 @@
 					"html/messages.html",
 					"html/payment.html",
 					"html/enterprise-recharge.html",
-					"html/enterprise-recharge2.html"
+					"html/enterprise-recharge2.html",
+					"html/bind-panda-account.html"
 				],
 				"priority": 0
 			},

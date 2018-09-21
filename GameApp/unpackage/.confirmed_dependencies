@@ -64,7 +64,8 @@
       "html/messages.html",
       "html/payment.html",
       "html/enterprise-recharge.html",
-      "html/enterprise-recharge2.html"
+      "html/enterprise-recharge2.html",
+      "html/bind-panda-account.html"
     ],
     "resources": [
       "images/subareas/2.png",

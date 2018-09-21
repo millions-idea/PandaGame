@@ -56,7 +56,7 @@ public class RoomApiController {
         List<GameRoomDetailInfo> list = gameRoomService.getAllRoomList();
 
         String[] parentAreaNameList = {"两人麻将", "四人两房", "三人两房", "血战到底"};
-        Double[] priceList = {0.1, 1D, 2D, 0.1};
+        Double[] priceList = {1D, 1D, 2D, 2D};
 
 
         for (int i = 0; i < 100; i++) {

@@ -22,18 +22,18 @@
 		 	<div class="form-placeholder-50"></div>
 
 			<div class="form-item">
-				<!--<label style="color:red;font-size: 14px;">转账时请在转账备注下填写注册的手机号</label>-->
+				<label style="color:red;font-size: 14px;">转账时请在转账备注下填写注册的手机号</label>
 		 		<div class="form-placeholder-30"></div>
 		 		<div class="form-item form-item-full">
 					<input type="number" class="form-input" id="amount" style="text-align: center;"  maxlength="8" placeholder="请输入充值金额" value=""/>
 				</div>
 				<button id='alipayButton' class="mui-btn mui-btn-block mui-btn-orange">去支付宝充值</button>
 		 		<div class="form-placeholder-20"></div>
-				<!--<button id='payButton' class="mui-btn mui-btn-block mui-btn-orange">我已充值</button>-->
+				<button id='payButton' class="mui-btn mui-btn-block mui-btn-orange">我已充值</button>
 				<!--<a id="alipayButton" class="mui-btn mui-btn-block mui-btn-orange" style="color:#fff" href="alipays://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/FKX01971FVU2LCLFRYARF4">去支付宝充值</a>-->
 			</div>
 			
-			<!--<div class="form-placeholder-20"></div>
+			<div class="form-placeholder-20"></div>
 			
 			<div class="info">
 				<p>如果没有前往支付宝支付页面<br/>请点击下面的二维码保存到相册扫一扫支付</p>
@@ -41,7 +41,7 @@
 				<div class="form-placeholder-10"></div>
 				<p>注意：<br/>目前充值由人工客服代理<br/>到账后会有短消息提醒您！</p> 
 				<p>遇到支付问题联系客服！</p> 
-			</div>-->
+			</div>
 			
 		</div>
 		
@@ -80,7 +80,9 @@
 						doc.getElementById("qcode").src = groupInfo.payQRCodeUrl;
 						 
 					})
-							
+					
+					
+					// 我已充值
 					doc.getElementById("payButton").addEventListener("tap",function(){
 						if(document.getElementById("amount").value == null || document.getElementById("amount").value.length == 0) {
 							plus.nativeUI.closeWaiting();
@@ -135,8 +137,9 @@
 						
 					})
 					
-						plus.nativeUI.closeWaiting();
+					plus.nativeUI.closeWaiting();
 					
+					// 跳往支付宝客户端
 					doc.getElementById("alipayButton").addEventListener("tap",function(){
 						
 						var urlCode = groupInfo.payCode;
@@ -148,7 +151,8 @@
 						plus.runtime.openURL(encodeURI("alipays://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/" + urlCode));
 						plus.nativeUI.closeWaiting();
 					})
-					  
+					 
+					// 保存支付宝二维码到相册
 					doc.getElementById("qcode").addEventListener("tap", function(){
 						plus.nativeUI.showWaiting( "正在保存二维码" );
 						console.log(groupInfo.payQRCodeUrl)

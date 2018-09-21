@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/user")
 public class UserApiController {
     @Autowired
-    private com.panda.game.management.biz.IUserService IUserService;
+    private com.panda.game.management.biz.IUserService userService;
 
 
     @GetMapping("/getUserInfo")
@@ -31,7 +31,7 @@ public class UserApiController {
      * @return
      */
     public JsonResult<UserResp> getUserInfo(String token){
-        UserResp userResp = IUserService.getUserDetailByToken(token);
+        UserResp userResp = userService.getUserDetailByToken(token);
         return new JsonResult<>().successful(userResp);
     }
 
@@ -45,7 +45,7 @@ public class UserApiController {
      * @return
      */
     public JsonResult editPassword(String token, String password, String newPassword){
-        IUserService.editPassword(token, password, newPassword);
+        userService.editPassword(token, password, newPassword);
         return new JsonResult<>().successful();
     }
 
@@ -59,7 +59,21 @@ public class UserApiController {
      * @return
      */
     public JsonResult bindFinanceAccount(String token, String account, String accountName){
-        IUserService.bindFinanceAccount(token, account, accountName);
+        userService.bindFinanceAccount(token, account, accountName);
+        return JsonResult.successful();
+    }
+
+
+
+    @PostMapping("/bindPandaAccount")
+    /**
+     * 绑定熊猫麻将账户 韦德 2018年9月19日22:13:01
+     * @param token
+     * @param account
+     * @return
+     */
+    public JsonResult bindPandaAccount(String token, String account){
+        userService.bindPandaAccount(token, account);
         return JsonResult.successful();
     }
 }

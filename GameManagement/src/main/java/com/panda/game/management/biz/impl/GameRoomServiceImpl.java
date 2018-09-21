@@ -37,17 +37,19 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
     private final SettlementMapper settlementMapper;
     private final RoomCardMapper roomCardMapper;
     private final WalletMapper walletMapper;
+    private final UserMapper userMapper;
     private static Integer lock = 103697367;
 
 
     @Autowired
-    public GameRoomServiceImpl(GameRoomMapper gameRoomMapper, SubareaMapper subareaMapper, GameMemberGroupMapper gameMemberGroupMapper, SettlementMapper settlementMapper, RoomCardMapper roomCardMapper, WalletMapper walletMapper) {
+    public GameRoomServiceImpl(GameRoomMapper gameRoomMapper, SubareaMapper subareaMapper, GameMemberGroupMapper gameMemberGroupMapper, SettlementMapper settlementMapper, RoomCardMapper roomCardMapper, WalletMapper walletMapper, UserMapper userMapper) {
         this.gameRoomMapper = gameRoomMapper;
         this.subareaMapper = subareaMapper;
         this.gameMemberGroupMapper = gameMemberGroupMapper;
         this.settlementMapper = settlementMapper;
         this.roomCardMapper = roomCardMapper;
         this.walletMapper = walletMapper;
+        this.userMapper = userMapper;
     }
 
     /**
@@ -390,6 +392,12 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         String userId = map.get("userId");
         if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
 
+        // 查询此用户是否绑定了熊猫id
+        Users user = userMapper.selectByPrimaryKey(Integer.valueOf(userId));
+        if(user == null) throw new MsgException("查询用户信息失败");
+
+        if(user.getPandaId() == null || user.getPandaId().isEmpty()) throw new MsgException("未绑定熊猫麻将账户id");
+
         RoomCard roomCard = roomCardMapper.selectLast(Integer.valueOf(userId), users.getPandaId());
         if(roomCard != null){
             long nd = 1000 * 24 * 60 * 60;
@@ -419,7 +427,6 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         // TODO 这里要推送熊猫服务器才能决定此次是否成功
         roomCard = new RoomCard();
         roomCard.setUserId(Integer.valueOf(userId));
-        roomCard.setPandaId(users.getPandaId());
         roomCard.setState(0);
         roomCard.setAddTime(new Date());
         int count = roomCardMapper.insert(roomCard);

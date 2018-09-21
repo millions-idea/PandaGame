@@ -52,7 +52,7 @@ public class BootstrapApiController {
     private RedisTemplate redisTemplate;
     @PostMapping("/register")
     public JsonResult register(HttpServletRequest request, Users user, String smsCode){
-        if(user.getPandaId().isEmpty()) return new JsonResult().normalExceptionAsString("熊猫麻将ID是必填项");
+        //if(user.getPandaId().isEmpty()) return new JsonResult().normalExceptionAsString("熊猫麻将ID是必填项");
 
         // 1、检查是否在黑名单中
         String userIp = RequestUtil.getIp(request);

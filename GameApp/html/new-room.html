@@ -82,6 +82,45 @@
 		<script type="text/javascript">
 			var pages = window.config.pages;
 			
+			function getClipbordText() {
+	
+				if(!window.plus) return;
+				
+				if(mui.os.android) {
+				
+					var Context = plus.android.importClass("android.content.Context");
+				
+					var main = plus.android.runtimeMainActivity();
+				
+					var clip = main.getSystemService(Context.CLIPBOARD_SERVICE);
+				
+					return plus.android.invoke(clip, "getText");
+				
+				} else {
+				
+					var UIPasteboard = plus.ios.importClass("UIPasteboard");
+				
+					var generalPasteboard = UIPasteboard.generalPasteboard();
+				
+					// 设置/获取文本内容:
+				
+					//generalPasteboard.setValueforPasteboardType("testValue", "public.utf8-plain-text");
+				
+					//var _val = generalPasteboard.valueForPasteboardType("public.utf8-plain-text");
+				
+					//TODO 应用在后台的时候获取剪切版数据被系统限制了，只有在app内才能访问接口
+				
+					var _val=generalPasteboard.plusCallMethod({valueForPasteboardType:"public.utf8-plain-text"});
+				
+					console.log("ios复制返回的数据是：",_val);
+				
+					return _val || '';
+				
+				}
+
+			}
+
+			
 			(function($, doc){
 				$.init({
 					statusBarStyle: "light",
@@ -111,13 +150,18 @@
 						
 						if(mui.os.ios){
 						     // ios
-							var UIPasteboard  = plus.ios.importClass("UIPasteboard");
+							/*var UIPasteboard  = plus.ios.importClass("UIPasteboard");
 							var generalPasteboard = UIPasteboard.generalPasteboard();
 							generalPasteboard.setValueforPasteboardType("testValue", "public.utf8-plain-text");
-							content = generalPasteboard.valueForPasteboardType("public.utf8-plain-text");
+							content = generalPasteboard.valueForPasteboardType("public.utf8-plain-text");*/
+							content = getClipbordText();
 							if(content.indexOf("[") != -1){
 								content = content.substr(content.indexOf("[") + 1, content.length);
 								content = content.substr(0, content.indexOf("]"));
+							}else if(content.indexOf("&roomId=") != -1){
+								var roomId = content.substr(content.indexOf("android_scheme=pandamajiang://opengame?roomid=") + 46, content.length);
+								roomId = roomId.substr(0, roomId.length - 1);
+								content = roomId;
 							}
 							
 						 }else if(mui.os.android){
@@ -129,6 +173,10 @@
 							if(content.indexOf("[") != -1){
 								content = content.substr(content.indexOf("[") + 1, content.length);
 								content = content.substr(0, content.indexOf("]"));
+							}else if(content.indexOf("&roomId=") != -1){
+								var roomId = content.substr(content.indexOf("android_scheme=pandamajiang://opengame?roomid=") + 46, content.length);
+								roomId = roomId.substr(0, roomId.length - 1);
+								content = roomId;
 							}
 						 }
 						
@@ -154,6 +202,11 @@
 							}
 							
 							if(data.code == 400){ 
+								if(data.msg == "没有匹配到合适的房间") {
+									plus.nativeUI.alert("没有匹配到合适房间请到熊猫麻将创建房间");
+        							return false;
+        						}
+								
 								plus.nativeUI.toast(data.msg);
 								return false;
 							}

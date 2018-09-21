@@ -138,4 +138,11 @@ public interface IUserService extends IBaseService<Users> {
      * @param accountName
      */
     void bindFinanceAccount(String token, String account,String accountName);
+
+    /**
+     * 绑定熊猫麻将账户 韦德 2018年9月19日22:13:24
+     * @param token
+     * @param account
+     */
+    void bindPandaAccount(String token, String account);
 }

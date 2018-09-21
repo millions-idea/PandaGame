@@ -59,7 +59,7 @@ public class WithdrawController extends BaseController{
     }
 
     @GetMapping("/index")
-    public String  index(){
+    public String index(){
         return "withdraw/index";
     }
 
