@@ -17,7 +17,7 @@
 .my-title{
 	color:#fff;
 	background-color: #FE532A;
-	box-shadow: 0px 10px 20px #00000030;
+	box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.18823529411764706);
 }
 
 .my-title-color{
@@ -189,7 +189,7 @@ footer a:hover{
 
 
 
-/*下拉刷新文字的样式*/
+/*ä¸‹æ‹‰åˆ·æ–°æ–‡å­—çš„æ ·å¼*/
 /*.mui-pull-caption {
     background-image: url(../images/list_header_info.png);
     background-size: contain;
@@ -199,7 +199,7 @@ footer a:hover{
     height: 31px;
     font-size: 0px;
 }*/
-/*下拉刷新圆形进度条的大小和样式*/
+/*ä¸‹æ‹‰åˆ·æ–°åœ†å½¢è¿›åº¦æ¡çš„å¤§å°å’Œæ ·å¼*/
 
 /*.mui-spinner {
     width: 32px;
@@ -210,13 +210,13 @@ footer a:hover{
 }*/
 
 
-/*下拉刷新的箭头颜色*/
+/*ä¸‹æ‹‰åˆ·æ–°çš„ç®­å¤´é¢œè‰²*/
 .mui-icon-pulldown {
     color: #FE532A !important;
 }
 
 
-/*轮播组件小圆点默认样式*/
+/*è½®æ’­ç»„ä»¶å°åœ†ç‚¹é»˜è®¤æ ·å¼*/
 .mui-slider-indicator {
     position: absolute;
     bottom: 8px;
@@ -269,8 +269,9 @@ footer a:hover{
 
 
 .mui-bar-tab .mui-tab-item.mui-active{
-	color: #FE532A; /* 这里放你想要的颜色 */
+	color: #FE532A; /* è¿™é‡Œæ”¾ä½ æƒ³è¦çš„é¢œè‰² */
 }
 .mui-bar .mui-icon:active{
 	opacity:1;
 }
+

@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<title>快乐血战到底－深圳市豆悦网络科技有限公司</title>	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta content="yes" name="apple-mobile-web-app-capable">
+	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<meta content="telephone=no" name="format-detection">
+	<meta name="HandheldFriendly" content="true">
+	<link rel="stylesheet" href="./css/mobDown.min.css?201412311830">
+	<link rel="stylesheet" href="./css/style.css">
+	<style>
+	/*新增样式*/
+	.about { background: #f2f2f2; color: #7a7a7a; padding-bottom: 8%;}
+	.about h2 { padding: 8% 0 3%; text-align: center;}
+	.about p { padding: 0 5%;}
+	</style>
+    <!-- 百度统计 脚本 -->
+    <script>
+    
+    </script>
+</head>
+<body>
+<div class="wrapper">
+    <!--
+	<header class="tc">
+		<h1><img src="./images/title.jpg"></h1>
+	</header>
+    -->
+	<section class="h-section">
+		<div class="about">
+			<h2>关于我们</h2>
+            <p>领先的移动游戏拼桌APP开发商</p>
+            <p></p>
+            <p>成都市意乐网络科技有限公司，是领先的移动游戏拼桌交友平台，专注于棋牌游戏聊天室的研发，公司设有专门的游戏互动中心，在移动游戏策划、美术、研发方面都有着国内领先的经验和技术。代表作品有 “四川熊猫麻将拼桌系列”棋牌网游等，多款自研产品月流水超千万。截至2015年1月，棋牌系列产品累计下载已突破2亿次，注册用户超过1.2亿人次。</p>
+	</div>
+	</section>
+	<footer class="tc">
+		<p><a href="index.html">返回首页</a> | <a href="about.html">关于我们</a> | <a href="contact.html">联系我们</a></p>
+		<div class="copyright">
+        <p>Copyright© 2018 成都市意乐网络科技有限公司</p>
+		</div>
+	</footer>
+</div>
+<script src="./js/zepto.min.js"></script>
+<script>
+$.fn.flowtype = function(options) {
+	var settings = $.extend({
+			maximum: 9999,
+			minimum: 1,
+			maxFont: 9999,
+			minFont: 1,
+			fontRatio: 35,
+			lineRatio: 1.45
+		}, options),
+		changes = function(el) {
+			var $el = $(el),
+				elw = $el.width(),
+				width = elw > settings.maximum ? settings.maximum : elw < settings.minimum ? settings.minimum : elw,
+				fontBase = width / settings.fontRatio,
+				fontSize = fontBase > settings.maxFont ? settings.maxFont : fontBase < settings.minFont ? settings.minFont : fontBase;
+			$el.css({
+				'font-size': fontSize + 'px',
+				'line-height': fontSize * settings.lineRatio + 'px'
+			})
+		};
+	return this.each(function() {
+		var that = this;
+		$(window).resize(function() {
+			changes(that)
+		});
+		changes(this)
+	})
+};
+$('body').flowtype({
+	minFont: 12,
+	maxFont: 28,
+	fontRatio: 40,
+})
+</script>
+</body>
+</html>

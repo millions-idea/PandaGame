@@ -7,7 +7,7 @@
  */
 package com.panda.game.management.interceptor;
 
-import com.panda.game.management.annotaion.FinanceToken;
+import com.panda.game.management.annotaion. FinanceToken;
 import com.panda.game.management.entity.Constant;
 import com.panda.game.management.exception.FinanceException;
 import com.panda.game.management.utils.Base64Utils;

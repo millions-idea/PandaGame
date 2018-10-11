@@ -42,4 +42,5 @@ public class Users {
     private Integer isEnable;
     private Integer isDelete;
     private Integer level;
+    private Integer parentId;
 }

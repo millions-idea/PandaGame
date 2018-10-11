@@ -17,6 +17,7 @@ import com.panda.game.management.repository.*;
 import com.panda.game.management.repository.utils.ConditionUtil;
 import com.panda.game.management.utils.DateUtil;
 import com.panda.game.management.utils.IdWorker;
+import com.panda.game.management.utils.JsonUtil;
 import com.panda.game.management.utils.TokenUtil;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -395,10 +396,12 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         // 查询此用户是否绑定了熊猫id
         Users user = userMapper.selectByPrimaryKey(Integer.valueOf(userId));
         if(user == null) throw new MsgException("查询用户信息失败");
+        System.out.println("数据埋点:" + JsonUtil.getJsonNotEscape(user));
+
 
         if(user.getPandaId() == null || user.getPandaId().isEmpty()) throw new MsgException("未绑定熊猫麻将账户id");
 
-        RoomCard roomCard = roomCardMapper.selectLast(Integer.valueOf(userId), users.getPandaId());
+        RoomCard roomCard = roomCardMapper.selectLast(Integer.valueOf(userId), user.getPandaId());
         if(roomCard != null){
             long nd = 1000 * 24 * 60 * 60;
             long nh = 1000 * 60 * 60;
@@ -416,21 +419,21 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
             long min = diff % nd % nh / nm;
 
             if(hour <= 3) throw new MsgException("限隔180分钟领取一次~");
+        }else{
+            Wallets wallets = walletMapper.selectByUid(Integer.valueOf(userId));
+            if(wallets == null) throw new MsgException("查询钱包数据异常");
+            Double balance = wallets.getBalance();
+            if(balance < 100) throw new MsgException("金币100枚以上才可以领取哟~");
+
+            // TODO 这里要推送熊猫服务器才能决定此次是否成功
+            roomCard = new RoomCard();
+            roomCard.setUserId(Integer.valueOf(userId));
+            roomCard.setState(0);
+            roomCard.setAddTime(new Date());
+            roomCard.setPandaId(user.getPandaId());
+            int count = roomCardMapper.insert(roomCard);
+            if(count == 0) throw new MsgException("领取失败");
         }
-
-
-        Wallets wallets = walletMapper.selectByUid(Integer.valueOf(userId));
-        if(wallets == null) throw new MsgException("查询钱包数据异常");
-        Double balance = wallets.getBalance();
-        if(balance < 100) throw new MsgException("金币100枚以上才可以领取哟~");
-
-        // TODO 这里要推送熊猫服务器才能决定此次是否成功
-        roomCard = new RoomCard();
-        roomCard.setUserId(Integer.valueOf(userId));
-        roomCard.setState(0);
-        roomCard.setAddTime(new Date());
-        int count = roomCardMapper.insert(roomCard);
-        if(count == 0) throw new MsgException("领取失败");
     }
 
     /**

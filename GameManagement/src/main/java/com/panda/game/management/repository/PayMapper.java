@@ -38,7 +38,7 @@ public interface PayMapper extends  MyMapper<Pays>{
             "SELECT  COALESCE(SUM(amount),0)  - (" +
             " SELECT COALESCE(SUM(amount),0) FROM `tb_accounts` WHERE trade_account_id = #{userId} AND currency = 1 AND accounts_type = 2) " +
             "   FROM `tb_accounts` WHERE trade_account_id = #{userId} AND accounts_type = 1 AND currency = 1 " +
-            ") FROM `tb_accounts` WHERE trade_account_id = #{userId} ORDER BY add_time DESC LIMIT 1;")
+            ") FROM `tb_accounts` WHERE trade_account_id = #{userId} ORDER BY accounts_id DESC LIMIT 1;")
     /**
      * 统计可提现金额 韦德 2018年8月21日11:17:17
      * @param userId

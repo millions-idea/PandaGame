@@ -16,7 +16,7 @@ spring:
     url: jdbc:mysql://193.112.151.148/panda?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
     driver-class-name: com.mysql.jdbc.Driver
     username: root
-    password: 123456
+    password: 1qQp53iydbJ709Ue
     type: com.alibaba.druid.pool.DruidDataSource
     dbcp2:
       max-wait-millis: 60000
@@ -49,4 +49,4 @@ server:
 logging:
   level:
     root: debug
-  file: c:boot.log
+  #file: c:boot.log

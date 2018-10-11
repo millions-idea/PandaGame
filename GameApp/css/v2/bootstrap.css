@@ -1,0 +1,13 @@
+body{
+	background-image: url(../../images/v2/common/bg1.jpg);
+	background-size: cover;
+	width: 100%;
+}
+
+
+.top_bg{
+	background-image: url(../../images/v2/common/top_bg.png);
+	background-size: cover;
+	width: 100%;
+	height: 83px;
+}

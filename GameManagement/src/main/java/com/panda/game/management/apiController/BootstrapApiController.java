@@ -50,6 +50,8 @@ public class BootstrapApiController {
     private IMessageService messageService;
     @Autowired
     private RedisTemplate redisTemplate;
+
+
     @PostMapping("/register")
     public JsonResult register(HttpServletRequest request, Users user, String smsCode){
         //if(user.getPandaId().isEmpty()) return new JsonResult().normalExceptionAsString("熊猫麻将ID是必填项");
@@ -73,6 +75,7 @@ public class BootstrapApiController {
         user.setUpdateDate(new Date());
         userFacadeService.register(user);
         //IBadBoyService.addToRegisterBlackList(userIp);
+
         return JsonResult.successful();
     }
 
