@@ -1,0 +1,57 @@
+*{margin:0;padding:0ï¼›}
+
+
+body,.mui-content{
+	background-color: #fff !important;}
+
+.mui-media-body,.operation{
+	display: inline-block;
+}
+
+
+.operation {
+	display: inline-block;
+	line-height: 46px;
+	text-align: right;
+}
+
+.operation  button{
+	/*line-height: 70px;
+	height: 70px;*/
+}
+
+
+.mui-content, .mui-table-view{
+	margin-top: 0px !important;
+}
+
+.icon{
+	font-size: 10px !important;
+ }
+
+.mui-table-view-cell.mui-active{
+	background-color: #0062CC;
+}
+
+.mui-table-view-cell:after{
+    background-color: #e0e0e0 !important;
+}
+
+.my-badge-success{
+	color: #00ad1e !important;
+}
+
+
+
+.loading{
+	text-align: center;
+	display: block;
+	position: relative;
+	top: 140px;
+	line-height: 50px;
+	color:#6a6a6a
+}
+
+.mui-table-view:after, .mui-table-view:before{
+	background-color:#fff !important;
+}

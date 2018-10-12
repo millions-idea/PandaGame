@@ -68,6 +68,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
 
         String userId = map.get("userId");
         if(userId == null || userId.isEmpty()) throw new MsgException("身份校验失败");
+        //Users users = userMapper.selectByPrimaryKey(userId);
 
         // 每位用户只能同时创建1个房间
         int playingCount = gameMemberGroupMapper.selectRoomCount(Integer.valueOf(userId));
@@ -115,6 +116,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         gameMemberGroup.setIsOwner(1);
         gameMemberGroup.setIsConfirm(0);
         gameMemberGroup.setAddTime(new Date());
+        //gameMemberGroup.setParentId(users.getParentId());
         count = 0;
         count = gameMemberGroupMapper.insert(gameMemberGroup);
         if(count == 0) throw new MsgException("加入房间失败");

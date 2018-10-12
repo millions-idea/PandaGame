@@ -88,7 +88,6 @@
 					var currentWebView = plus.webview.currentWebview();
 					
 					plus.webview.currentWebview().addEventListener("show", function(){ 
-						console.log("进入了页面");
 						mui('#refreshContainer').pullRefresh().endPulldown(true);
 						refresh();
 					})

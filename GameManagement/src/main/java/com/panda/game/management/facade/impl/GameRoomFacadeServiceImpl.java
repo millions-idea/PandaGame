@@ -9,13 +9,18 @@ package com.panda.game.management.facade.impl;
 
 import com.panda.game.management.biz.*;
 import com.panda.game.management.entity.Constant;
+import com.panda.game.management.entity.DataDictionary;
 import com.panda.game.management.entity.db.*;
+import com.panda.game.management.entity.dbExt.GameMemberGroupDetailInfo;
 import com.panda.game.management.entity.dbExt.SettlementDetailInfo;
 import com.panda.game.management.entity.param.PayParam;
 import com.panda.game.management.entity.resp.GameRoomCallbackResp;
+import com.panda.game.management.entity.resp.GroupInformation;
 import com.panda.game.management.exception.InfoException;
 import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.facade.GameRoomFacadeService;
+import com.panda.game.management.utils.PhoneUtil;
+import com.panda.game.management.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
@@ -60,12 +66,11 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
         // 如果所有人的成绩相加运算后得到结果是0，系统自动进行结算
 
         // 扣除此房间内所有人的金币
-        List<GameMemberGroup> memberList = gameMemberGroupService.getListByRoom(callback.getGameRoom().getRoomCode());
+        List<GameMemberGroupDetailInfo> memberList = gameMemberGroupService.getDetailInfoListByRoom(callback.getGameRoom().getRoomCode());
         if(memberList == null || memberList.isEmpty()) throw new InfoException("加载房间成员列表失败");
         // 查询所有人的成绩信息
         List<SettlementDetailInfo> settlementList = settlementService.getMemberList(roomCode);
         if(settlementList == null || settlementList.isEmpty()) throw new InfoException("加载房间成员成绩失败");
-
 
         List<PayParam> reduceRoomCostPayParams = new ArrayList<>();
         memberList.forEach(member -> {
@@ -79,6 +84,47 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
             payParam.setAmount(price);
             payParam.setToUid(Constant.SYSTEM_ACCOUNTS_ID);
             reduceRoomCostPayParams.add(payParam);
+
+
+            // 代理佣金计算(判断该用户是否是第一次游戏，如果是，向他的上级用户发放邀请红包，如果不是第一次，向他的上级发放抽成收益)
+            if(member.getParentUserId() != null && member.getParentUserId() > 0){
+                // 得到用户游戏总局数
+                Integer joinCount = member.getJoinCount();
+                // 得到系统指定的阈值条件
+                String osJoinCount = DataDictionary.DATA_DICTIONARY.values().stream()
+                        .filter(d -> d.getKey().contains("invite.joinCount")).findFirst().get().getValue();
+                String regPackagePrice = DataDictionary.DATA_DICTIONARY.values().stream()
+                        .filter(d -> d.getKey().contains("invite.regPackagePrice")).findFirst().get().getValue();
+
+                // 用户满足预设条件
+                Integer parentId = member.getParentUserId();
+                if(joinCount >= Integer.valueOf(osJoinCount)){
+                    // 用户满足首次注册条件
+                    if(joinCount == 1){
+                        PayParam regPackagePayParam = new PayParam();
+                        regPackagePayParam.setFromUid(Constant.SYSTEM_ACCOUNTS_ID);
+                        regPackagePayParam.setToUid(parentId);
+                        regPackagePayParam.setAmount(Double.valueOf(regPackagePrice));
+                        regPackagePayParam.setRemark("新用户邀请注册红包");
+                        reduceRoomCostPayParams.add(regPackagePayParam);
+                        messageService.pushMessage(new Messages(null, parentId
+                                , "【邀请红包】" + PhoneUtil.getEncrypt(member.getPhone()) +"贡献的" + regPackagePrice + "元已到账!", 0, new Date()));
+                    }else{
+                        // 向邀请方赠送游戏收益
+                        String playAwardPrice = DataDictionary.DATA_DICTIONARY.values().stream()
+                                .filter(d -> d.getKey().contains("invite.playAwardPrice")).findFirst().get().getValue();
+                        PayParam regPackagePayParam = new PayParam();
+                        regPackagePayParam.setFromUid(Constant.SYSTEM_ACCOUNTS_ID);
+                        regPackagePayParam.setToUid(parentId);
+                        regPackagePayParam.setAmount(Double.valueOf(playAwardPrice));
+                        regPackagePayParam.setRemark("游戏返利奖励");
+                        reduceRoomCostPayParams.add(regPackagePayParam);
+                        messageService.pushMessage(new Messages(null, parentId
+                                , "【佣金返利】" + PhoneUtil.getEncrypt(member.getPhone()) +"贡献的" + playAwardPrice + "元已到账!", 0, new Date()));
+                    }
+                }
+            }
+
         });
         payService.batchConsume(reduceRoomCostPayParams);
 

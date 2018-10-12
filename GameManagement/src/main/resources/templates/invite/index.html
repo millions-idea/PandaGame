@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>熊猫麻将拼桌APP邀请您来注册</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link th:href="@{/css/mui.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/animate.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/ui.css}" rel="stylesheet" />
+    <link th:href="@{/css/login.css}" rel="stylesheet" />
+    <link th:href="@{/css/register.css}" rel="stylesheet" />
+</head>
+<body>
+
+<!--container begin-->
+<div class="container">
+    <div class="header">
+        <!--logo begin-->
+        <div class="logo_panel">
+            <img src="/images/boot_logo.png" />
+        </div>
+        <!--logo end-->
+    </div>
+    <div class="form-placeholder-30"></div>
+
+    <!--username begin-->
+    <div class="form-item form-item-full">
+        <input type="number" class="form-input" id="phone" maxlength="11"  oninput="if(value.length>11)value=value.slice(0,11)" placeholder="请输入手机号" value="" />
+    </div>
+    <!--username end-->
+
+    <!--password begin-->
+    <div class="form-item form-item-full">
+        <input type="text" class="form-input" id="password" maxlength="16" placeholder="请输入密码" value="" />
+    </div>
+    <!--password end-->
+
+    <!--password begin-->
+    <div class="form-item form-item-full">
+        <input type="text" class="form-input" id="password2" maxlength="16" placeholder="请重复输入密码" value="" />
+    </div>
+    <!--password end-->
+
+
+    <!--parentId-->
+    <div class="form-item form-item-full">
+        <span style="color: #fe5a2f;">邀请码：0001234</span>
+    </div>
+    <!--parentId end-->
+
+
+
+    <!--login button begin-->
+    <div class="form-placeholder-20"></div>
+    <div class="form-item">
+        <button id='registerButton' class="mui-btn mui-btn-block mui-btn-orange">注&nbsp;&nbsp;册</button>
+    </div>
+    <!--login button end-->
+
+</div>
+<!--container end-->
+
+<!--footer begin-->
+<div class="form-placeholder-50"></div>
+<footer>
+    <span><a href="/">去下载APP&nbsp;></a></span>
+</footer>
+<!--footer end-->
+
+<script th:src="@{/js/mui.min.js}"></script>
+<script th:src="@{/js/mui.enterfocus.js}"></script>
+<script th:src="@{/js/config.js}"></script>
+<script th:src="@{/js/app.js}"></script>
+<script th:src="@{/js/v2/bootstrap/reg.js}"></script>
+</body>
+</html>

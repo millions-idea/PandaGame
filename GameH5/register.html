@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/animate.min.css" />
+		<link href="css/ui.css" rel="stylesheet" />
+		<link href="css/login.css" rel="stylesheet" />
+		<link href="css/register.css" rel="stylesheet" />
+	</head>
+
+	<body>
+
+		<!--container begin-->
+		<div class="container">
+			<div class="header">
+				<!--logo begin-->
+				<div class="logo_panel">
+					<img src="images/boot_logo.png" />
+				</div> 
+				<!--logo end-->
+			</div>
+			<div class="form-placeholder-30"></div>
+
+			<!--username begin-->
+			<div class="form-item form-item-full">
+				<input type="number" class="form-input" id="phone" maxlength="11"  oninput="if(value.length>11)value=value.slice(0,11)" placeholder="请输入手机号" value="" />
+			</div>
+			<!--username end-->
+
+			<!--password begin-->
+			<div class="form-item form-item-full">
+				<input type="text" class="form-input" id="password" maxlength="16" placeholder="请输入密码" value="" />
+			</div>
+			<!--password end-->
+
+			<!--password begin-->
+			<div class="form-item form-item-full">
+				<input type="text" class="form-input" id="password2" maxlength="16" placeholder="请重复输入密码" value="" />
+			</div>
+			<!--password end-->
+
+
+			<!--
+            	作者：2175656094@qq.com
+            	时间：2018-10-11
+            	描述：邀请人编号 parentId
+            -->
+			<div class="form-item form-item-full">
+				<input type="number" class="form-input" id="parentId" maxlength="8"  oninput="if(value.length>8)value=value.slice(0,8)" placeholder="邀请码(没有可不写)" value="" />
+			</div>
+			<!--parentId end-->
+
+
+
+			<!--login button begin-->
+			<div class="form-placeholder-20"></div>
+			<div class="form-item">
+				<button id='registerButton' class="mui-btn mui-btn-block mui-btn-orange">注&nbsp;&nbsp;册</button>
+			</div>
+			<!--login button end-->
+
+		</div>
+		<!--container end-->
+
+		<!--footer begin-->
+		<div class="form-placeholder-50"></div>
+		<footer>
+			<span><a href="javascript:void(0)" id="toLogin">已有账号,去登录&nbsp;></a></span>
+			<span class="footer_tip">拼桌成功后请到熊猫麻将中参与游戏</span>
+		</footer>
+		<!--footer end-->
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/mui.enterfocus.js"></script>
+		<script src="js/config.js"></script>
+		<script src="js/app.js"></script> 
+		<script src="js/v2/bootstrap/reg.js"></script> 
+	</body>
+
+</html>

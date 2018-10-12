@@ -33,5 +33,5 @@ public interface IDictionaryService extends IBaseService<Dictionary> {
      * 更新基础配置信息 韦德 2018年9月2日01:44:08
      * @param html
      */
-    void updateConfiguration(String html, String give, String version, String iosDownload, String androidDownload);
+    void updateConfiguration(String html, String give, String version, String iosDownload, String androidDownload, String regPackagePrice , String playAwardPrice , String joinCount);
 }

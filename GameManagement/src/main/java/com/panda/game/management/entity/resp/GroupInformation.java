@@ -34,4 +34,7 @@ public class GroupInformation {
     private String version;
     private String iosDownload;
     private String androidDownload;
+    private String regPackagePrice;
+    private String playAwardPrice;
+    private String joinCount;
 }

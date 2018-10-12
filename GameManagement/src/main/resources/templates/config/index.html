@@ -24,40 +24,80 @@
     <div class="layui-form layui-form-pane my-view layui-row layui-col-md5" xmlns:th="http://www.thymeleaf.org">
 
         <div class="layui-form-item">
-            <label class="layui-form-label"  style="width: 220px">新用户首次注册赠送金币</label>
-            <div class="layui-input-inline">
-                <input type="text" id="newUserGiveValue"  placeholder="请输入新用户首次注册赠送金币" autocomplete="off" class="layui-input"  th:value="${newUserGive}">
+            <div class="layui-card">
+                <div class="layui-card-header">营销活动</div>
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"  style="width: 220px">新用户首次注册赠送金币</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="newUserGiveValue"  placeholder="请输入新用户首次注册赠送金币" autocomplete="off" class="layui-input"  th:value="${newUserGive}">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"  style="width: 220px">邀请好友注册赠送金币</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="regPackagePrice"  placeholder="请输入邀请好友注册赠送金币" autocomplete="off" class="layui-input" th:value="${regPackagePrice}">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"  style="width: 220px">受邀请用户需完成X局游戏</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="joinCount"  placeholder="请输入邀请受邀请用户需完成X局游戏" autocomplete="off" class="layui-input" th:value="${joinCount}">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"  style="width: 220px">邀请好友游戏抽佣奖励金币</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="playAwardPrice"  placeholder="请输入邀请好友游戏抽佣奖励金币" autocomplete="off" class="layui-input" th:value="${playAwardPrice}">
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
+
+
 
         <div class="layui-form-item">
-            <label class="layui-form-label"  style="width: 220px">APP版本号(U开头代表强更)</label>
-            <div class="layui-input-inline">
-                <input type="text" id="version"  placeholder="请输入APP最新的版本号" autocomplete="off" class="layui-input"  th:value="${version}">
-            </div>
-        </div>
+            <div class="layui-card">
+                <div class="layui-card-header">基本设置</div>
+                <div class="layui-card-body">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"  style="width: 220px">APP版本号(U开头代表强更)</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="version"  placeholder="请输入APP最新的版本号" autocomplete="off" class="layui-input"  th:value="${version}">
+                        </div>
+                    </div>
 
-        <div class="layui-form-item">
-            <label class="layui-form-label"  style="width: 220px">IOS系统APP下载地址</label>
-            <div class="layui-input-inline">
-                <input type="text" id="iosDownload"  placeholder="请输入下载地址" autocomplete="off" class="layui-input"  th:value="${ios}">
-            </div>
-        </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"  style="width: 220px">IOS系统APP下载地址</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="iosDownload"  placeholder="请输入下载地址" autocomplete="off" class="layui-input"  th:value="${ios}">
+                        </div>
+                    </div>
 
-        <div class="layui-form-item">
-            <label class="layui-form-label"  style="width: 220px">Android系统APP下载地址</label>
-            <div class="layui-input-inline">
-                <input type="text" id="androidDownload"  placeholder="请输入下载地址" autocomplete="off" class="layui-input"  th:value="${android}">
-            </div>
-        </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"  style="width: 220px">Android系统APP下载地址</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="androidDownload"  placeholder="请输入下载地址" autocomplete="off" class="layui-input"  th:value="${android}">
+                        </div>
+                    </div>
 
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">联系方式</label>
-            <div class="layui-input-block">
-                <textarea id="consumeServiceHtml" placeholder="请编辑联系方式" th:text="${consumeServiceHtml}" class="layui-textarea"></textarea>
-            </div>
-        </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">联系方式</label>
+                        <div class="layui-input-block">
+                            <textarea id="consumeServiceHtml" placeholder="请编辑联系方式" th:text="${consumeServiceHtml}" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
 
+                </div>
+            </div>
+
+        </div>
 
         <div class="layui-form-item ">
             <button lay-submit lay-filter="my-form" class="layui-btn layui-btn layui-btn-warm" style="float: left;">保存</button>
@@ -78,14 +118,20 @@
                     versionValue = $("#version").val(),
                     newUserGiveValue = $("#newUserGiveValue").val(),
                     iosDownloadValue = $("#iosDownload").val(),
-                    androidDownloadValue = $("#androidDownload").val();
+                    androidDownloadValue = $("#androidDownload").val(),
+                    regPackagePriceValue = $("#regPackagePrice").val(),
+                    playAwardPriceValue = $("#playAwardPrice").val(),
+                    joinCountValue = $("#joinCount").val();
 
                 $.post("/management/config/updateConfiguration",{
                     html: consumeServiceHtml,
                     giveAmount: newUserGiveValue,
                     version: versionValue,
                     iosDownload: iosDownloadValue,
-                    androidDownload: androidDownloadValue
+                    androidDownload: androidDownloadValue,
+                    regPackagePrice: regPackagePriceValue,
+                    playAwardPrice: playAwardPriceValue,
+                    joinCount: joinCountValue,
                 }, function (data) {
                     if(!isNaN(data.error) || data.code != 200) {
                         layer.msg("更新失败");

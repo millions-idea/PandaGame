@@ -1,0 +1,277 @@
+@font-face {
+	font-family:A-Roboto-Regular;
+	src: url("../fonts/Roboto-Regular.ttf");
+}
+
+@font-face {
+	font-family:A-Roboto-Light;
+	src: url("../fonts/Roboto-Light.ttf");
+}
+
+
+@font-face {
+	font-family:I-NotoSansHans-DemiLight;
+	src: url("../fonts/NotoSansHans-DemiLight.otf");
+}
+
+.my-title{
+	color:#fff;
+	background-color: #FE532A;
+	box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.18823529411764706);
+}
+
+.my-title-color{
+	color: #fff;
+	font-size: 15px;
+	
+}
+
+.bottom-navigation-style{
+	position: fixed;
+	bottom: 0px;
+	height: 1px;
+	width: 100%;
+	background-color: #EFEFF4;
+	box-shadow: 0px 40px 100px 20px #787878;
+	z-index: 999;
+}
+
+.my-bar-tab{
+ 	border-top-style: none !important;
+ 	box-shadow: 0px -5px 20px 0px #f7f7f7 !important;
+ }
+ 
+.mui-btn-primary{
+	background-color: #FE532A !important;
+	border: 1px solid #FE532A !important;
+    border-radius: 22px;
+}
+
+
+ 
+.form-item{
+	margin-top: 10px !important;
+	margin: auto;
+	width: 70%;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.form-item-full{
+	width: 100% !important;
+}
+
+
+ 
+.form-input{
+	border: none !important;
+	border-bottom: 1px solid #DDDDDD !important;
+	height: 40px !important;
+	line-height: 40px !important;
+}
+ 
+.form-input:hover{
+	width: 100%;
+	border: none !important;
+	border-radius: 0px !important;
+	border-bottom: 2px solid #FE532A !important;
+	transition: all 0.3s;
+}
+
+ 
+.logo{
+	width:100px;
+	height:100px;
+	text-align: center;
+}
+
+ 
+.form-placeholder-100{
+	height:100px
+}
+
+.form-placeholder-90{
+	height:90px
+}
+
+
+.form-placeholder-80{
+	height:80px
+}
+
+.form-placeholder-70{
+	height:70px
+}
+
+.form-placeholder-60{
+	height:60px
+}
+
+.form-placeholder-50{
+	height:50px
+}
+
+.form-placeholder-40{
+	height:40px
+}
+
+.form-placeholder-30{
+	height:30px
+}
+
+.form-placeholder-20{
+	height:20px
+}
+
+.form-placeholder-10{
+	height:10px
+}
+
+.form-placeholder-5{
+	height:5px
+}
+
+
+.form-placeholder-gray{
+	background-color: #efeff4;
+}
+ 
+footer{
+	text-align: center;
+	line-height: 50px;
+}
+
+footer a{
+	color: #242424;
+}
+
+footer a:link{
+	color: #555555;
+}
+
+footer a:hover{
+	color: #555555;
+	cursor: pointer;
+}
+
+ 
+ 
+.mui-btn-orange{
+	background-color: #fe5a2f !important;
+    border: 1px solid #fe5a2f !important;
+    box-shadow: 3px 5px 20px 0px #ffb150;
+    height: 50px;
+    line-height: 50px;
+    padding: 0px !important;
+    border-radius: 30px;
+}
+
+.mui-btn-orange:hover{
+	background-color: #FC7858 !important;
+}
+
+.disabled{
+	color:#242424;
+}
+
+.disabled:hover{
+	color:#242424;
+}
+
+.button-disabled{
+	color:#fff;
+	background-color: #FC7858!important;
+}
+ 
+.bootstrap{
+	background-image: url(../images/5b2f46ba1e422.jpg);
+}
+
+
+
+/*ä¸‹æ‹‰åˆ·æ–°æ–‡å­—çš„æ ·å¼*/
+/*.mui-pull-caption {
+    background-image: url(../images/list_header_info.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 144px;
+    height: 31px;
+    font-size: 0px;
+}*/
+/*ä¸‹æ‹‰åˆ·æ–°åœ†å½¢è¿›åº¦æ¡çš„å¤§å°å’Œæ ·å¼*/
+
+/*.mui-spinner {
+    width: 32px;
+    height: 32px;
+}
+.mui-spinner:after {
+    background-image: url(../images/progress_circle.png);
+}*/
+
+
+/*ä¸‹æ‹‰åˆ·æ–°çš„ç®­å¤´é¢œè‰²*/
+.mui-icon-pulldown {
+    color: #FE532A !important;
+}
+
+
+/*è½®æ’­ç»„ä»¶å°åœ†ç‚¹é»˜è®¤æ ·å¼*/
+.mui-slider-indicator {
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
+    background: 0 0
+}
+
+.mui-slider-indicator.mui-segmented-control {
+    position: relative;
+    bottom: auto
+}
+
+.mui-slider-indicator .mui-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin: 1px 6px;
+    cursor: pointer;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.78);
+    /* -webkit-box-shadow: 0 0 1px 1px rgba(130,130,130,.7); */
+    /* box-shadow: 0 0 1px 1px rgba(130,130,130,.7); */
+    box-shadow: none !important;
+}
+
+.mui-slider-indicator .mui-active.mui-indicator {
+    background: #626262;
+}
+
+.mui-slider-indicator .mui-icon {
+    font-size: 20px;
+    line-height: 30px;
+    width: 40px;
+    height: 30px;
+    margin: 3px;
+    text-align: center;
+    border: 1px solid #ddd
+}
+
+.mui-slider-indicator .mui-number {
+    line-height: 32px;
+    display: inline-block;
+    width: 58px
+}
+
+.mui-slider-indicator .mui-number span {
+    color: #ff5053
+}
+
+
+.mui-bar-tab .mui-tab-item.mui-active{
+	color: #FE532A; /* è¿™é‡Œæ”¾ä½ æƒ³è¦çš„é¢œè‰² */
+}
+.mui-bar .mui-icon:active{
+	opacity:1;
+}
+

@@ -47,13 +47,16 @@ public class ConfigController extends BaseController {
         model.addAttribute("version", dictionaryService.getGroupInformation().getVersion());
         model.addAttribute("ios", dictionaryService.getGroupInformation().getIosDownload());
         model.addAttribute("android", dictionaryService.getGroupInformation().getAndroidDownload());
+        model.addAttribute("regPackagePrice", dictionaryService.getGroupInformation().getRegPackagePrice());
+        model.addAttribute("playAwardPrice", dictionaryService.getGroupInformation().getPlayAwardPrice());
+        model.addAttribute("joinCount", dictionaryService.getGroupInformation().getJoinCount());
         return "config/index";
     }
 
     @PostMapping("/updateConfiguration")
     @ResponseBody
-    public JsonResult updateConfiguration(String html, String giveAmount, String version, String iosDownload, String androidDownload){
-        dictionaryService.updateConfiguration(html, giveAmount, version, iosDownload, androidDownload);
+    public JsonResult updateConfiguration(String html, String giveAmount, String version, String iosDownload, String androidDownload , String regPackagePrice , String playAwardPrice , String joinCount){
+        dictionaryService.updateConfiguration(html, giveAmount, version, iosDownload, androidDownload, regPackagePrice, playAwardPrice, joinCount);
         dictionaryService.refresh();
         return JsonResult.successful();
     }

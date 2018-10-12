@@ -1,0 +1,315 @@
+*{margin:0;padding:0ï¼›}
+
+body>.mui-progressbar{
+	top:0
+}
+
+.runnerAd{
+	display: block;
+	background-color: #fff;
+	/* min-height: 160px; */
+	/* height: 165px; */
+	box-shadow: 0px 3px 20px 0px #d4d4d4;
+	style="z-index: 999;";
+	z-index: 999;
+	position: relative;
+	padding-bottom: 8px;
+}
+
+
+.runnerImage{
+	margin: 0 auto;
+	position: relative;
+	top: 10px;
+	width: 90%;
+	border-radius: 15px;
+	overflow: hidden;
+}
+
+.runnerImage img{
+	border-radius: 15px;
+	overflow: hidden;
+	max-height: 260px;
+	max-width: 700px;
+}
+
+
+.textAd{
+	display: block;
+	line-height: 24px;
+	height: 24px;
+	padding-top: 5px;
+	padding-left: 15px;
+}
+
+
+.textAd .icon{
+	color:#0A78FF;
+}
+
+
+.textAd .text{
+	position: relative;
+	left: 5px;
+	font-size:12px;
+	line-height: 24px;
+	height: 24px;
+	color:#6A6A6A;
+}
+
+
+.container{
+	background-color: #fff;
+	height: 100%;
+	min-height: 400px;
+}
+
+
+body,.mui-content{
+	background-color: #fff !important;}
+
+
+.small-navigation{
+	width: 100%;
+	height: 38px;
+}
+
+.small-navigation .left{
+	float: left;
+	font-size: 17px;
+	font-weight: bold;
+	padding: 10px;
+	color: #6a6a6a;
+	line-height:30px;
+	height:30px;
+}
+
+
+
+.small-navigation .right{
+	float: right;
+	font-size: 12px;
+	padding: 10px;
+	color: #959595;
+	line-height:30px;
+	height:30px;
+}
+
+
+.finance{
+	height: 110px;
+}
+ 
+
+.finance .recharge{
+    border-radius: 5px;
+    float: left;
+    min-width: 47%;
+    width: 47%;
+    height: 80%;
+    position: relative;
+    top: 10%;
+    left: 2%;
+    background-color: #E7F2F9;
+}
+
+
+.finance .withdraw{
+    border-radius: 5px;
+    float: right;
+    min-width: 47%;
+    width: 47%;
+    height: 80%;
+    position: relative;
+    top: 10%;
+    right: 2%;
+    background-color: #EDF8F3;
+}
+
+
+.finance .recharge span{
+	padding-left: 5px;
+	color:#0070BB;
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 30px;
+	height: 30px;
+	display: block;
+}
+
+.finance .recharge p{
+	padding-left: 5px; 
+	font-size: 12px;
+    color: #3487C5;
+}
+
+.finance .recharge  button{
+	border:none !important;
+	color:#fff;
+	background-color: #0070BB !important;
+	position: relative;
+	left: 5px;
+	bottom: 5px;
+	height: 25px;
+	line-height: 25px;
+	width: 60%;
+	font-size: 13px;
+	padding: 0px !important;
+	padding-left: 6px !important;
+	padding-right: 6px !important;
+	cursor: pointer;
+}
+
+
+.finance .withdraw span{
+	padding-left: 5px;
+	color:#4DBD8B;
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 30px;
+	height: 30px;
+	display: block;
+}
+
+.finance .withdraw p{
+	padding-left: 5px; 
+	font-size: 12px;
+    color: #4DBD8B;
+}
+
+.finance .withdraw  button{
+	border:none !important;
+	color:#fff;
+	background-color: #4DBD8B !important;
+	position: relative;
+	left: 5px;
+	bottom: 5px;
+	height: 25px;
+	line-height: 25px;
+	width: 60%;
+	font-size: 13px;
+	padding: 0px !important;
+	padding-left: 6px !important;
+	padding-right: 6px !important;
+	cursor: pointer;
+}
+
+.roomCard{
+	height: 85px;
+	width: 100%;
+	cursor: pointer;
+}
+
+
+
+.roomCard .image{
+	background-color: #fff;
+	border-radius: 5px;
+	float: left;
+	min-width: 35%;
+	width: 35%;
+	height: 80%;
+	position: relative;
+	top: 10%;
+	left: 2%;
+	box-shadow: 0px 1px 20px 0px #e2e2e2;
+	overflow: hidden;
+}
+
+
+.roomCard .image img{
+	width: 130px;
+}
+
+
+.roomCard .content{
+	float: right;
+	width: 58%;
+	height: 80%;
+	position: relative;
+	top: 10%;
+	right: 2%;
+}
+
+
+.content .title{
+	font-size: 18px;
+}
+
+.content p{
+	font-size: 12px;
+}
+.content .icon{
+	font-size: 18px;
+	position: relative;
+	bottom: 8px;
+}
+.content .personNum{
+	font-size: 12px;
+	position: relative;
+	bottom: 8px;
+	color: #bebebe;
+}
+
+
+.subareas{
+	width: 100%;
+	cursor: pointer;
+	list-style: none;
+	padding: 0px;
+	height: 100%;
+	margin-top: 10px;
+}
+
+.subareas li{
+	position: relative;
+	left: 3%;
+	box-shadow: 0px 5px 10px 0px #949494;
+	border-radius: 10px;
+	width: 93%;
+	/* height: 72px; */
+	overflow: hidden;
+	margin-bottom: 15px;
+}
+
+.subareas li img{
+	display:block;
+	width: 100%;
+}
+
+.popular{
+	text-align: center;
+}
+
+.popular span{
+	display: block;
+	width: 100%;
+	color: #cacaca;
+	font-size: 15px;
+}
+
+
+
+.popular .icon{
+	color: #b2b2b2;
+}
+
+.popular img{
+	width: 140px;
+	height: 140px;
+}
+
+.popInput{
+	font-size:18px;
+	background-color: red !important;
+}
+
+
+.loading{
+	text-align: center;
+	display: block;
+	position: relative;
+	top: 140px;
+	line-height: 50px;
+	color:#6a6a6a
+}

@@ -106,6 +106,15 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
 
         String androidDownload = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("android.download")).findFirst().get().getValue();
         groupInformation.setAndroidDownload(androidDownload);
+
+        String regPackagePrice = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("invite.regPackagePrice")).findFirst().get().getValue();
+        groupInformation.setRegPackagePrice(regPackagePrice);
+
+        String playAwardPrice = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("invite.playAwardPrice")).findFirst().get().getValue();
+        groupInformation.setPlayAwardPrice(playAwardPrice);
+
+        String joinCount = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("invite.joinCount")).findFirst().get().getValue();
+        groupInformation.setJoinCount(joinCount);
         return groupInformation;
     }
 
@@ -159,7 +168,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
      */
     @Override
     @Transactional
-    public void updateConfiguration(String html, String giveAmount, String version, String iosDownload, String androidDownload) {
+    public void updateConfiguration(String html, String giveAmount, String version, String iosDownload, String androidDownload, String regPackagePrice , String playAwardPrice , String joinCount) {
         Dictionary dictionary = DataDictionary.DATA_DICTIONARY.get("my.consume.service.html");
         int count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), html);
         if(count == 0) throw new MsgException("更新失败[A01]");
@@ -183,5 +192,20 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
         count = 0;
         count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), androidDownload);
         if(count == 0) throw new MsgException("更新失败[A05]");
+
+        dictionary = DataDictionary.DATA_DICTIONARY.get("invite.regPackagePrice");
+        count = 0;
+        count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), regPackagePrice);
+        if(count == 0) throw new MsgException("更新失败[A06]");
+
+        dictionary = DataDictionary.DATA_DICTIONARY.get("invite.playAwardPrice");
+        count = 0;
+        count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), playAwardPrice);
+        if(count == 0) throw new MsgException("更新失败[A07]");
+
+        dictionary = DataDictionary.DATA_DICTIONARY.get("invite.joinCount");
+        count = 0;
+        count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), joinCount);
+        if(count == 0) throw new MsgException("更新失败[A08]");
     }
 }

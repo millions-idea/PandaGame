@@ -1,0 +1,38 @@
+.header{
+	height:100px;
+	line-height: 100px;
+	transition: all 3s;
+} 
+
+
+
+.mui-btn-white{
+	color:#242424 !important;
+	background-color: #f1f1f17d !important;
+	border: 1px solid #fff !important;
+}
+
+.form-input-half{
+	float: left;
+	width:50% !important;
+}
+
+
+.form-link-button{
+	display: block!important;
+	height: 40px;
+	line-height: 40px;
+	cursor: pointer;
+	
+}
+
+.form-link-button:hover{ 
+	background-color: #f1f1f17d !important;
+}
+
+
+.footer_tip{
+	color:#fe5a2f;
+	width: 100%;
+	display: block;
+}

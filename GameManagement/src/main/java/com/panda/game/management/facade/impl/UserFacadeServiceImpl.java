@@ -46,6 +46,8 @@ public class UserFacadeServiceImpl implements UserFacadeService {
         Dictionary dictionary = DataDictionary.DATA_DICTIONARY.get("finance.give.amount");
         if(dictionary == null) throw new MsgException("注册异常，请稍后重试！");
 
+        if(param.getParentId() != null && param.getParentId() > 0) param.setParentId(Integer.valueOf(param.getParentId().toString().replace("000","")));
+
         // 注册用户、开通钱包
         userService.register(param);
 
@@ -65,7 +67,7 @@ public class UserFacadeServiceImpl implements UserFacadeService {
             String encryptPhoneAfter = param.getPhone().substring(9,11);
             String encryptPhone = StringUtil.padLeft(encryptPhoneBefore, 9, '*').concat(encryptPhoneAfter);
             messageService.pushMessage(new Messages(null, param.getParentId()
-                    , "恭喜您成功邀请会员" + encryptPhone +"注册，静等收益到账哟~", 0, new Date()));
+                    , "恭喜您成功邀请会员" + encryptPhone +"注册APP", 0, new Date()));
         }
 
         return true;

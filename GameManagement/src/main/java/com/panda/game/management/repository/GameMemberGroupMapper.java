@@ -8,6 +8,7 @@
 package com.panda.game.management.repository;
 
 import com.panda.game.management.entity.db.GameMemberGroup;
+import com.panda.game.management.entity.dbExt.GameMemberGroupDetailInfo;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Service;
 
@@ -119,4 +120,15 @@ public interface GameMemberGroupMapper extends MyMapper<GameMemberGroup> {
 
     @Update("UPDATE tb_game_member_group SET is_confirm=#{isConfirm} WHERE room_code=#{roomCode}")
     int updateByRoomCode(GameMemberGroup gameMemberGroup);
+
+
+
+    @Select("SELECT *,(SELECT parent_id FROM tb_users WHERE user_id = t1.user_id) AS parentUserId, (SELECT phone FROM tb_users WHERE user_id = t1.user_id) AS phone, (SELECT COUNT(*) FROM tb_game_member_group WHERE user_id = t1.user_id AND exit_time IS NOT NULL) AS joinCount FROM tb_game_member_group t1 " +
+            "WHERE t1.room_code = #{roomCode} ")
+    /**
+     * 查询指定房间内的成员列表 韦德 2018年8月21日01:40:42
+     * @param roomCode
+     * @return
+     */
+    List<GameMemberGroupDetailInfo> getDetailInfoListByRoom(Long roomCode);
 }
