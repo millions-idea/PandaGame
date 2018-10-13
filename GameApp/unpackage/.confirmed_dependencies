@@ -80,7 +80,8 @@
 	},
 	"html/room.html": {
 		"refer": [
-			"html/room-detail.html"
+			"html/room-detail.html",
+			"html/v2/room-detail.html"
 		],
 		"resources": [
 			"images/house.png"
@@ -120,5 +121,10 @@
 			"html/room-detail.html"
 		],
 		"resources": []
+	},
+	"html/v2/room-detail.html": {
+		"refer": [
+			"html/custom-service.html"
+		]
 	}
 }

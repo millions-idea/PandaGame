@@ -82,3 +82,12 @@
 }
 
 
+@media only screen and (max-width: 320px) {
+	.modal .textLabel{
+		top:-180px;
+	}
+	
+	.modal .closeButton{
+		top:-135px;
+	}
+}

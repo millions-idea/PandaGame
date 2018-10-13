@@ -72,10 +72,10 @@ public interface IUserService extends IBaseService<Users> {
 
     /**
      * 根据主键id查询用户信息 韦德 2018年8月27日11:17:42
-     * @param systemAccountsId
+     * @param userId
      * @return
      */
-    UserResp getUserById(Integer systemAccountsId);
+    UserResp getUserById(Integer userId);
 
     /**
      * 根据用户名查询用户信息 韦德 2018年8月27日22:51:49

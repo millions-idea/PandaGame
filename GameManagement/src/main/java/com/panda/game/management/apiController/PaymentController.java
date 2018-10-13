@@ -92,8 +92,6 @@ public class PaymentController extends BaseController {
         }
     }
 
-
-
     @GetMapping("/appPay")
     @ResponseBody
     public String appPay(HttpServletRequest request, HttpServletResponse response) throws IOException {

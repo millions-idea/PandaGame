@@ -144,7 +144,6 @@ public class BootstrapApiController {
     }
 
 
-
     @GetMapping("/version")
     public VersionResp version(){
         Dictionary version = DataDictionary.DATA_DICTIONARY.get("version");

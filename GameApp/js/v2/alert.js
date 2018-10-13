@@ -11,7 +11,8 @@ window.game = {
 			shade.className = "modal-shade";
 			shade.style.display = "block";
 			shade.id = "shade";
-			body[0].append(shade);
+			body[0].appendChild(shade);
+			console.log("正常")
 			
 			
 			var modal = document.createElement("div");
@@ -28,12 +29,12 @@ window.game = {
 			var textLabel = document.createElement("span");
 			textLabel.className = "textLabel";
 			textLabel.textContent = msg;
-			modal.append(titleLabel);
-			modal.append(titleBackground);
-			modal.append(closeButton);
-			modal.append(textLabel);
+			modal.appendChild(titleLabel);
+			modal.appendChild(titleBackground);
+			modal.appendChild(closeButton);
+			modal.appendChild(textLabel);
 			
-			body[0].append(modal);
+			body[0].appendChild(modal);
 			
 			beforeCallback();
 			

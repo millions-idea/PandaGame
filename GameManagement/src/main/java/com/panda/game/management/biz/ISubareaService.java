@@ -67,4 +67,11 @@ public interface ISubareaService extends IBaseService<Subareas> {
      * @param subareas
      */
     int update(Subareas subareas);
+
+    /**
+     * 通过房间号查询分区信息 韦德 2018年10月13日14:57:18
+     * @param roomCode
+     * @return
+     */
+    Subareas getSubareaByRoomId(Long roomCode);
 }

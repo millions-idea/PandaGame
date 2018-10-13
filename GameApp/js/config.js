@@ -1,22 +1,23 @@
 (function(){
 	
 	window.config = {
-		title: "熊猫麻将",
+		title: "熊猫麻将拼桌",
 		/*pub*/
 		/*api: "http://132.232.61.181:59845/",
 		file: "http://132.232.61.181:8090/",
 		wss: "ws://132.232.61.181:8088/ws",*/
 		
 		/*test*/
-		/*api: "http://pk5ak2.natappfree.cc/",
-		file: "http://193.112.151.148:8090/",
-		wss: "ws://193.112.151.148:8088/ws",*/
-		
-		/*dev*/
-		api: "http://v3jt4q.natappfree.cc/",
+		/*api: "http://193.112.151.148:59845/",
 		file: "http://193.112.151.148:8090/",
 		wss: "ws://193.112.151.148:8088/ws",
-		invite: "http://v3jt4q.natappfree.cc/invite",
+		invite: "http://193.112.151.148:59845/invite",*/
+		
+		/*dev*/
+		api: "http://fxreht.natappfree.cc/",
+		file: "http://193.112.151.148:8090/",
+		wss: "ws://193.112.151.148:8088/ws",
+		invite: "http://fxreht.natappfree.cc/invite",
 		
 		pages: [{
 			id: "home",

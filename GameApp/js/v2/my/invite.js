@@ -31,6 +31,9 @@ function copyTo(copy_content){
 	
 	$.plusReady(function() {
 		
+		console.log(document.documentElement.clientWidth + "," + document.documentElement.clientHeight)
+		
+		
 		// 设置顶部状态栏样式
 		plus.navigator.setStatusBarStyle("light");
 		plus.navigator.setStatusBarBackground("#FE532A");
@@ -51,7 +54,7 @@ function copyTo(copy_content){
 		doc.getElementById("copy").addEventListener("tap", function(){
 			var code = doc.getElementById("code").textContent;
 			if(code == '...') return plus.nativeUI.alert("邀请码正在努力生成中……");
-			copyTo(window.config.invite + "?id=" + code);
+			copyTo(window.config.invite + "?code=" + code);
 			plus.nativeUI.alert("复制成功,快去发给朋友吧~");
 		})
 		

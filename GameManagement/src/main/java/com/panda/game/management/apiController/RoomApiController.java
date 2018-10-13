@@ -8,10 +8,13 @@
 package com.panda.game.management.apiController;
 
 import com.panda.game.management.biz.IGameRoomService;
+import com.panda.game.management.biz.ISubareaService;
 import com.panda.game.management.entity.JsonArrayResult;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.GameRoom;
+import com.panda.game.management.entity.db.Subareas;
 import com.panda.game.management.entity.dbExt.GameRoomDetailInfo;
+import com.panda.game.management.entity.resp.RoomMembersResp;
 import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.facade.GameRoomFacadeService;
 import com.panda.game.management.utils.IdWorker;
@@ -33,6 +36,9 @@ public class RoomApiController {
     private IGameRoomService gameRoomService;
     @Autowired
     private GameRoomFacadeService gameRoomFacadeService;
+    @Autowired
+    private ISubareaService subareaService;
+
     private static Integer lock = 103697367;
 
     @PostMapping("/create")
@@ -127,9 +133,18 @@ public class RoomApiController {
     }
 
     @GetMapping("/getPersonCount")
-    public JsonResult<Integer> getPersonCount(String roomCode){
+    public JsonResult<RoomMembersResp> getPersonCount(String roomCode){
+        RoomMembersResp roomMembersResp = new RoomMembersResp();
         gameRoomService.checkRoomExpire(Long.valueOf(roomCode));
-        Integer count = gameRoomService.getPersonCount(roomCode);
-        return new JsonResult<>().successful(count);
+
+        // 查询房间信息
+        Subareas subareas = subareaService.getSubareaByRoomId(Long.valueOf(roomCode));
+        roomMembersResp.setCount(subareas.getMaxPersonCount());
+
+        // 实时查询房间人数
+        Integer personCount = gameRoomService.getPersonCount(roomCode);
+        roomMembersResp.setPersons(personCount);
+
+        return new JsonResult<>().successful(roomMembersResp);
     }
 }

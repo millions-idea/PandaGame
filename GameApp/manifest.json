@@ -7,7 +7,7 @@
 	"id": "H5B2B8FB5",/*应用的标识，创建应用时自动生成，勿手动修改*/
 	"name": "熊猫麻将拼桌",/*应用名称，程序桌面图标名称*/
 	"version": {
-		"name": "1.0.4",/*应用版本名称*/
+		"name": "1.0.5",/*应用版本名称*/
 		"code": "83"
 	},
 	"description": "为四川本地最火爆的麻将游戏提供拼桌服务",/*应用描述信息*/
@@ -281,7 +281,8 @@
 					"images/house.png"
 				],
 				"refer": [
-					"html/room-detail.html"
+					"html/room-detail.html",
+					"html/v2/room-detail.html"
 				],
 				"priority": 0
 			},
@@ -322,6 +323,13 @@
 				"resources": [],
 				"refer": [
 					"html/room-detail.html"
+				],
+				"priority": 0
+			},
+			"html/v2/room-detail.html": {
+				"resources": [],
+				"refer": [
+					"html/custom-service.html"
 				],
 				"priority": 0
 			}

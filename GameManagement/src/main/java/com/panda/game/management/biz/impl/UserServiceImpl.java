@@ -91,12 +91,13 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserServ
     /**
      * 根据主键id查询用户信息 韦德 2018年8月27日11:17:42
      *
-     * @param systemAccountsId
+     * @param userId
      * @return
      */
     @Override
-    public UserResp getUserById(Integer systemAccountsId) {
-        UserDetailInfo userInfo = userMapper.selectUserDetail(systemAccountsId.toString());
+    public UserResp getUserById(Integer userId) {
+        UserDetailInfo userInfo = userMapper.selectUserDetail(userId.toString());
+        if(userInfo == null) return null;
         UserResp userResp = new UserResp();
         PropertyUtil.clone(userInfo, userResp);
         return userResp;

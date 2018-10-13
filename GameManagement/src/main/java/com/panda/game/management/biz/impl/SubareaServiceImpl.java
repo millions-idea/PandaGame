@@ -120,6 +120,17 @@ public class SubareaServiceImpl extends BaseServiceImpl<Subareas> implements ISu
         return count;
     }
 
+    /**
+     * 通过房间号查询分区信息 韦德 2018年10月13日14:57:18
+     *
+     * @param roomCode
+     * @return
+     */
+    @Override
+    public Subareas getSubareaByRoomId(Long roomCode) {
+        return subareaMapper.selectByRoomId(roomCode);
+    }
+
 
     /**
      * 提取分页条件

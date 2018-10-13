@@ -303,9 +303,13 @@ function checkVersion(plugin){
 				ver = ver.trim();
 				var ua = navigator.userAgent.toLowerCase();
 				var groupInfo = JSON.parse(plus.storage.getItem("groupInfo"));
+				var newVersion = parseInt(data.version.trim().toString().replace(".","").replace(".",""));
+				var oldVersion = parseInt(ver.trim().toString().replace(".","").replace(".",""))
  				console.log("IOS:" + groupInfo.iosDownload);
  				console.log("Android:" + groupInfo.androidDownload);
-         		if (data.version.trim().toString() != ver.toString()) {
+ 				console.log("转换版本号:" + newVersion);
+ 				console.log("转换版本号:" + oldVersion);
+         		if (newVersion > oldVersion) {
 					if (/iphone|ipad|ipod/.test(ua)) return plus.runtime.openURL(groupInfo.iosDownload);
          			console.log("update版本号" + data.update);
          			if(data.update == 0){

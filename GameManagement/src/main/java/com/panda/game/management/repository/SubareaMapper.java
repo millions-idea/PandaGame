@@ -74,4 +74,11 @@ public interface SubareaMapper extends MyMapper<Subareas> {
             , @Param("endTime") String endTime
             , @Param("condition") String condition);
 
+    @Select("SELECT * FROM tb_subareas WHERE subarea_id = (SELECT subarea_id FROM tb_game_room WHERE room_code = #{roomCode})")
+    /**
+     * 通过房间号查询分区 韦德 2018年10月13日14:58:03
+     * @param roomCode
+     * @return
+     */
+    Subareas selectByRoomId(@Param("roomCode") Long roomCode);
 }

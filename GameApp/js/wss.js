@@ -191,7 +191,7 @@ window.wss = {
 		
 		
 		mui.openWindow({
-            url: "/html/room-detail.html",
+            url: "/html/v2/room-detail.html",
             id: "room-detail-" + roomCode,
             preload: false,
             waiting: {
