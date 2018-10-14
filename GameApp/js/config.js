@@ -3,9 +3,11 @@
 	window.config = {
 		title: "熊猫麻将拼桌",
 		/*pub*/
-		/*api: "http://132.232.61.181:59845/",
+		api: "http://132.232.61.181:59845/",
 		file: "http://132.232.61.181:8090/",
-		wss: "ws://132.232.61.181:8088/ws",*/
+		wss: "ws://132.232.61.181:8088/ws",
+		invite: "http://app.kdxny74.cn/invite",
+		
 		
 		/*test*/
 		/*api: "http://193.112.151.148:59845/",
@@ -14,10 +16,10 @@
 		invite: "http://193.112.151.148:59845/invite",*/
 		
 		/*dev*/
-		api: "http://fxreht.natappfree.cc/",
+		/*api: "http://fxreht.natappfree.cc/",
 		file: "http://193.112.151.148:8090/",
 		wss: "ws://193.112.151.148:8088/ws",
-		invite: "http://fxreht.natappfree.cc/invite",
+		invite: "http://fxreht.natappfree.cc/invite",*/
 		
 		pages: [{
 			id: "home",

@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<link href="../../css/ui.css" rel="stylesheet" />
+		<link href="../../css/v2/alert.css" rel="stylesheet" />
+		<link href="../../css/v2/roomDetail.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav my-title" style="height: 65px;">
+			<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" style="color: #fff; position: relative; top:12px"></a>
+			<label class="roomLabel">熊猫房号:</label>
+			<h1 class="mui-title my-title-color roomId" id="pandaRoomId">XXXXXX</h1>
+			<a id="openMenu" class="mui-icon mui-icon-right-nav mui-pull-right" style="color: white;position: relative;top: 8px;right:5px">…</a>
+		</header>
+
+		<div id="sheet" class="mui-popover mui-popover-bottom mui-popover-action ">
+			<!-- 可选择菜单 -->
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a id="toDisband" href="#">退出房间</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a id="customCloseAccounts" href="#">申请超时结算</a>
+				</li>
+			</ul>
+			<!-- 取消菜单 -->
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a href="#sheet"><b>取消</b></a>
+				</li>
+			</ul>
+		</div>
+
+		<div class="window">
+			<ul>
+				<li><img name="persons" src="../../images/pd1.png" alt="" /></li>
+				<li><img name="persons" src="../../images/pd2.png" alt="" /></li>
+				<li><img name="persons" src="../../images/pd3.png" alt="" /></li>
+				<li><img name="persons" src="../../images/pd4.png"alt="" /></li>
+			</ul>
+			<span class="stateButton">
+				<img src="../../images/bgButton.png" alt="" />
+				<h2 id="state">拼桌中</h2>
+			</span>
+		</div>
+		
+		<footer class="closeAccounts">
+			<button id="sl" data-type="1" type="button" class="mui-btn mui-btn-gray"  style="background-color: #F44336;">胜利</button>
+			<input type="number" id="grade" style="text-align: center;" placeholder="请输入您的游戏战绩" />
+			<button id="zb" data-type="2" type="button" class="mui-btn mui-btn-gray"  style="background-color: #9c736a;">战败</button>
+		</footer>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/config.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/wss.js"></script>
+		<script src="../../js/v2/alert.js"></script>
+		<script src="../../js/room/index.js"></script> 
+		<script src="../../js/v2/room/index.js"></script> 
+	</body>
+</html>

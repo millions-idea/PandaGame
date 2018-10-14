@@ -1,0 +1,77 @@
+*{margin:0;padding:0; }
+
+body{
+	background-color: #fff; ;
+} 
+
+.header{
+	height:150px;
+	line-height: 150px;
+	background-color: #fe5a2f !important;
+	text-align: center;
+    box-shadow: 3px 5px 20px 0px #ffb150; 
+} 
+
+.header span{
+	font-size:30px;
+}
+
+.form-item-full{
+	width: 80% !important;
+}
+
+.container{
+	width: 100%;
+	background-color: #fff;
+}
+
+.findPassword{
+	padding-left: 10px;
+}
+
+.findPassword span{
+	text-align: center;
+}
+
+
+.reportMessage{
+	text-align: right;
+	padding-right: 10px;
+}
+
+
+.reportMessage span a{
+	color: #242424;
+}
+
+.reportMessage span a{
+	color: #242424;
+}
+
+.reportMessage span a:link{
+	color: #555555;
+}
+
+.reportMessage span a:hover{
+	color: #555555;
+	cursor: pointer;
+}
+
+
+button:enabled,button:enabled:active{
+    color: #fff;
+    background-color: #0062cc;
+    border: 1px solid #0062cc
+}
+  
+
+
+.logo_panel{
+	width: 100%;
+}
+
+.logo_panel img{
+	width: 250px; 
+	line-height: 150px;
+    vertical-align: middle;
+}

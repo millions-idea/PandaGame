@@ -62,7 +62,7 @@ public class UserFacadeServiceImpl implements UserFacadeService {
 
 
         // 向邀请方推送通知消息
-        if (param.getParentId() != 0){
+        if (param.getParentId() != null && param.getParentId() != 0){
             String encryptPhoneBefore = param.getPhone().substring(0,3);
             String encryptPhoneAfter = param.getPhone().substring(9,11);
             String encryptPhone = StringUtil.padLeft(encryptPhoneBefore, 9, '*').concat(encryptPhoneAfter);
