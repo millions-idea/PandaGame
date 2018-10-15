@@ -299,7 +299,8 @@
 					"images/house.png"
 				],
 				"refer": [
-					"html/room-detail.html"
+					"html/room-detail.html",
+					"html/v2/room-detail.html"
 				],
 				"priority": 0
 			},

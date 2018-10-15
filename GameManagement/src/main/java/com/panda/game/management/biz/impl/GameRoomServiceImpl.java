@@ -616,7 +616,7 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         long hour = diff % nd / nh;
         // 计算差多少分钟
         long min = diff % nd % nh / nm;
-        if((day > 0 || hour > 0 || min > 5) && onLineCount <= 1) {
+        if((day > 0 || hour > 0 || min > 30) && onLineCount <= 1) {
             gameMemberGroupMapper.updateMemberExit(gameRoom.getRoomCode());
             gameRoom.setStatus(6);
             gameRoom.setIsEnable(0);

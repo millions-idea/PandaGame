@@ -226,7 +226,7 @@ function getPersonCount() {
 			// 弹窗提醒
 			var modal = document.getElementById("modal");
 			if(modal == null) {
-				 game.message("由于5分钟内未拼桌成功，系统已自动将该房间解散！", function() {
+				 game.message("由于30分钟内未拼桌成功，系统已自动将该房间解散！", function() {
 						var audioPlayer = plus.audio.createPlayer("/mp3/v2/message.mp3");
 						audioPlayer.play();
 					}, function() {

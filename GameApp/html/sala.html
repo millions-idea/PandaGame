@@ -22,8 +22,8 @@
 			</ul>
 			<script id="template" type="text/html">
 				{{each list as item index}}
-					<li name="room-item"  class="mui-table-view-cell mui-media" data-code="{{item.roomCode}}" data-name="{{item.name}}">
-				        <a href="javascript:;" name="item" data-code="{{item.roomCode}}"  data-name="{{item.name}}">
+					<li name="room-item"  class="mui-table-view-cell mui-media" data-status="{{item.status}}"  data-code="{{item.roomCode}}" data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
+				        <a href="javascript:;" name="item" data-status="{{item.status}}"  data-code="{{item.roomCode}}" data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
 				            <img class="mui-media-object mui-pull-left" src="../images/house.png">
 				            <div class="mui-media-body">
 		                		{{item.name}}
@@ -51,6 +51,7 @@
 		<script src="../js/app.js"></script>
 		<script src="../js/home/index.js"></script>
 		<script src="../js/room/index.js"></script>
+		<script src="../js/wss.js"></script>
 		
 		<script type="text/javascript">
 			var gDoc;
@@ -150,7 +151,35 @@
 					var roomItems = gDoc.getElementsByName("room-item");
 					for (var i = 0; i < roomItems.length; i++) {
 						roomItems[i].addEventListener("tap", function(){ 
-							mui.alert("为了游戏公平请一键匹配房间");
+							//mui.alert("为了游戏公平请一键匹配房间");
+							var code = this.getAttribute("data-code");
+							var name = this.getAttribute("data-name"); 
+							var externalRoomId =this.getAttribute("data-externalRoomId"); 
+							var status = this.getAttribute("data-status"); 
+							var btnArray = ['取消', '确定'];
+							
+							if(status == 2) return plus.nativeUI.toast("该房间已开始游戏, 请选择未开始的房间!");
+							
+			                mui.confirm('您确定要加入此房间吗?', name, btnArray, function(e) {
+			                    if (e.index == 1) {
+									room.joinRoom({
+										token: JSON.parse(localCache).token.toString(),
+										roomCode: code
+									}, function(data){
+										if(data == null || data.code != 200) {
+											if(data.code == 300) return plus.nativeUI.toast(data.msg);	
+											return plus.nativeUI.toast("加入房间失败, 请刷新重试!");	
+										}
+										if(status == 4) return plus.nativeUI.toast("游戏已结束！请等待结算");
+										// 构建聊天业务CHAT
+										wss.initRoom(code, externalRoomId, name); 
+									}, function(){
+										mui.nativeUI.toast("服务器拥挤, 请稍后重试!");
+									})
+			                    } 
+			                })
+							
+							
 						}, false)
 					}
 					
