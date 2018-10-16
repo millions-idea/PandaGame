@@ -39,7 +39,9 @@ var gDoc;
 			updatePasswordButton = doc.getElementById("updatePasswordButton"),
 			messageButton = doc.getElementById("messageButton"),
 			logoutButton = doc.getElementById("logoutButton"),
-			inviteButton = doc.getElementById("inviteButton");
+			inviteButton = doc.getElementById("inviteButton"),
+			rechargeButton = doc.getElementById("recharge"),
+			withdrawButton = doc.getElementById("withdraw");
 		
 		plus.nativeUI.closeWaiting();
 		
@@ -117,7 +119,41 @@ var gDoc;
 				toLogin($);
 			}
 		}, false)
-		 
+		
+		
+		// 充值
+		rechargeButton.addEventListener("tap", function(){
+			//return plus.nativeUI.toast("暂未对外开放，正在申请审核");
+			
+			mui.openWindow({
+                url: "recharge.html",
+                id: "recharge",
+                preload: false,
+                waiting: {
+                    autoShow: true,
+                  title:'正在加载...'
+                },
+			    createNew:true
+
+            });
+		})
+		
+		
+		// 提现
+		withdrawButton.addEventListener("tap", function(){
+			mui.openWindow({
+                url: "withdraw.html",
+                id: "withdraw",
+                preload: false,
+                waiting: {
+                    autoShow: true,
+                  title:'正在加载...'
+                },
+			    createNew:true
+
+            });
+			
+		})
 	});
 }(mui, document));
 

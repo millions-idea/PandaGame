@@ -97,7 +97,7 @@ body,.mui-content{
 
 
 .finance{
-	height: 110px;
+	height: 200px;
 }
  
 
@@ -110,7 +110,9 @@ body,.mui-content{
     position: relative;
     top: 10%;
     left: 2%;
-    background-color: #E7F2F9;
+    background-image: url(../../images/home_panda.png);
+    background-repeat: no-repeat;
+    background-size: 160px 160px;
 }
 
 
@@ -123,7 +125,10 @@ body,.mui-content{
     position: relative;
     top: 10%;
     right: 2%;
-    background-color: #EDF8F3;
+    background-image: url(../../images/home_pp.png);
+    background-repeat: no-repeat;
+    background-size: 160px 160px;
+    
 }
 
 

@@ -60,7 +60,7 @@ var getMessageTimer = null;
 
 		
 		
-		doc.getElementById("recharge").addEventListener("tap", function(){
+		/*doc.getElementById("recharge").addEventListener("tap", function(){
 			//return plus.nativeUI.toast("暂未对外开放，正在申请审核");
 			
 			mui.openWindow({
@@ -75,14 +75,14 @@ var getMessageTimer = null;
 
             });
 
-		})
+		})*/
 		
 		
 		
 		/**
 		 * 申请提现
 		 */
-		doc.getElementById("withdraw").addEventListener("tap", function(){
+		/*doc.getElementById("withdraw").addEventListener("tap", function(){
 			if(doc.getElementById("centerRightAdButton").textContent != "抢先预览"){
 				mui.openWindow({
                     url: "withdraw.html",
@@ -99,7 +99,36 @@ var getMessageTimer = null;
 				plus.nativeUI.toast("暂未开放");
 			}
 			
-		})
+		})*/
+		
+		
+		
+		doc.getElementById("home_panda").addEventListener("tap", function(){
+			mui.openWindow({
+				 url: "/html/v2/roomList.html",
+                id: "roomList",
+				preload: false,
+				waiting: {
+					autoShow: true,
+					title: '正在加载...'
+				},
+				createNew: true
+			});
+		});
+		
+		doc.getElementById("home_pp").addEventListener("tap", function(){
+			mui.openWindow({
+				 url: "/html/v2/roomList.html",
+                id: "roomList",
+				preload: false,
+				waiting: {
+					autoShow: true,
+					title: '正在加载...'
+				},
+				createNew: true
+			});
+		});
+		
 		 
 		 /**
 		  * 领取房卡

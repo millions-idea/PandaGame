@@ -243,7 +243,9 @@
 					"html/update-password.html",
 					"login.html",
 					"html/messages.html",
-					"html/invite.html"
+					"html/invite.html",
+					"html/withdraw.html",
+					"html/recharge.html"
 				],
 				"priority": 0
 			},
@@ -272,7 +274,8 @@
 					"html/payment.html",
 					"html/enterprise-recharge.html",
 					"html/enterprise-recharge2.html",
-					"html/bind-panda-account.html"
+					"html/bind-panda-account.html",
+					"html/v2/roomList.html"
 				],
 				"priority": 0
 			},
