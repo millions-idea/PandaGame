@@ -16,7 +16,7 @@
 		invite: "http://193.112.151.148:59845/invite",*/
 		
 		/*dev*/
-		api: "http://gfppcg.natappfree.cc/",
+		api: "http://zeqi6t.natappfree.cc/",
 		file: "http://193.112.151.148:8090/",
 		wss: "ws://193.112.151.148:8088/ws",
 		invite: "http://s9gw2f.natappfree.cc/invite",

@@ -236,12 +236,12 @@ function refresh(){
 		bottomAdDesc.innerText = data.msg.centerBottomAdDesc;
 		
 		
-		centerLeftAdTitle.innerText = data.msg.centerLeftAdTitle;
-		centerLeftAdDesc.innerText = data.msg.centerLeftAdDesc;
+		//centerLeftAdTitle.innerText = data.msg.centerLeftAdTitle;
+		//centerLeftAdDesc.innerText = data.msg.centerLeftAdDesc;
 		
-		centerRightAdTitle.innerText = data.msg.centerRightAdTitle;
-		centerRightAdDesc.innerText = data.msg.centerRightAdDesc;
-		centerRightAdButton.innerText = data.msg.centerRightAdButton;
+		//centerRightAdTitle.innerText = data.msg.centerRightAdTitle;
+		//centerRightAdDesc.innerText = data.msg.centerRightAdDesc;
+		//centerRightAdButton.innerText = data.msg.centerRightAdButton;
 		
 		
 		gDoc.getElementById("centerBottomAdQCode").src = data.msg.centerBottomAdQCode;

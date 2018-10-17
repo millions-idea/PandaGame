@@ -10,6 +10,7 @@
 		<link href="../../css/ui.css" rel="stylesheet" />
 		<link href="../../css/room/index.css" rel="stylesheet" />
 		<link href="../../css/sala/index.css" rel="stylesheet" />
+		<link href="../../css/v2/roomList.css" rel="stylesheet" />
 		<script src="../../js/frame/template-web.js"></script>
 		
 	</head>
@@ -17,12 +18,64 @@
 	<body>
 		<header class="mui-bar mui-bar-nav my-title">
 			<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" style="color: #fff;"></a>
-			<h1 class="mui-title my-title-color">创建房间</h1>
+			<h1 class="mui-title my-title-color">麻将快速拼桌</h1>
 		</header>
 		
 		
 		<div class="mui-content" id="refreshContainer">
 		 	<div class="form-placeholder-5"></div>
+			
+			<ul class="n_room_list">
+				<li>
+					<span class="title">血战到底</span>
+					<span class="status">等待中</span>
+				    <span class="mui-badge mui-badge-warning mui-badge-badge category" style="right: 70px;">1金币</span>
+				    <div class="members">
+				    	<img class="member first" src="../../images/room_status_ok.png" alt="" />
+					    <img class="member" src="../../images/room_status_wait.png" alt="" />
+					    <img class="member" src="../../images/room_status_wait.png" alt="" />
+					    <img class="member over" src="../../images/room_status_wait.png" alt="" />
+				    </div>
+				</li>
+				
+				
+				<li>
+					<span class="title">三人两房</span>
+					<span class="status">等待中</span>
+				    <span class="mui-badge mui-badge-warning mui-badge-badge category" style="right: 70px;">1金币</span>
+				    <div class="members">
+				    	<img class="member first" src="../../images/room_status_ok.png" alt="" />
+					    <img class="member" src="../../images/room_status_ok.png" alt="" />
+					    <img class="member" src="../../images/room_status_wait.png" alt="" />
+				    </div>
+				</li>
+				
+				
+				
+				<li>
+					<span class="title">两人麻将</span>
+					<span class="status">等待中</span>
+				    <span class="mui-badge mui-badge-warning mui-badge-badge category" style="right: 70px;">1金币</span>
+				    <div class="members">
+				    	<img class="member first" src="../../images/room_status_ok.png" alt="" />
+					    <img class="member" src="../../images/room_status_wait.png" alt="" />
+				    </div>
+				</li>
+				
+				
+				<li>
+					<span class="title">血战到底</span>
+					<span class="status begin">游戏中</span>
+				    <span class="mui-badge mui-badge-warning mui-badge-badge category" style="right: 70px;">1金币</span>
+				    <div class="members">
+				    	<img class="member first" src="../../images/room_status_ok.png" alt="" />
+					    <img class="member" src="../../images/room_status_ok.png" alt="" />
+					    <img class="member" src="../../images/room_status_ok.png" alt="" />
+					    <img class="member over" src="../../images/room_status_ok.png" alt="" />
+				    </div>
+				</li>
+			</ul>
+			
 			
 			<!--content begin-->
 		    <ul id="list" class="mui-table-view list">
@@ -47,18 +100,20 @@
 				{{/each}}
 			</script>
 			<!--content end-->
-			 <!--bottom navigation begin-->
-			<div class="bottom-navigation-style"></div>
-		    <!--bottom navigation end-->
-				
 		</div>
 		    
-	    <!--bottom navigation begin-->
-		<div class="bottom-navigation-style"></div>
-	    <!--bottom navigation end-->
-		</div>
+		 <nav class="mui-bar mui-bar-tab my-bar-tab" id="bottom-navigation">
+		    <a class="mui-tab-item" tabindex="0">
+		        <span class="mui-tab-label">快速加入</span>
+		    </a>
+		    <a class="mui-tab-item mui-active" tabindex="1">
+		        <span style="font-size: 30px;margin-bottom: 14px;margin-left: -5px;" class="mui-icon mui-icon-loop"></span>
+		    </a>
+		    <a class="mui-tab-item" tabindex="2" id="roomTab">
+		        <span class="mui-tab-label">创建房间</span>
+		    </a>
+		</nav> 
 		
-		 
 		
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/config.js"></script>
@@ -79,7 +134,7 @@
 					    container:"#refreshContainer",//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
 					    down : {
 					      style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
-					      color:'#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+					      color:'#c9975c', //可选，默认“#2BD009” 下拉刷新控件颜色
 					      height:'50px',//可选,默认50px.下拉刷新控件的高度,
 					      range:'100px', //可选 默认100px,控件可下拉拖拽的范围
 					      offset:'0px', //可选 默认0px,下拉刷新控件的起始位置
@@ -95,7 +150,7 @@
 				$.plusReady(function(){
 					// 设置顶部状态栏样式
 					plus.navigator.setStatusBarStyle("light");
-					plus.navigator.setStatusBarBackground("#FE532A");
+					plus.navigator.setStatusBarBackground("#c9975c");
 					
 					// 禁止屏幕翻转
 					plus.screen.lockOrientation("portrait-primary");
