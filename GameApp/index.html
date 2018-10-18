@@ -60,6 +60,8 @@
 				$.oldBack = mui.back;
 				var backButtonPress = 0;
 				$.back = function(event) {
+					plus.navigator.setStatusBarBackground("#FE532A");
+					
 					backButtonPress++;
 					if (backButtonPress > 1) {
 						plus.runtime.quit();
@@ -71,6 +73,7 @@
 					}, 1000);
 					return false;
 				};
+				 
 				 
 				 
 				// 监听网络状态变化

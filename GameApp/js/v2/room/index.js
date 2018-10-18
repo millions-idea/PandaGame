@@ -22,6 +22,7 @@ $.plusReady(function() {
 
 	// 禁止屏幕翻转
 	plus.screen.lockOrientation("portrait-primary");
+ 
 
 	// 绑定动态标题事件
 	var self = plus.webview.currentWebview(),

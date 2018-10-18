@@ -15,10 +15,7 @@ import com.panda.game.management.exception.InfoException;
 import com.panda.game.management.exception.MsgException;
 import com.panda.game.management.repository.*;
 import com.panda.game.management.repository.utils.ConditionUtil;
-import com.panda.game.management.utils.DateUtil;
-import com.panda.game.management.utils.IdWorker;
-import com.panda.game.management.utils.JsonUtil;
-import com.panda.game.management.utils.TokenUtil;
+import com.panda.game.management.utils.*;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -447,6 +444,8 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
      */
     @Override
     public GameRoomDetailInfo getLimitRoom(String parentAreaId, String subareasId) {
+        if(StringUtil.isBlank(parentAreaId) || StringUtil.isBlank(subareasId))
+            return gameRoomMapper.getFirstRoom();
         return gameRoomMapper.getLimitRoom(parentAreaId,subareasId);
     }
 

@@ -228,12 +228,12 @@ footer {
 	padding: 10px;
 	z-index: 2;
 	width: 100%;
-	line-height: 35px;
+	line-height: 25px;
 }
 
 .header-text span{
 	position:relative;
-	top: 4px;
+	top: 3px;
 }
 
 .header-text button{
@@ -251,7 +251,7 @@ footer {
 }
 
 .window {
-	top: 65px;
+	top: 110px;
 	margin: 0 auto;
 	width: 90%;
 	position: relative;

@@ -46,6 +46,7 @@ public interface GameRoomMapper extends MyMapper<GameRoom> {
 
 
     @Select("SELECT t1.* " +
+            ",(SELECT max_person_count FROM tb_subareas WHERE subarea_id = t1.subarea_id) AS maxPersonCount " +
             ",(SELECT COUNT(*) FROM tb_game_member_group WHERE room_code = t1.room_code AND is_confirm = 0) AS personCount " +
             ",(SELECT is_owner FROM tb_game_member_group WHERE user_id = t1.owner_id AND room_code = t1.room_code) AS isOwner  " +
             ",(SELECT `name` FROM tb_subareas WHERE subarea_id = t1.parent_area_id) AS parentName " +
@@ -74,6 +75,16 @@ public interface GameRoomMapper extends MyMapper<GameRoom> {
      * @return
      */
     GameRoomDetailInfo getLimitRoom(@Param("parentAreaId") String parentAreaId , @Param("subareasId") String subareasId);
+
+
+    @Select("SELECT * FROM tb_game_room WHERE `status` = 0 AND is_enable = 1  LIMIT 1;")
+    /**
+     * 根据分区匹配合适的房间 韦德 2018年10月18日21:36:14
+     * @param parentAreaId
+     * @param subareasId
+     * @return
+     */
+    GameRoomDetailInfo getFirstRoom();
 
     @Update("UPDATE tb_game_room SET `status`=#{status},`is_enable`=#{isEnable}, version = version + 1 WHERE room_code=#{roomCode} AND version = #{version}")
     /**

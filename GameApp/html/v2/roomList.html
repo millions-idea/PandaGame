@@ -25,8 +25,8 @@
 		<div class="mui-content" id="refreshContainer">
 		 	<div class="form-placeholder-5"></div>
 			
-			<ul class="n_room_list">
-				<li>
+			<ul id="list" class="n_room_list">
+				<!--<li>
 					<span class="title">血战到底</span>
 					<span class="status">等待中</span>
 				    <span class="mui-badge mui-badge-warning mui-badge-badge category" style="right: 70px;">1金币</span>
@@ -36,70 +36,21 @@
 					    <img class="member" src="../../images/room_status_wait.png" alt="" />
 					    <img class="member over" src="../../images/room_status_wait.png" alt="" />
 				    </div>
-				</li>
-				
-				
-				<li>
-					<span class="title">三人两房</span>
-					<span class="status">等待中</span>
-				    <span class="mui-badge mui-badge-warning mui-badge-badge category" style="right: 70px;">1金币</span>
-				    <div class="members">
-				    	<img class="member first" src="../../images/room_status_ok.png" alt="" />
-					    <img class="member" src="../../images/room_status_ok.png" alt="" />
-					    <img class="member" src="../../images/room_status_wait.png" alt="" />
-				    </div>
-				</li>
-				
-				
-				
-				<li>
-					<span class="title">两人麻将</span>
-					<span class="status">等待中</span>
-				    <span class="mui-badge mui-badge-warning mui-badge-badge category" style="right: 70px;">1金币</span>
-				    <div class="members">
-				    	<img class="member first" src="../../images/room_status_ok.png" alt="" />
-					    <img class="member" src="../../images/room_status_wait.png" alt="" />
-				    </div>
-				</li>
-				
-				
-				<li>
-					<span class="title">血战到底</span>
-					<span class="status begin">游戏中</span>
-				    <span class="mui-badge mui-badge-warning mui-badge-badge category" style="right: 70px;">1金币</span>
-				    <div class="members">
-				    	<img class="member first" src="../../images/room_status_ok.png" alt="" />
-					    <img class="member" src="../../images/room_status_ok.png" alt="" />
-					    <img class="member" src="../../images/room_status_ok.png" alt="" />
-					    <img class="member over" src="../../images/room_status_ok.png" alt="" />
-				    </div>
-				</li>
+				</li>-->
 			</ul>
 			
-			
-			<!--content begin-->
-		    <ul id="list" class="mui-table-view list">
-				<span class="loading" id="loading-text">系统正在加载,请稍后……</span> 
-			</ul>
 			<script id="template" type="text/html">
 				{{each list as item index}}
-					<li name="room-item"  class="mui-table-view-cell mui-media" data-status="{{item.status}}"  data-code="{{item.roomCode}}" data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
-				        <a href="javascript:;" name="item" data-status="{{item.status}}"  data-code="{{item.roomCode}}" data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
-				            <img class="mui-media-object mui-pull-left" src="../images/house.png">
-				            <div class="mui-media-body">
-		                		{{item.name}}
-				                <p class='mui-ellipsis info'>
-				                	<span class="mui-badge mui-badge-success mui-badge-inverted my-badge-success">频道ID: {{item.roomCode}}</span>
-				                	<span class="mui-badge mui-badge-danger   mui-badge-inverted">人气: {{item.personCount}}</span>
-				                </p>
-				            </div> 
-				           <span class="mui-badge mui-badge-warning mui-badge-badge" style="right: 70px;">{{item.parentPrice}}金币</span>
-				           {{@item.statusHtml}} 
-				        </a>
-				    </li>
+					<li name="room-item"   data-status="{{item.status}}"  data-code="{{item.roomCode}}" data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
+						<span class="title">{{item.name}}</span>
+						<span class="status begin">{{@item.statusHtml}}</span>
+					    <span class="mui-badge mui-badge-warning mui-badge-badge category" style="right: 70px;">{{item.parentPrice}}金币</span>
+					    <div class="members">
+				    		{{@item.personsHtml}} 
+					    </div>
+				   </li>
 				{{/each}}
 			</script>
-			<!--content end-->
 		</div>
 		    
 		 <nav class="mui-bar mui-bar-tab my-bar-tab" id="bottom-navigation">
@@ -144,7 +95,11 @@
 					      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
 					      callback: refresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
 					    }
-				  	}
+				  },
+				  beforeback: function(){
+				  	plus.navigator.setStatusBarBackground("#FE532A");
+						return true;
+				  }
 				});
 				
 				$.plusReady(function(){
@@ -161,8 +116,149 @@
 						mui('#refreshContainer').pullRefresh().endPulldown(true);
 						refresh();
 					})
-					
-					
+					 
+					// 注册TAB触摸事件
+					mui(".mui-bar-tab").on("tap", "a", function(e){
+						var tabindex = this.getAttribute("tabindex");
+						if(tabindex == 1){
+							// 刷新列表
+							plus.nativeUI.toast("正在刷新中……");
+							refresh();
+							
+						}else if(tabindex == 2){
+							// 创建房间
+							mui.openWindow({
+			                    url: "/html/v2/selectSubarea.html",
+			                    id: "selectSubarea",
+			                    preload: false,
+			                    waiting: {
+			                        autoShow: true,
+			                      title:'正在加载...'
+			                    },
+							    createNew:true
+			    
+			                });
+						}else if(tabindex == 0){
+							// 快速加入
+							plus.nativeUI.toast("正在为您拼桌……");
+							
+		                	room.getLimitRoom({}, function(data){
+								
+								if(data.code == 500 || data.code == 300){
+									plus.nativeUI.toast("匹配失败"); 
+									return false;
+								}
+								
+								if(data.code == 400){ 
+									if(data.msg == "没有匹配到合适的房间") {
+										plus.nativeUI.alert("没有匹配到合适房间请到熊猫麻将创建房间");
+	        							return false;
+	        						}
+									if(data.msg.indexOf("未结束") != -1){ 
+										plus.nativeUI.toast(data.msg);
+										return false;
+									}
+								}
+								
+								
+								var roomCode = data.msg.roomCode;
+								var name = data.msg.name;
+								
+							
+								// 加入房间
+								plus.nativeUI.confirm("确定要加入" + name + "房间吗？", function(e){
+									if(e.index == 0){
+										var localCache = plus.storage.getItem('userInfo');
+										if(localCache != null && localCache.length > 0){
+											room.joinRoom({
+												"token": JSON.parse(localCache).token.toString(),
+												"roomCode": roomCode
+											}, function(data){
+												if(data == null || data.code == null || data.code == 500  || data.code == 300){
+													plus.nativeUI.toast("加入房间失败");
+													return false;
+												} 
+			                					
+			                					if(data.code == 400){
+			                						if(data.msg == "已存在") data.msg = "您已是此房间的成员";
+			                						if(data.msg.indexOf("未结束") != 1){
+			                							mui.openWindow({
+												            url: "/html/room.html",
+												            id: "room",
+												            preload: false,
+												            show: {
+																aniShow: 'pop-in',
+																duration: 200
+															},
+															styles: {
+																popGesture: 'hide'
+															},
+															waiting: {
+																title: "正在加载...",
+																autoShow: true
+															},
+															extras:{
+																roomCode: data.roomCode,
+																name: data.name,
+																externalRoomId: data.externalRoomId,
+																status: data.status
+														    }
+												        });
+					            						plus.webview.getWebviewById("roomList").close();
+														plus.webview.currentWebview().close();
+														plus.nativeUI.toast("您已经参加游戏, 请结束后再创建新房间");
+														return false;
+			                						}
+													plus.nativeUI.toast(data.msg);
+													return false;
+												}
+			                					
+												for (var i = 0 ; i < pages.length ; i ++) {
+													if (i != 2) { 
+														plus.webview.hide(pages[i].id, "fade-out", 200);
+													}
+												}
+												
+												mui.openWindow({
+										            url: "/html/room.html",
+										            id: "room",
+										            preload: false,
+										            show: {
+														aniShow: 'pop-in',
+														duration: 200
+													},
+													styles: {
+														popGesture: 'hide'
+													},
+													waiting: {
+														title: "正在加载...",
+														autoShow: true
+													},
+													extras:{
+														roomCode: data.roomCode,
+														name: data.name,
+														externalRoomId: data.externalRoomId,
+														status: data.status
+												    }
+										       }); 
+												plus.webview.getWebviewById("roomList").close();
+												plus.webview.currentWebview().close();
+			                				
+											}, function(){
+												
+											});
+										}
+										
+									}
+								})
+							
+							
+							}, function(){
+								
+							})
+							
+						}
+					}) 
 				})
 				
 			})(mui, document);
@@ -172,8 +268,6 @@
 				var localCache = plus.storage.getItem('userInfo');
 				if(!(localCache != null && localCache.length > 0)) return false; 
 				room.getAllRoomList({}, function(data){
-					if(gDoc.getElementById("loading-text") != null)	gDoc.getElementById("loading-text").innerText = "暂时还没有游戏房间";
-
 					mui('#refreshContainer').pullRefresh().endPulldown();
 
 					if(data == null || data.code != 200) return plus.nativeUI.toast("加载列表失败");
@@ -183,39 +277,59 @@
 						//状态(0=未开始,1=已就绪,2=已开始,3=已暂停,4=已结束,5=已结算,6=已失效)
 						switch (item.status){
 							case 0:
-								item.statusHtml = '<span class="mui-badge mui-badge-outlined">未开始</span>';
+								//item.statusHtml = '<span class="mui-badge mui-badge-outlined">未开始</span>';
+								//<span class="status">等待中</span>
+								item.statusHtml = '<span style="font-family: "fz";font-size: 18px;position: relative;top: -57px;display: inline-block;line-height: 30px;color: #6E89A0;left: 95px;">未开始</span>';
 								break;
 							case 1:
-								item.statusHtml = '<span class="mui-badge mui-badge-primary">已就绪</span>';
+								item.statusHtml = '<span style="font-family: "fz";font-size: 18px;position: relative;top: -57px;display: inline-block;line-height: 30px;color: #6E89A0;left: 95px;">已就绪</span>';
 								break;
 							case 2:
-								item.statusHtml = '<span class="mui-badge mui-badge-success">游戏中</span>';
+								item.statusHtml = '<span style="font-family: "fz";font-size: 18px;position: relative;top: -57px;display: inline-block;line-height: 30px;color: #6E89A0;left: 95px;">游戏中</span>';
 								break;
 							case 3:
-								item.statusHtml = '<span class="mui-badge">已暂停</span>';
+								item.statusHtml = '<span style="font-family: "fz";font-size: 18px;position: relative;top: -57px;display: inline-block;line-height: 30px;color: #6E89A0;left: 95px;">已暂停</span>';
 								break;
 							case 4:
-								item.statusHtml = '<span class="mui-badge mui-badge-danger ">已结束</span>';
+								item.statusHtml = '<span style="font-family: "fz";font-size: 18px;position: relative;top: -57px;display: inline-block;line-height: 30px;color: #6E89A0;left: 95px;">已结束</span>';
 								break;
 							case 5:
-								item.statusHtml = '<span class="mui-badge mui-badge-royal ">已结算</span>';
+								item.statusHtml = '<span style="font-family: "fz";font-size: 18px;position: relative;top: -57px;display: inline-block;line-height: 30px;color: #6E89A0;left: 95px;">已结算</span>';
 								break;
 							case 6:
-								item.statusHtml = '<span class="mui-badge ">已失效</span>';
+								item.statusHtml = '<span style="font-family: "fz";font-size: 18px;position: relative;top: -57px;display: inline-block;line-height: 30px;color: #6E89A0;left: 95px;">已失效</span>';
 								break;
 						}
+						
+						var personsHtml = '';
+
+						var perNum = item.maxPersonCount;
+						
+						for (var j = 1; j < perNum; j++) {
+							personsHtml += '<img style="margin-right:5px; width: 75px;height: 75px;display: inline-block;position: relative;top: 50px;border-radius: 20px; margin-bottom: 1px;" src="../../images/room_status_ok.png" alt="" />';
+						}
+						
+						
+						var waitNum = item.maxPersonCount - item.personCount;
+						for (var t = 0; t < waitNum; t++) {
+							personsHtml += '<img style="margin-right:5px; width: 75px;height: 75px;display: inline-block;position: relative;top: 50px;border-radius: 20px;" src="../../images/room_status_wait.png" alt="" />';
+						}
+						
+						item.personsHtml = personsHtml;
 
 					}
 					
-					if(data.data.length == 0) {
-						gDoc.getElementById("list").innerHTML = '<span class="loading" id="loading-text">暂时还没有游戏房间</span>';
-						return;
-					}
 					
 					var html = template("template", {
 						list: data.data
 					}); 
 					gDoc.getElementById("list").innerHTML = html;
+					
+					
+					if(data.data.length == 0) {
+						gDoc.getElementById("list").innerHTML = '<span class="loading" id="loading-text">暂时还没有游戏房间</span>';
+						return;
+					}
 					
 					var roomItems = gDoc.getElementsByName("room-item");
 					for (var i = 0; i < roomItems.length; i++) {

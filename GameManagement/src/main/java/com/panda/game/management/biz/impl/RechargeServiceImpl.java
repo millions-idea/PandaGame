@@ -66,6 +66,11 @@ public class RechargeServiceImpl extends BaseServiceImpl<Recharge> implements IR
         PropertyUtil.clone(userInfo, userResp);
         userResp.setToken(token);
 
+        Integer notExamineCount = rechargeMapper.selectNotExamine(userInfo.getUserId());
+        if (notExamineCount > 0){
+            throw new MsgException("您已经提交过了, 请通过后再提交!");
+        }
+
         Recharge recharge = new Recharge();
         recharge.setUserId(Integer.valueOf(userId));
         recharge.setAmount(amount);

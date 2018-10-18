@@ -81,18 +81,21 @@ public class RoomApiController {
             roomDetailInfo.setRoomCode(roomCode);
             roomDetailInfo.setIsOwner(0);
             roomDetailInfo.setExternalRoomId(0);
-            roomDetailInfo.setMaxPersonCount(4);
             roomDetailInfo.setStatus(4);
 
             /*randNum = rand.nextInt(3) + 1;*/
             if(randNum-1 == 0){
                 roomDetailInfo.setPersonCount(2);
+                roomDetailInfo.setMaxPersonCount(2);
             }else if(randNum-1 == 1){
                 roomDetailInfo.setPersonCount(4);
+                roomDetailInfo.setMaxPersonCount(4);
             }else if(randNum-1 == 2){
                 roomDetailInfo.setPersonCount(3);
+                roomDetailInfo.setMaxPersonCount(3);
             }else if(randNum-1 == 3){
                 roomDetailInfo.setPersonCount(4);
+                roomDetailInfo.setMaxPersonCount(4);
             }
             roomDetailInfo.setStatus(2);
             roomDetailInfo.setParentPrice(priceList[randNum-1]);

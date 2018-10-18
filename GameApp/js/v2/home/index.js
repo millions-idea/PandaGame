@@ -32,7 +32,7 @@ var getMessageTimer = null;
 		
 		// 禁止屏幕翻转
 		plus.screen.lockOrientation("portrait-primary"); 
-		
+	 
 		
 		// 检测更新版本
 		checkVersion(plus);
@@ -260,15 +260,14 @@ function refresh(){
 	home.getLevelSubareas({}, function(data){
 		if(data == null || data.code != 200 || data.count == 0) return plus.nativeUI.toast("服务器开小差了,请您稍后重试!");
 		var html = template("subareasTemplate", {
-			list: data.data
+			list: data.data[0]
 		});
-		gDoc.getElementById("subareas").innerHTML = html;
-		
-		
+		/*gDoc.getElementById("subareas").innerHTML = html;/*/
+		 
 		// 创建房间事件
 		var items = gDoc.getElementsByName("subareas-item");
 		
-		for (var i = 0; i < items.length; i++) {
+		/*for (var i = 0; i < items.length; i++) {
 			items[i].addEventListener("tap", function(){
 				var id = this.getAttribute("data-id");
 				var state = this.getAttribute("data-state");
@@ -289,7 +288,25 @@ function refresh(){
                 });
 			})
 		}
-		
+		items[0].addEventListener("tap", function(){
+			var id = this.getAttribute("data-id");
+			var state = this.getAttribute("data-state");
+			if(state == 0) return plus.nativeUI.toast("此游戏区暂未对外开放");
+			mui.openWindow({
+                url: "/html/create-room.html",
+                id: "create-room",
+                preload: false,
+                waiting: {
+                    autoShow: true,
+                  title:'正在加载...'
+                },
+                extras:{
+					subareaId: id
+			    },
+			    createNew:true
+
+            });
+		})*/
 		
 		// 打开下载熊猫麻将app地址
 		gDoc.getElementById("downloadApp").addEventListener("tap", function(){
@@ -300,7 +317,6 @@ function refresh(){
 	},function(){
 		plus.nativeUI.toast("服务器开小差了,请您稍后重试!");
 	});
- 
 }
 
 function readMessage(){

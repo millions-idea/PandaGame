@@ -99,11 +99,13 @@
 						
 						home.recharge(param, function(data){
 							if(data.code == 500 || data.code == 300){
+								plus.nativeUI.closeWaiting(); 
 								plus.nativeUI.toast("充值失败"); 
 								return false;
 							}
 							
 							if(data.code == 400){ 
+								plus.nativeUI.closeWaiting(); 
 								plus.nativeUI.toast(data.msg);
 								return false;
 							}

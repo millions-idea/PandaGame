@@ -53,4 +53,7 @@ public interface RechargeMapper extends MyMapper<Recharge> {
             , @Param("beginTime") String beginTime
             , @Param("endTime") String endTime
             , @Param("condition") String condition);
+
+    @Select("SELECT COUNT(*) FROM tb_recharge WHERE user_id = #{userId} AND state = 0")
+    Integer selectNotExamine(@Param("userId") Integer userId);
 }
