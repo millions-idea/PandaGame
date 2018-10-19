@@ -70,7 +70,7 @@ $.plusReady(function() {
 					plus.nativeUI.toast("退出成功")
 
 					var me = JSON.parse(plus.storage.getItem('userInfo'));
-					sendMessageToRoom('用户' + me.phone + '退出了房间');
+
 
 					$.openWindow({
 						url: 'room.html',
