@@ -22,7 +22,7 @@ spring:
       max-wait-millis: 60000
 #缓存数据库配置
   redis:
-    host: 127.0.0.1
+    host: 172.27.16.12
     port: 6379
     password: ikyOedVzV4bpXeWl
     database: 0
@@ -49,4 +49,4 @@ server:
 logging:
   level:
     root: debug
-  file: c:boot.log
+  #file: c:boot.log
