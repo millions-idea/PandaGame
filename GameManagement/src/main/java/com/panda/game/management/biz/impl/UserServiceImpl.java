@@ -459,6 +459,19 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserServ
         if(count == 0) throw  new MsgException("绑定失败");
     }
 
+    /**
+     * 设置商家权限 韦德 2018年10月21日10:57:58
+     *
+     * @param userId
+     */
+    @Override
+    public void setMerchant(Integer userId) {
+        Users users = userMapper.selectByPrimaryKey(userId);
+        users.setLevel(1);
+        int count = userMapper.updateByPrimaryKey(users);
+        if(count <= 0) throw new MsgException("设置失败");
+    }
+
 
     /**
      * 提取分页条件

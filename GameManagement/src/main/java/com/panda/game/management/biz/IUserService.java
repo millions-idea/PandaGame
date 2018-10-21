@@ -145,4 +145,10 @@ public interface IUserService extends IBaseService<Users> {
      * @param account
      */
     void bindPandaAccount(String token, String account);
+
+    /**
+     * 设置商家权限 韦德 2018年10月21日10:57:58
+     * @param userId
+     */
+    void setMerchant(Integer userId);
 }

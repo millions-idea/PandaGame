@@ -106,6 +106,19 @@ var tableIndex;
                         layer.msg("操作成功");
                     })
                 });
+            } else if(layEvent === 'setMerchant'){ //删除
+                layer.confirm('确定要提升为代理商？', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    service.setMerchant({
+                        "userId": data.userId
+                    }, function (data) {
+                        if(utils.response.isErrorByCode(data)) return layer.msg("操作失败");
+                        if(utils.response.isException(data)) return layer.msg(data.msg);
+                        tableIndex.reload();
+                        layer.msg("操作成功");
+                    })
+                });
             }
 
 
@@ -163,6 +176,16 @@ function initService(r) {
          */
         changeRole: function (param, callback) {
             $.post(r + "/changeRole", param, function (data) {
+                callback(data);
+            });
+        },
+        /**
+         * 设置代理商 韦德 2018年10月21日10:54:24
+         * @param param
+         * @param callback
+         */
+        setMerchant: function (param, callback) {
+            $.post(r + "/setMerchant", param, function (data) {
                 callback(data);
             });
         }
@@ -261,6 +284,13 @@ function getTableColumns() {
                     permissionRole = "管理员";
                 }else if(d.permissionRole == "ROLE_STAFF"){
                     permissionRole = "客服";
+                }
+                if(d.level != null && d.level > 0){
+                    if(d.level != 10){
+                        if(d.level == 1){
+                            permissionRole = "代理商";
+                        }
+                    }
                 }
                 return permissionRole;
             }}

@@ -105,4 +105,17 @@ public class MemberController extends BaseController {
         permissionRelationService.replace(userId, roleName);
         return JsonResult.successful();
     }
+
+
+    /**
+     * 设置代理商
+     * @param userId
+     * @return
+     */
+    @PostMapping("/setMerchant")
+    @ResponseBody
+    public JsonResult setMerchant(Integer userId){
+        userService.setMerchant(userId);
+        return JsonResult.successful();
+    }
 }
