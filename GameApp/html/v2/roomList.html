@@ -12,7 +12,7 @@
 		<link href="../../css/sala/index.css" rel="stylesheet" />
 		<link href="../../css/v2/roomList.css" rel="stylesheet" />
 		<script src="../../js/frame/template-web.js"></script>
-		
+
 	</head>
 
 	<body>
@@ -20,11 +20,10 @@
 			<a class="mui-action-back mui-icon mui-icon-arrowleft mui-pull-left" style="color: #fff;"></a>
 			<h1 class="mui-title my-title-color">麻将快速拼桌</h1>
 		</header>
-		
-		
+
 		<div class="mui-content" id="refreshContainer">
-		 	<div class="form-placeholder-5"></div>
-			
+			<div class="form-placeholder-5"></div>
+
 			<ul id="list" class="n_room_list">
 				<!--<li>
 					<span class="title">血战到底</span>
@@ -38,155 +37,152 @@
 				    </div>
 				</li>-->
 			</ul>
-			
+
 			<script id="template" type="text/html">
 				{{each list as item index}}
-					<li name="room-item"   data-status="{{item.status}}"  data-code="{{item.roomCode}}" data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
-						<span class="title">{{item.name}}</span>
-						<span class="status begin">{{@item.statusHtml}}</span>
-					    <span class="mui-badge mui-badge-warning mui-badge-badge category" style="right: 70px;">{{item.parentPrice}}金币</span>
-					    <div class="members">
-				    		{{@item.personsHtml}} 
-					    </div>
-				   </li>
+				<li name="room-item" data-status="{{item.status}}" data-code="{{item.roomCode}}" data-name="{{item.name}}" data-externalRoomId="{{item.externalRoomId}}">
+					<span class="title">{{item.name}}</span>
+					<span class="status begin">{{@item.statusHtml}}</span>
+					<span class="mui-badge mui-badge-warning mui-badge-badge category" style="right: 70px;">{{item.parentPrice}}金币</span>
+					<div class="members">
+						{{@item.personsHtml}}
+					</div>
+				</li>
 				{{/each}}
 			</script>
 		</div>
-		    
-		 <nav class="mui-bar mui-bar-tab my-bar-tab" id="bottom-navigation">
-		    <a class="mui-tab-item" tabindex="0">
-		        <span class="mui-tab-label">快速加入</span>
-		    </a>
-		    <a class="mui-tab-item mui-active" tabindex="1">
-		        <span style="font-size: 30px;margin-bottom: 14px;margin-left: -5px;" class="mui-icon mui-icon-loop"></span>
-		    </a>
-		    <a class="mui-tab-item" tabindex="2" id="roomTab">
-		        <span class="mui-tab-label">创建房间</span>
-		    </a>
-		</nav> 
-		
-		
+
+		<nav class="mui-bar mui-bar-tab my-bar-tab" id="bottom-navigation">
+			<a class="mui-tab-item" tabindex="0">
+				<span class="mui-tab-label">快速加入</span>
+			</a>
+			<a class="mui-tab-item mui-active" tabindex="1">
+				<span style="font-size: 30px;margin-bottom: 14px;margin-left: -5px;" class="mui-icon mui-icon-loop"></span>
+			</a>
+			<a class="mui-tab-item" tabindex="2" id="roomTab">
+				<span class="mui-tab-label">创建房间</span>
+			</a>
+		</nav>
+
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/config.js"></script>
 		<script src="../../js/app.js"></script>
 		<script src="../../js/home/index.js"></script>
 		<script src="../../js/room/index.js"></script>
 		<script src="../../js/wss.js"></script>
-		
+
 		<script type="text/javascript">
 			var gDoc;
 			var pages = window.config.pages;
-			
-			(function($, doc){
+
+			(function($, doc) {
 				gDoc = doc;
-				
+
 				$.init({
-					pullRefresh : {
-					    container:"#refreshContainer",//待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
-					    down : {
-					      style:'circle',//必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
-					      color:'#c9975c', //可选，默认“#2BD009” 下拉刷新控件颜色
-					      height:'50px',//可选,默认50px.下拉刷新控件的高度,
-					      range:'100px', //可选 默认100px,控件可下拉拖拽的范围
-					      offset:'0px', //可选 默认0px,下拉刷新控件的起始位置
-					      auto: true,//可选,默认false.首次加载自动上拉刷新一次
-					      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
-					      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
-					      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
-					      callback: refresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-					    }
-				  },
-				  beforeback: function(){
-				  	plus.navigator.setStatusBarBackground("#FE532A");
+					pullRefresh: {
+						container: "#refreshContainer", //待刷新区域标识，querySelector能定位的css选择器均可，比如：id、.class等
+						down: {
+							style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+							color: '#c9975c', //可选，默认“#2BD009” 下拉刷新控件颜色
+							height: '50px', //可选,默认50px.下拉刷新控件的高度,
+							range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+							offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
+							auto: true, //可选,默认false.首次加载自动上拉刷新一次
+							contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+							contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+							contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+							callback: refresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+						}
+					},
+					beforeback: function() {
+						plus.navigator.setStatusBarBackground("#FE532A");
 						return true;
-				  }
+					}
 				});
-				
-				$.plusReady(function(){
+
+				$.plusReady(function() {
 					// 设置顶部状态栏样式
 					plus.navigator.setStatusBarStyle("light");
 					plus.navigator.setStatusBarBackground("#c9975c");
-					
+
 					// 禁止屏幕翻转
 					plus.screen.lockOrientation("portrait-primary");
-					
+
 					var currentWebView = plus.webview.currentWebview();
-					
-					plus.webview.currentWebview().addEventListener("show", function(){ 
+
+					plus.webview.currentWebview().addEventListener("show", function() {
 						mui('#refreshContainer').pullRefresh().endPulldown(true);
 						refresh();
 					})
-					 
+
 					// 注册TAB触摸事件
-					mui(".mui-bar-tab").on("tap", "a", function(e){
+					mui(".mui-bar-tab").on("tap", "a", function(e) {
 						var tabindex = this.getAttribute("tabindex");
-						if(tabindex == 1){
+						if(tabindex == 1) {
 							// 刷新列表
 							plus.nativeUI.toast("正在刷新中……");
 							refresh();
-							
-						}else if(tabindex == 2){
+
+						} else if(tabindex == 2) {
 							// 创建房间
 							mui.openWindow({
-			                    url: "/html/v2/selectSubarea.html",
-			                    id: "selectSubarea",
-			                    preload: false,
-			                    waiting: {
-			                        autoShow: true,
-			                      title:'正在加载...'
-			                    },
-							    createNew:true
-			    
-			                });
-						}else if(tabindex == 0){
+								url: "/html/v2/selectSubarea.html",
+								id: "selectSubarea",
+								preload: false,
+								waiting: {
+									autoShow: true,
+									title: '正在加载...'
+								},
+								createNew: true
+
+							});
+						} else if(tabindex == 0) {
 							// 快速加入
 							plus.nativeUI.toast("正在为您拼桌……");
-							
-		                	room.getLimitRoom({}, function(data){
-								
-								if(data.code == 500 || data.code == 300){
-									plus.nativeUI.toast("匹配失败"); 
+
+							room.getLimitRoom({}, function(data) {
+
+								if(data.code == 500 || data.code == 300) {
+									plus.nativeUI.toast("匹配失败");
 									return false;
 								}
-								
-								if(data.code == 400){ 
+
+								if(data.code == 400) {
 									if(data.msg == "没有匹配到合适的房间") {
 										plus.nativeUI.alert("没有匹配到合适房间请到熊猫麻将创建房间");
-	        							return false;
-	        						}
-									if(data.msg.indexOf("未结束") != -1){ 
+										return false;
+									}
+									if(data.msg.indexOf("未结束") != -1) {
 										plus.nativeUI.toast(data.msg);
 										return false;
 									}
 								}
-								
-								
+
 								var roomCode = data.msg.roomCode;
 								var name = data.msg.name;
-								
-							
+
 								// 加入房间
-								plus.nativeUI.confirm("确定要加入" + name + "房间吗？", function(e){
-									if(e.index == 0){
+								plus.nativeUI.confirm("确定要加入" + name + "房间吗？", function(e) {
+									if(e.index == 0) {
 										var localCache = plus.storage.getItem('userInfo');
-										if(localCache != null && localCache.length > 0){
+										if(localCache != null && localCache.length > 0) {
 											room.joinRoom({
 												"token": JSON.parse(localCache).token.toString(),
 												"roomCode": roomCode
-											}, function(data){
-												if(data == null || data.code == null || data.code == 500  || data.code == 300){
+											}, function(data) {
+												if(data == null || data.code == null || data.code == 500 || data.code == 300) {
 													plus.nativeUI.toast("加入房间失败");
 													return false;
-												} 
-			                					
-			                					if(data.code == 400){
-			                						if(data.msg == "已存在") data.msg = "您已是此房间的成员";
-			                						if(data.msg.indexOf("未结束") != 1){
-			                							mui.openWindow({
-												            url: "/html/room.html",
-												            id: "room",
-												            preload: false,
-												            show: {
+												}
+
+												if(data.code == 400) {
+													if(data.msg == "已存在") data.msg = "您已是此房间的成员";
+													if(data.msg.indexOf("未结束") != 1) {
+														mui.openWindow({
+															url: "/html/room.html",
+															id: "room",
+															preload: false,
+															show: {
 																aniShow: 'pop-in',
 																duration: 200
 															},
@@ -197,33 +193,33 @@
 																title: "正在加载...",
 																autoShow: true
 															},
-															extras:{
+															extras: {
 																roomCode: data.roomCode,
 																name: data.name,
 																externalRoomId: data.externalRoomId,
 																status: data.status
-														    }
-												        });
-					            						plus.webview.getWebviewById("roomList").close();
+															}
+														});
+														plus.webview.getWebviewById("roomList").close();
 														plus.webview.currentWebview().close();
 														plus.nativeUI.toast("您已经参加游戏, 请结束后再创建新房间");
 														return false;
-			                						}
+													}
 													plus.nativeUI.toast(data.msg);
 													return false;
 												}
-			                					
-												for (var i = 0 ; i < pages.length ; i ++) {
-													if (i != 2) { 
+
+												for(var i = 0; i < pages.length; i++) {
+													if(i != 2) {
 														plus.webview.hide(pages[i].id, "fade-out", 200);
 													}
 												}
-												
+
 												mui.openWindow({
-										            url: "/html/room.html",
-										            id: "room",
-										            preload: false,
-										            show: {
+													url: "/html/room.html",
+													id: "room",
+													preload: false,
+													show: {
 														aniShow: 'pop-in',
 														duration: 200
 													},
@@ -234,48 +230,47 @@
 														title: "正在加载...",
 														autoShow: true
 													},
-													extras:{
+													extras: {
 														roomCode: data.roomCode,
 														name: data.name,
 														externalRoomId: data.externalRoomId,
 														status: data.status
-												    }
-										       }); 
+													}
+												});
 												plus.webview.getWebviewById("roomList").close();
 												plus.webview.currentWebview().close();
-			                				
-											}, function(){
-												
+
+											}, function() {
+
 											});
 										}
-										
+
 									}
 								})
-							
-							
-							}, function(){
-								
+
+							}, function() {
+
 							})
-							
+
 						}
-					}) 
+					})
 				})
-				
+
 			})(mui, document);
-			
-			function refresh(callback){
-				
+
+			function refresh(callback) {
+
 				var localCache = plus.storage.getItem('userInfo');
-				if(!(localCache != null && localCache.length > 0)) return false; 
-				room.getAllRoomList({}, function(data){
+				if(!(localCache != null && localCache.length > 0)) return false;
+				room.getAllRoomList({}, function(data) {
 					mui('#refreshContainer').pullRefresh().endPulldown();
 
 					if(data == null || data.code != 200) return plus.nativeUI.toast("加载列表失败");
-					
-					for (var i = 0; i < data.data.length; i++) {
+
+					for(var i = 0; i < data.data.length; i++) {
 						var item = data.data[i];
 						//状态(0=未开始,1=已就绪,2=已开始,3=已暂停,4=已结束,5=已结算,6=已失效)
-						switch (item.status){
+						switch(item.status) {
 							case 0:
 								//item.statusHtml = '<span class="mui-badge mui-badge-outlined">未开始</span>';
 								//<span class="status">等待中</span>
@@ -300,81 +295,76 @@
 								item.statusHtml = '<span style="font-family: "fz";font-size: 18px;position: relative;top: -57px;display: inline-block;line-height: 30px;color: #6E89A0;left: 95px;">已失效</span>';
 								break;
 						}
-						
+
 						var personsHtml = '';
 
-						var perNum = item.personCount; 
-						for (var j = 0; j < perNum; j++) {
+						var perNum = item.personCount;
+						for(var j = 0; j < perNum; j++) {
 							personsHtml += '<img style="margin-right:5px; width: 75px;height: 75px;display: inline-block;position: relative;top: 50px;border-radius: 20px; margin-bottom: 1px;" src="../../images/room_status_ok.png" alt="" />';
 						}
-						 
-						  
+
 						var waitNum = item.maxPersonCount - item.personCount;
-						
+
 						//console.log(perNum + "," + waitNum); 
-						
-						if(waitNum == 0) 
+
+						if(waitNum == 0)
 							personsHtml += '<span style="margin-right:5px; width: 75px;height: 75px;display: inline-block;position: relative;top: 50px;border-radius: 20px;" />';
-						
-						for (var t = 0; t < waitNum; t++) {
+
+						for(var t = 0; t < waitNum; t++) {
 							personsHtml += '<img style="margin-right:5px; width: 75px;height: 75px;display: inline-block;position: relative;top: 50px;border-radius: 20px;" src="../../images/room_status_wait.png" alt="" />';
 						}
-						
+
 						item.personsHtml = personsHtml;
 					}
-					
-					
+
 					var html = template("template", {
 						list: data.data
-					}); 
+					});
 					gDoc.getElementById("list").innerHTML = html;
-					
-					
+
 					if(data.data.length == 0) {
 						gDoc.getElementById("list").innerHTML = '<span class="loading" id="loading-text">暂时还没有游戏房间</span>';
 						return;
 					}
-					
+
 					var roomItems = gDoc.getElementsByName("room-item");
-					for (var i = 0; i < roomItems.length; i++) {
-						roomItems[i].addEventListener("tap", function(){ 
+					for(var i = 0; i < roomItems.length; i++) {
+						roomItems[i].addEventListener("tap", function() {
 							//mui.alert("为了游戏公平请一键匹配房间");
 							var code = this.getAttribute("data-code");
-							var name = this.getAttribute("data-name"); 
-							var externalRoomId =this.getAttribute("data-externalRoomId"); 
-							var status = this.getAttribute("data-status"); 
+							var name = this.getAttribute("data-name");
+							var externalRoomId = this.getAttribute("data-externalRoomId");
+							var status = this.getAttribute("data-status");
 							var btnArray = ['取消', '确定'];
-							
+
 							if(status == 2) return plus.nativeUI.toast("该房间已开始游戏, 请选择未开始的房间!");
-							
-			                mui.confirm('您确定要加入此房间吗?', name, btnArray, function(e) {
-			                    if (e.index == 1) {
+
+							mui.confirm('您确定要加入此房间吗?', name, btnArray, function(e) {
+								if(e.index == 1) {
 									room.joinRoom({
 										token: JSON.parse(localCache).token.toString(),
 										roomCode: code
-									}, function(data){
+									}, function(data) {
 										if(data == null || data.code != 200) {
-											if(data.code == 300) return plus.nativeUI.toast(data.msg);	
-											return plus.nativeUI.toast("加入房间失败, 请刷新重试!");	
+											return plus.nativeUI.toast(data.msg);
 										}
 										if(status == 4) return plus.nativeUI.toast("游戏已结束！请等待结算");
 										// 构建聊天业务CHAT
-										wss.initRoom(code, externalRoomId, name); 
-									}, function(){
+										wss.initRoom(code, externalRoomId, name);
+									}, function() {
 										mui.nativeUI.toast("服务器拥挤, 请稍后重试!");
 									})
-			                    } 
-			                })
-							
-							
+								}
+							})
+
 						}, false)
 					}
-					
-				}, function(){
+
+				}, function() {
 					plus.nativeUI.toast("加载列表失败");
 					gDoc.getElementById("loading-text").innerText = "加载列表失败";
 					mui('#refreshContainer').pullRefresh().endPulldown();
-					
+
 				})
 			}
 		</script>

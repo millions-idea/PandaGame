@@ -267,8 +267,8 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
                 GameRoom gameRoom = callback.getGameRoom();
                 Subareas subarea = callback.getSubareas();
                 Integer parentAreaId = gameRoom.getParentAreaId();
-                SettlementDetailInfo memberSettlement = settlementList.stream()
-                        .filter(settlementDetailInfo -> settlementDetailInfo.getUserId() == member.getUserId())
+                SettlementDetailInfo memberSettlement =  settlementList.stream()
+                        .filter(settlementDetailInfo -> settlementDetailInfo.getUserId().equals(member.getUserId()))
                         .findFirst().get();
                 Double memberGrade = memberSettlement.getGrade();
 

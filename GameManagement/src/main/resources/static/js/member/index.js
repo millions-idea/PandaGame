@@ -312,7 +312,7 @@ function getTableColumns() {
         , {field: 'updateDate', title: '最后编辑时间', width: 180, sort: true, templet: function (d) {
                 return d.updateDate == null ? '' : utils.date.timestampConvert(d.updateDate);
             }}
-        , {fixed: 'right',title: '操作', width: 480, align: 'center', toolbar: "#barOption"}
+        , {fixed: 'right',title: '操作', width: 520, align: 'center', toolbar: "#barOption"}
     ]];
 }
 
