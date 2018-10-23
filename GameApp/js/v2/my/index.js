@@ -52,22 +52,6 @@ var gDoc;
 			refreshUserInfo();
 		})
 		
-		// 邀请好友注册赚钱
-		inviteButton.addEventListener("tap", function(){
-			mui.openWindow({
-                url: "/html/invite.html",
-                id: "invite",
-                preload: false,
-                waiting: {
-                    autoShow: true,
-                  title:'正在加载...'
-                },
-			    createNew:true
-
-            });
-		}, false)
-	
-		
 		// 短消息
 		messageButton.addEventListener("tap", function(){
 			mui.openWindow({

@@ -1,6 +1,4 @@
-(function(owner){
-	
-	
+(function(owner){ 
 	//保留两位小数并且整数部分三位一个逗号分隔符的数字金钱标准表示法：
 	 //这里假设我们即不知道输入数字的整数位数，也不知道小数位数
 	/*将100000转为100,000.00形式*/
@@ -9,7 +7,7 @@
 	        money = String(money);
 	        var left=money.split('.')[0],right=money.split('.')[1];
 	        //right = right ? (right.length>=2 ? '.'+right.substr(0,2) : '.'+right+'0') : '.00';
-	        right = right ? (right.length>=2 ? '.'+right.substr(0,2) : '.'+right+'0') : '';
+	        right = right ? (right.length>=2 ? '.'+right.substr(0,2) : '.'+right+'0') : '.00';
 	        var temp = left.split('').reverse().join('').match(/(\d{1,3})/g);
 	        var num = (Number(money)<0?"-":"") + temp.join(',').split('').reverse().join('')+right;
 	        if(num.length == 1) num += ".00";

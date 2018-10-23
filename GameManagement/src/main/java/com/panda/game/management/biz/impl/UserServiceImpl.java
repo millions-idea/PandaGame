@@ -9,15 +9,15 @@ package com.panda.game.management.biz.impl;
 
 import com.google.common.collect.ImmutableMap;
 import com.panda.game.management.biz.IUserService;
-import com.panda.game.management.entity.db.Recharge;
+import com.panda.game.management.entity.db.MerchantMessage;
 import com.panda.game.management.entity.db.Users;
 import com.panda.game.management.entity.db.Wallets;
-import com.panda.game.management.entity.dbExt.RechargeDetailInfo;
 import com.panda.game.management.entity.dbExt.UserDetailInfo;
+import com.panda.game.management.entity.resp.MerchantBusiness;
 import com.panda.game.management.entity.resp.UserResp;
-import com.panda.game.management.exception.FinanceException;
 import com.panda.game.management.exception.InfoException;
 import com.panda.game.management.exception.MsgException;
+import com.panda.game.management.repository.MerchantMessageMapper;
 import com.panda.game.management.repository.PayMapper;
 import com.panda.game.management.repository.UserMapper;
 import com.panda.game.management.repository.WalletMapper;
@@ -36,21 +36,24 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserService {
     private final UserMapper userMapper;
     private final WalletMapper walletMapper;
     private final PayMapper payMapper;
+    private final MerchantMessageMapper merchantMessageMapper;
 
     @Autowired
     private RedisTemplate redisTemplate;
 
     @Autowired
-    public UserServiceImpl(UserMapper userMapper, WalletMapper walletMapper, PayMapper payMapper) {
+    public UserServiceImpl(UserMapper userMapper, WalletMapper walletMapper, PayMapper payMapper, MerchantMessageMapper merchantMessageMapper) {
         this.userMapper = userMapper;
         this.walletMapper = walletMapper;
         this.payMapper = payMapper;
+        this.merchantMessageMapper = merchantMessageMapper;
     }
 
     /**
@@ -467,9 +470,56 @@ public class UserServiceImpl extends BaseServiceImpl<Users> implements IUserServ
     @Override
     public void setMerchant(Integer userId) {
         Users users = userMapper.selectByPrimaryKey(userId);
-        users.setLevel(1);
+        if(users.getLevel() == null || users.getLevel() == 0){
+            users.setLevel(1);
+        }else{
+            users.setLevel(0);
+        }
         int count = userMapper.updateByPrimaryKey(users);
         if(count <= 0) throw new MsgException("设置失败");
+    }
+
+    /**
+     * 获取商家业务资金明细信息 韦德 2018年10月23日15:00:22
+     *
+     * @param token
+     * @return
+     */
+    @Override
+    public MerchantBusiness getMerchantBusinessList(String token) {
+        Map<String, String> map = TokenUtil.validate(token);
+        if(map.isEmpty()) throw new MsgException("请重新登录");
+        Integer userId = Integer.valueOf(map.get("userId"));
+
+        // 判断用户是否为代理商
+        Users users = userMapper.selectByPrimaryKey(userId);
+        if(users.getLevel() == null || !users.getLevel().equals(1)) throw new MsgException("请开通代理商权限后再来哦~");
+
+        // 1.查询与此用户有关系的资金信息
+        List<MerchantMessage> merchantMessages = merchantMessageMapper.selectChildren(userId);
+
+        // 2.统计计算用户名下的资金、用户情况
+        AtomicReference<Double> regiIncome = new AtomicReference<>(0D); // 注册推广收入
+        AtomicReference<Double> returnIncome = new AtomicReference<>(0D);   // 游戏返利收入
+        merchantMessages.stream().forEach(item -> {
+            // 区分是推广收入还是游戏返利
+            // type = 1 , 推广收入
+            // type = 2 , 游戏返利
+            if(item.getType().equals(1)){
+                regiIncome.updateAndGet(v -> v + item.getAmount());
+            }else if(item.getType().equals(2)){
+                returnIncome.updateAndGet(v -> v + item.getAmount());
+            }
+        });
+        List<Users> children = userMapper.selectChildren(userId);
+
+        // 3.封装返回对象
+        MerchantBusiness merchantBusiness = new MerchantBusiness();
+        merchantBusiness.setRegiIncome(regiIncome.get());
+        merchantBusiness.setReturnIncome(returnIncome.get());
+        merchantBusiness.setMerchantMessageList(merchantMessages);
+        merchantBusiness.setFriends(children.size());
+        return merchantBusiness;
     }
 
 

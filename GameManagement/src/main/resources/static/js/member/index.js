@@ -107,7 +107,7 @@ var tableIndex;
                     })
                 });
             } else if(layEvent === 'setMerchant'){ //删除
-                layer.confirm('确定要提升为代理商？', {
+                layer.confirm('确定要提升/撤销为代理商？', {
                     btn: ['确定','取消'] //按钮
                 }, function(){
                     service.setMerchant({
@@ -312,7 +312,7 @@ function getTableColumns() {
         , {field: 'updateDate', title: '最后编辑时间', width: 180, sort: true, templet: function (d) {
                 return d.updateDate == null ? '' : utils.date.timestampConvert(d.updateDate);
             }}
-        , {fixed: 'right',title: '操作', width: 520, align: 'center', toolbar: "#barOption"}
+        , {fixed: 'right',title: '操作', width: 560, align: 'center', toolbar: "#barOption"}
     ]];
 }
 

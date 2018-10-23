@@ -29,6 +29,7 @@ public class UserDetailInfo {
     private String financeName;
     private Integer isEnable;
     private Integer isDelete;
+    private Integer level;
 
     /*wallets*/
     private Integer walletId;

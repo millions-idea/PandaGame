@@ -8,8 +8,11 @@
 package com.panda.game.management.biz.impl;
 
 import com.google.common.base.Joiner;
+import com.panda.game.management.annotaion.AspectLog;
 import com.panda.game.management.biz.IMessageService;
+import com.panda.game.management.entity.db.MerchantMessage;
 import com.panda.game.management.entity.db.Messages;
+import com.panda.game.management.repository.MerchantMessageMapper;
 import com.panda.game.management.repository.MessageMapper;
 import com.panda.game.management.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +26,12 @@ import java.util.stream.Collectors;
 @Service
 public class MessageServiceImpl extends BaseServiceImpl<Messages> implements IMessageService {
     private final MessageMapper messageMapper;
+    private final MerchantMessageMapper merchantMessageMapper;
 
     @Autowired
-    public MessageServiceImpl(MessageMapper messageMapper) {
+    public MessageServiceImpl(MessageMapper messageMapper, MerchantMessageMapper merchantMessageMapper) {
         this.messageMapper = messageMapper;
+        this.merchantMessageMapper = merchantMessageMapper;
     }
 
     /**
@@ -38,6 +43,19 @@ public class MessageServiceImpl extends BaseServiceImpl<Messages> implements IMe
     @Override
     public Boolean pushMessage(Messages messages) {
         return messageMapper.insert(messages) > 0;
+    }
+
+    /**
+     * 批量推送商家消息 韦德 2018年10月23日21:01:20
+     *
+     * @param merchantMessage
+     * @return
+     */
+    @Override
+    @Transactional
+    @AspectLog(description = "推送商家服务消息")
+    public Boolean pushMerchantMessage(List<MerchantMessage> merchantMessage) {
+        return  merchantMessageMapper.insertList(merchantMessage) > 0;
     }
 
     /**

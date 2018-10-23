@@ -37,6 +37,20 @@ var getMessageTimer = null;
 		// 检测更新版本
 		checkVersion(plus);
 		
+		// 查看帮助
+		doc.getElementById("help").addEventListener("tap", function(){
+			mui.openWindow({
+                url: "/html/help.html",
+                id: "help",
+                preload: false,
+                waiting: {
+                    autoShow: true,
+                  title:'正在加载...'
+                },
+                createNew: true
+            });
+		})
+		
 		// 推送消息被点击
 		if(bindMessageClick == 0) {
 			console.log("注册推送消息事件");

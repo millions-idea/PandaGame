@@ -207,7 +207,8 @@
 					"html/my.html",
 					"html/room.html",
 					"html/sala.html",
-					"html/custom-service.html"
+					"html/custom-service.html",
+					"html/v2/merchantBusinessList.html"
 				],
 				"priority": 0
 			},
@@ -275,7 +276,8 @@
 					"html/enterprise-recharge.html",
 					"html/enterprise-recharge2.html",
 					"html/bind-panda-account.html",
-					"html/v2/roomList.html"
+					"html/v2/roomList.html",
+					"html/help.html"
 				],
 				"priority": 0
 			},
@@ -349,6 +351,14 @@
 				"resources": [],
 				"refer": [
 					"html/create-room.html"
+				],
+				"priority": 0
+			},
+			"html/v2/merchantBusinessList.html": {
+				"resources": [],
+				"refer": [
+					"html/custom-service.html",
+					"html/invite.html"
 				],
 				"priority": 0
 			}

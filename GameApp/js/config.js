@@ -16,10 +16,10 @@
 		invite: "http://193.112.151.148:59845/invite",*/
 		
 		/*dev*/
-		api: "http://2t6jeb.natappfree.cc/",
+		api: "http://k7sj6q.natappfree.cc/",
 		file: "http://193.112.151.148:8090/",
 		wss: "ws://193.112.151.148:8088/ws",
-		invite: "http://s9gw2f.natappfree.cc/invite", 
+		invite: "http://k7sj6q.natappfree.cc/", 
 		
 		pages: [{
 			id: "home",
@@ -37,12 +37,12 @@
 			}
 		},{
 			id: "sala",
-			url: "html/sala.html",
+			url: "html/v2/merchantBusinessList.html",
 			style: {
 				top: "0px",
 				bottom: "50px",
 				titleNView: {                       // 窗口的标题栏控件
-			      titleText:"游戏大厅",                // 标题栏文字,当不设置此属性时，默认加载当前页面的标题，并自动更新页面的标题
+			      titleText:"明星代理商",                // 标题栏文字,当不设置此属性时，默认加载当前页面的标题，并自动更新页面的标题
 			      titleColor:"#fff",             // 字体颜色,颜色值格式为"#RRGGBB",默认值为"#000000"
 			      titleSize:"17px",                 // 字体大小,默认17px
 			      backgroundColor:"#FE532A",        // 控件背景颜色,颜色值格式为"#RRGGBB",默认值为"#F7F7F7"

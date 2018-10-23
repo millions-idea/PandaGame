@@ -8,8 +8,8 @@
 package com.panda.game.management.biz;
 
 import com.panda.game.management.entity.db.Users;
-import com.panda.game.management.entity.dbExt.RechargeDetailInfo;
 import com.panda.game.management.entity.dbExt.UserDetailInfo;
+import com.panda.game.management.entity.resp.MerchantBusiness;
 import com.panda.game.management.entity.resp.UserResp;
 
 import java.util.List;
@@ -151,4 +151,11 @@ public interface IUserService extends IBaseService<Users> {
      * @param userId
      */
     void setMerchant(Integer userId);
+
+    /**
+     * 获取商家业务资金明细信息 韦德 2018年10月23日15:00:22
+     * @param token
+     * @return
+     */
+    MerchantBusiness getMerchantBusinessList(String token);
 }

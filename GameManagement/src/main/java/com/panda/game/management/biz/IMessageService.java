@@ -7,6 +7,7 @@
  */
 package com.panda.game.management.biz;
 
+import com.panda.game.management.entity.db.MerchantMessage;
 import com.panda.game.management.entity.db.Messages;
 
 import java.util.List;
@@ -18,6 +19,13 @@ public interface IMessageService {
      * @return
      */
     Boolean pushMessage(Messages messages);
+
+    /**
+     * 批量推送商家消息 韦德 2018年10月23日21:01:20
+     * @param merchantMessage
+     * @return
+     */
+    Boolean pushMerchantMessage(List<MerchantMessage> merchantMessage);
 
     /**
      * 推送消息

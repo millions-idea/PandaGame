@@ -73,6 +73,7 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
         if(settlementList == null || settlementList.isEmpty()) throw new InfoException("加载房间成员成绩失败");
 
         List<PayParam> reduceRoomCostPayParams = new ArrayList<>();
+        List<MerchantMessage> merchantMessages = new ArrayList<>();
         memberList.forEach(member -> {
             PayParam payParam = new PayParam();
             // 扣除房费
@@ -109,6 +110,7 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
                         reduceRoomCostPayParams.add(regPackagePayParam);
                         messageService.pushMessage(new Messages(null, parentId
                                 , "【邀请红包】" + PhoneUtil.getEncrypt(member.getPhone()) +"贡献的" + regPackagePrice + "元已到账!", 0, new Date()));
+                        merchantMessages.add(new MerchantMessage(null, parentId, member.getUserId(), Double.valueOf(regPackagePrice), 1, "邀请好友"+PhoneUtil.getEncrypt(member.getPhone())  + "注册APP", new Date()));
                     }else{
                         // 向邀请方赠送游戏收益
                         String playAwardPrice = DataDictionary.DATA_DICTIONARY.values().stream()
@@ -121,12 +123,14 @@ public class GameRoomFacadeServiceImpl implements GameRoomFacadeService {
                         reduceRoomCostPayParams.add(regPackagePayParam);
                         messageService.pushMessage(new Messages(null, parentId
                                 , "【佣金返利】" + PhoneUtil.getEncrypt(member.getPhone()) +"贡献的" + playAwardPrice + "元已到账!", 0, new Date()));
+                        merchantMessages.add(new MerchantMessage(null, parentId, member.getUserId(), Double.valueOf(playAwardPrice), 2, "邀请好友"+PhoneUtil.getEncrypt(member.getPhone())  + "游戏返利", new Date()));
                     }
                 }
             }
 
         });
         payService.batchConsume(reduceRoomCostPayParams);
+        messageService.pushMerchantMessage(merchantMessages);
 
         // 1、计算房间总成绩
         Double countGrade = settlementList.stream().map(s -> s.getGrade()).reduce(0D, (acc, element) -> acc + element);

@@ -80,4 +80,13 @@ public interface UserMapper extends MyMapper<Users> {
             , @Param("beginTime") String beginTime
             , @Param("endTime") String endTime
             , @Param("condition") String condition);
+
+
+    @Select("SELECT * FROM tb_users WHERE parent_id = #{userId}")
+    /**
+     * 查询子用户列表 韦德 2018年10月23日17:41:15
+     * @param userId
+     * @return
+     */
+    List<Users> selectChildren(@Param("userId") Integer userId);
 }
