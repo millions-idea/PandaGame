@@ -55,6 +55,7 @@ public class MessageServiceImpl extends BaseServiceImpl<Messages> implements IMe
     @Transactional
     @AspectLog(description = "推送商家服务消息")
     public Boolean pushMerchantMessage(List<MerchantMessage> merchantMessage) {
+        if(merchantMessage == null || merchantMessage.size() == 0) return false;
         return  merchantMessageMapper.insertList(merchantMessage) > 0;
     }
 

@@ -42,4 +42,10 @@ public interface IRoomCardService extends IBaseService<RoomCard> {
      * @param roomCard
      */
     void pass(RoomCard roomCard);
+
+    /**
+     * 获取最新未充值的房卡记录
+     * @return
+     */
+    RoomCard getNewRoomCard();
 }

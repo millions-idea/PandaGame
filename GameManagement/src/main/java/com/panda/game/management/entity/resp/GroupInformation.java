@@ -37,4 +37,5 @@ public class GroupInformation {
     private String regPackagePrice;
     private String playAwardPrice;
     private String joinCount;
+    private String appMarquee;
 }

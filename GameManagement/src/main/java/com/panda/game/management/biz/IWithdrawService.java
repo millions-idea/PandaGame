@@ -64,4 +64,10 @@ public interface IWithdrawService extends IBaseService<Withdraw> {
      * @param withdraw
      */
     boolean pass(Withdraw withdraw);
+
+    /**
+     * 获取最新记录
+     * @return
+     */
+    Withdraw getNewRecord();
 }

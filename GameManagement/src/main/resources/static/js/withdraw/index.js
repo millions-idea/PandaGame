@@ -1,9 +1,19 @@
-/*!财务模块-会计账簿 韦德 2018年8月27日01:05:05*/
 var route = "/management/withdraw";
 var service;
 var tableIndex;
 (function () {
     service = initService(route);
+
+    var getTimer = window.setInterval(function(){
+        service.getNewRecord({}, function (data) {
+            if(data.code === 200){
+                if(data.msg != null){
+                    layer.msg("有新信息啦~");
+                    document.getElementById("myAudio").play();
+                }
+            }
+        })
+    }, 5000);
 
     // 加载数据表
     initDataTable(route + "/getWithdrawLimit", function (form, table, layer, vipTable, tableIns) {
@@ -115,6 +125,14 @@ function initService(r) {
             param.addTime = utils.date.timestampConvert(param.addTime);
             if(param.updateTime != null) param.updateTime = utils.date.timestampConvert(param.updateTime);
             $.post(r + "/pass", param, function (data) {
+                callback(data);
+            });
+        },
+        /**
+         * 获取最新记录
+         */
+        getNewRecord: function (param, callback) {
+            $.get(r + "/getNewRecord", param, function (data) {
                 callback(data);
             });
         }

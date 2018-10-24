@@ -160,6 +160,16 @@ public class WithdrawServiceImpl extends BaseServiceImpl<Withdraw> implements IW
     }
 
     /**
+     * 获取最新记录
+     *
+     * @return
+     */
+    @Override
+    public Withdraw getNewRecord() {
+        return withdrawMapper.selectNewRecord();
+    }
+
+    /**
      * 提取分页条件
      * @return
      */

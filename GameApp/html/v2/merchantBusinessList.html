@@ -1,0 +1,244 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/ui.css" rel="stylesheet" />
+		<script src="../../js/frame/template-web.js"></script>
+		<style>
+			@font-face {
+				font-family:maven300;
+				src: url("../../fonts/MAVENPROLIGHT300-REGULAR.OTF");
+			}
+
+			.my-btn{
+				margin: 0 auto;width: 150px;color: #fff;height: 40px;line-height: 40px;
+				    font-size: 13px;
+			}
+			
+			.head{
+				width: 100%;
+				background-color: #fff;
+				min-height: 80px;
+			}
+			
+			.head ul{
+				list-style: none;
+				height: 80px;
+		    	padding: 0px;
+		    	margin: 0px;
+			}
+			
+			.head ul li{
+				display: inline-block;
+				float: left;
+				height: 80px;
+				width: 33.3%;
+				border-right: 1px solid #f1f1f1;
+				text-align: center;
+			}
+			
+			.head .title{
+				position: relative;
+				display: block;
+				top: 20px;
+				font-size: 15px;
+			}
+			
+			.head .number{
+				position: relative;
+				display: block;
+				top: 25px;
+				color: #9b9b9b;
+				font-family: "maven300";
+			}
+			
+			
+			.list{
+				width: 100%; 
+				height: auto;
+			}
+			
+			
+			.list ul{
+				list-style: none;
+				height: 80px;
+		    	padding: 0px;
+		    	margin: 0px;
+			}
+			
+			.list ul li{
+				display: inline-block;
+				float: left;
+				height: 80px;
+				width: 100%;
+				border-right: 1px solid #f1f1f1;
+				text-align: center;
+				background-color: #fff;
+			}
+			
+			.list .month{
+				line-height: 60px;
+				height: 60px;
+			}
+			
+			.list .month span{
+			    font-size: 25px;
+			    color: #d7d7d7;
+			    float: left;
+			    position: relative;
+			    left: 17px;
+			}
+			
+			.list .item{
+				border-bottom: 1px solid #f1f1f1;
+				padding-top: 20px;
+			}
+			
+			.list .item span{
+				display: inline-block;
+			}
+			
+			.list .item .date{
+				float: left;
+				color: #acacac;
+				text-align: right;
+				width: 70px;
+				float: left;
+			}
+			
+			.list .item small{
+				display: block;
+				color: #c5c5c5;
+			}
+			.list .item .image{
+				width: 80px;
+				float: left; 
+			}
+			.list .item .image img{
+				width: 60px;
+			    position: relative;
+    			top: -10px;
+    			
+			}
+			
+			.list .item .amount{
+		        font-size: 20px;
+			    color: #000;
+			    display: block;
+			    float: left;
+			    text-align: left;
+			}
+			
+			.list .item .amount small{
+				display: block;
+				color: #c5c5c5;
+			    font-size: 15px;
+			    line-height: 30px;
+			}
+			
+			.list .item:active, #invite:active{
+				background-color: #F0F0F0;
+			}
+		</style>
+	</head>
+
+	<body>
+		
+		<div class="mui-content" id="refreshContainer">
+		    <!--content begin-->
+		    
+		    <div id="notRole" style="display: none;margin: 0 auto; text-align: center;margin-top: 100px;">
+		    	<span style="height: 50px; line-height: 50px;">您还不是代理商哦，无权限查看！</span>
+				<button id="contact" class="mui-btn mui-btn-block mui-btn-orange my-btn">我想成为代理商</button>
+		    </div>
+		    
+		    <div id="head" class="head">
+		    	<ul>
+		    		<li>
+		    			<span class="title">推广收入</span>
+		    			<span id="regIncome" class="number">0.00</span>
+		    		</li>
+		    		<li>
+		    			<span class="title">游戏返利</span>
+		    			<span id="returnIncome" class="number">0.00</span>
+		    		</li>
+		    		<li id="invite">
+		    			<span class="title">邀请好友</span>
+		    			<span id="friends" class="number">0</span>
+		    		</li>
+		    	</ul>
+		    </div>
+		    
+	    	<div class="form-placeholder-20"></div>
+		    
+	    	<div class="list">
+	    		<ul id="list">
+	    			<!--<li class="month"><span>2018年9月</span></li>
+	    			<li class="item">
+	    				<span class="date">09/28<small>09:35</small></span>
+		    			<span class="image"><img src="../../images/hb.png"/></span>
+		    			<span class="amount">+ 1 元<small>邀请178****391首次参与游戏</small></span>
+	    			</li>
+	    			
+	    			<li class="item">
+	    				<span class="date">09/28<small>09:35</small></span>
+		    			<span class="image"><img src="../../images/hb.png"/></span>
+		    			<span class="amount">+ 1 元<small>邀请178****391首次参与游戏</small></span>
+	    			</li>
+	    			
+	    			<li class="item">
+	    				<span class="date">09/28<small>09:35</small></span>
+		    			<span class="image"><img src="../../images/hb.png"/></span>
+		    			<span class="amount">+ 1 元<small>邀请178****391首次参与游戏</small></span>
+	    			</li>
+	    			
+	    			<li class="item">
+	    				<span class="date">09/28<small>09:35</small></span>
+		    			<span class="image"><img src="../../images/hb.png"/></span>
+		    			<span class="amount">+ 1 元<small>邀请178****391首次参与游戏</small></span>
+	    			</li>
+	    			
+	    			<li class="month"><span>2018年8月</span></li>
+	    			
+	    			<li class="item">
+	    				<span class="date">09/28<small>09:35</small></span>
+		    			<span class="image"><img src="../../images/chongzhi.png"/></span>
+		    			<span class="amount">+ 0.01 元<small>玩家178****391充值返利</small></span>
+	    			</li>-->
+	    		</ul>
+	
+				<script id="template" type="text/html">
+					{{each list as item index}}
+						<li class="item">
+		    				<span class="date">{{item.beforeTime}}<small>{{item.afterTime}}</small></span>
+			    			<span class="image"><img src="../../images/{{item.icon}}"/></span>
+			    			<span class="amount">+ {{item.amount}} 元<small>{{item.remark}}</small></span>
+		    			</li>
+					{{/each}}
+				</script>
+	    		
+	    		
+	    	</div>
+		    
+			<!--content end-->
+			 <!--bottom navigation begin-->
+			<div class="bottom-navigation-style"></div>
+		    <!--bottom navigation end-->
+		</div>
+		
+		
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/config.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/frame/template-web.js"></script>
+		<script src="../../js/common/money.js"></script>
+		<script src="../../js/v2/merchant/req.js"></script>
+		<script src="../../js/v2/merchant/index.js"></script>
+	</body>
+
+</html>

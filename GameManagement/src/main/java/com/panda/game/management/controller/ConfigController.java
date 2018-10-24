@@ -50,13 +50,15 @@ public class ConfigController extends BaseController {
         model.addAttribute("regPackagePrice", dictionaryService.getGroupInformation().getRegPackagePrice());
         model.addAttribute("playAwardPrice", dictionaryService.getGroupInformation().getPlayAwardPrice());
         model.addAttribute("joinCount", dictionaryService.getGroupInformation().getJoinCount());
+        model.addAttribute("appMarquee", dictionaryService.getGroupInformation().getAppMarquee());
         return "config/index";
     }
 
     @PostMapping("/updateConfiguration")
     @ResponseBody
-    public JsonResult updateConfiguration(String html, String giveAmount, String version, String iosDownload, String androidDownload , String regPackagePrice , String playAwardPrice , String joinCount){
-        dictionaryService.updateConfiguration(html, giveAmount, version, iosDownload, androidDownload, regPackagePrice, playAwardPrice, joinCount);
+    public JsonResult updateConfiguration(String html, String giveAmount, String version, String iosDownload, String androidDownload , String regPackagePrice , String playAwardPrice
+            , String joinCount , String appMarquee){
+        dictionaryService.updateConfiguration(html, giveAmount, version, iosDownload, androidDownload, regPackagePrice, playAwardPrice, joinCount, appMarquee);
         dictionaryService.refresh();
         return JsonResult.successful();
     }

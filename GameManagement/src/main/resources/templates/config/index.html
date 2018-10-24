@@ -87,6 +87,13 @@
                         </div>
                     </div>
 
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"  style="width: 220px">APP首页走马灯广告</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="appMarquee"  placeholder="请输入广告文字" autocomplete="off" class="layui-input"  th:value="${appMarquee}">
+                        </div>
+                    </div>
+
                     <div class="layui-form-item layui-form-text">
                         <label class="layui-form-label">联系方式</label>
                         <div class="layui-input-block">
@@ -121,7 +128,8 @@
                     androidDownloadValue = $("#androidDownload").val(),
                     regPackagePriceValue = $("#regPackagePrice").val(),
                     playAwardPriceValue = $("#playAwardPrice").val(),
-                    joinCountValue = $("#joinCount").val();
+                    joinCountValue = $("#joinCount").val(),
+                    appMarquee = $("#appMarquee").val();
 
                 $.post("/management/config/updateConfiguration",{
                     html: consumeServiceHtml,
@@ -132,6 +140,7 @@
                     regPackagePrice: regPackagePriceValue,
                     playAwardPrice: playAwardPriceValue,
                     joinCount: joinCountValue,
+                    appMarquee: appMarquee,
                 }, function (data) {
                     if(!isNaN(data.error) || data.code != 200) {
                         layer.msg("更新失败");

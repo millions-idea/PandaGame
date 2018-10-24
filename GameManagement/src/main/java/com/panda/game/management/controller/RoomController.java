@@ -125,6 +125,12 @@ public class RoomController extends BaseController {
         return jsonArrayResult;
     }
 
+    @GetMapping("/getNewRoomCard")
+    @ResponseBody
+    public JsonResult<RoomCard> getNewRoomCard(){
+        RoomCard roomCard = roomCardService.getNewRoomCard();
+        return new JsonResult<RoomCard>().successful(roomCard);
+    }
 
     @PostMapping("/recharge")
     @ResponseBody

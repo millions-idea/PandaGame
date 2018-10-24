@@ -9,7 +9,10 @@ CREATE TABLE `tb_merchant_messages` (
   `amount` decimal(10,2) NOT NULL COMMENT '金额',
   `type` int(11) NOT NULL,
   `remark` varchar(255) NOT NULL COMMENT '摘要',
-  `addTime` datetime DEFAULT CURRENT_TIMESTAMP,
+  `add_time` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`business_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='商家生意消息通知表';
 
+
+
+INSERT INTO `tb_dictionary` (`key`, `value`) VALUES ('app.marquee','\"麻\"省四川最火爆的熊猫麻将线上拼桌APP现招给力代理商，庞大的用户市场，入门门槛极低，申请代理商资格请联系客服。');

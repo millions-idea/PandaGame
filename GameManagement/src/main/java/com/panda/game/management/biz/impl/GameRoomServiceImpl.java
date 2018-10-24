@@ -627,7 +627,6 @@ public class GameRoomServiceImpl extends BaseServiceImpl<GameRoom> implements IG
         return true;
     }
 
-
     /**
      * 提取分页条件
      * @return

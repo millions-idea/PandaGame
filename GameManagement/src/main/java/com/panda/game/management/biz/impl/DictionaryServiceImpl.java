@@ -115,6 +115,9 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
 
         String joinCount = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("invite.joinCount")).findFirst().get().getValue();
         groupInformation.setJoinCount(joinCount);
+
+        String appMarquee = DataDictionary.DATA_DICTIONARY.values().stream().filter(d -> d.getKey().contains("app.marquee")).findFirst().get().getValue();
+        groupInformation.setAppMarquee(appMarquee);
         return groupInformation;
     }
 
@@ -165,10 +168,11 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
      * 更新联系方式 韦德 2018年9月2日01:44:08
      *
      * @param html
+     * @param appMarquee
      */
     @Override
     @Transactional
-    public void updateConfiguration(String html, String giveAmount, String version, String iosDownload, String androidDownload, String regPackagePrice , String playAwardPrice , String joinCount) {
+    public void updateConfiguration(String html, String giveAmount, String version, String iosDownload, String androidDownload, String regPackagePrice, String playAwardPrice, String joinCount, String appMarquee) {
         Dictionary dictionary = DataDictionary.DATA_DICTIONARY.get("my.consume.service.html");
         int count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), html);
         if(count == 0) throw new MsgException("更新失败[A01]");
@@ -207,5 +211,10 @@ public class DictionaryServiceImpl extends BaseServiceImpl<Dictionary> implement
         count = 0;
         count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), joinCount);
         if(count == 0) throw new MsgException("更新失败[A08]");
+
+        dictionary = DataDictionary.DATA_DICTIONARY.get("app.marquee");
+        count = 0;
+        count = dictionaryMapper.updateUrlById(dictionary.getDictionaryId(), appMarquee);
+        if(count == 0) throw new MsgException("更新失败[A09]");
     }
 }

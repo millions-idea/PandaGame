@@ -62,4 +62,12 @@ public interface RoomCardMapper extends MyMapper<RoomCard> {
             , @Param("beginTime") String beginTime
             , @Param("endTime") String endTime
             , @Param("condition")  String condition);
+
+
+    @Select("SELECT * FROM tb_room_card WHERE state = 0 LIMIT 1;")
+    /**
+     * 获取最新未充值的房卡记录
+     * @return
+     */
+    RoomCard selectNewRoomCard();
 }

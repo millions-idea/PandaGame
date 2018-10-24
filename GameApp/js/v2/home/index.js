@@ -220,7 +220,8 @@ function refresh(){
 		centerLeftAdDesc = gDoc.getElementById("centerLeftAdDesc"),
 		centerRightAdTitle = gDoc.getElementById("centerRightAdTitle"),
 		centerRightAdDesc = gDoc.getElementById("centerRightAdDesc"),
-		centerRightAdButton = gDoc.getElementById("centerRightAdButton");
+		centerRightAdButton = gDoc.getElementById("centerRightAdButton"),
+		appMarquee = gDoc.getElementById("appMarquee");
 	
 	readMessage();
 	
@@ -244,11 +245,12 @@ function refresh(){
 		// 加载动态AD内容
 		topTextAd.innerText = data.msg.topTextAd;
 		centerBottomAdQCode.style.src = data.msg.centerBottomAdQCode;
+		appMarquee.innerText = data.msg.appMarquee;
 		
 		
 		bottomAdTitle.innerText = data.msg.centerBottomAdTitle;
 		bottomAdDesc.innerText = data.msg.centerBottomAdDesc;
-		
+
 		
 		//centerLeftAdTitle.innerText = data.msg.centerLeftAdTitle;
 		//centerLeftAdDesc.innerText = data.msg.centerLeftAdDesc;

@@ -129,5 +129,4 @@ public interface GameRoomMapper extends MyMapper<GameRoom> {
             , @Param("beginTime") String beginTime
             , @Param("endTime") String endTime
             , @Param("condition") String condition);
-
 }

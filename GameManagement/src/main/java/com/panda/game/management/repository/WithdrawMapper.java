@@ -52,4 +52,10 @@ public interface WithdrawMapper extends MyMapper<Withdraw> {
             , @Param("beginTime") String beginTime
             , @Param("endTime") String endTime
             , @Param("condition")  String condition);
+
+    @Select("SELECT * FROM tb_withdraw WHERE state = 0 LIMIT 1;")
+    /**
+     * 查询最新记录
+     */
+    Withdraw selectNewRecord();
 }

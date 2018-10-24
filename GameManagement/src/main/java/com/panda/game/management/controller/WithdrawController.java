@@ -12,6 +12,7 @@ import com.panda.game.management.biz.IWithdrawService;
 import com.panda.game.management.entity.JsonArrayResult;
 import com.panda.game.management.entity.JsonResult;
 import com.panda.game.management.entity.db.Messages;
+import com.panda.game.management.entity.db.RoomCard;
 import com.panda.game.management.entity.db.Withdraw;
 import com.panda.game.management.entity.dbExt.WithdrawDetailInfo;
 import com.panda.game.management.entity.resp.WithdrawResp;
@@ -90,5 +91,13 @@ public class WithdrawController extends BaseController{
         }
         jsonArrayResult.setCount(count);
         return jsonArrayResult;
+    }
+
+
+    @GetMapping("/getNewRecord")
+    @ResponseBody
+    public JsonResult<Withdraw> getNewRecord(){
+        Withdraw withdraw = withdrawService.getNewRecord();
+        return new JsonResult<Withdraw>().successful(withdraw);
     }
 }

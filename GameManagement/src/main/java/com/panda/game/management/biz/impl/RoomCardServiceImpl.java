@@ -103,6 +103,16 @@ public class RoomCardServiceImpl extends BaseServiceImpl<RoomCard> implements IR
     }
 
     /**
+     * 获取最新未充值的房卡记录
+     *
+     * @return
+     */
+    @Override
+    public RoomCard getNewRoomCard() {
+        return roomCardMapper.selectNewRoomCard();
+    }
+
+    /**
      * 提取分页条件
      * @return
      */

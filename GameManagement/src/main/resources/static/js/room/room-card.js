@@ -5,6 +5,18 @@ var tableIndex;
 (function () {
     service = initService(route);
 
+
+    var getTimer = window.setInterval(function(){
+        service.getNewRoomCard({}, function (data) {
+            if(data.code === 200){
+                if(data.msg != null){
+                    layer.msg("有新信息啦~");
+                    document.getElementById("myAudio").play();
+                }
+            }
+        })
+    }, 5000);
+
     // 加载数据表
     initDataTable(route + "/getRoomCardLimit", function (form, table, layer, vipTable, tableIns) {
 
@@ -61,6 +73,14 @@ function initService(r) {
             param.addTime = utils.date.timestampConvert(param.addTime);
             if(param.updateTime != null) param.updateTime = utils.date.timestampConvert(param.updateTime);
             $.post(r + "/pass", param, function (data) {
+                callback(data);
+            });
+        },
+        /**
+         * 获取最新未充值的房卡记录
+         */
+        getNewRoomCard: function (param, callback) {
+            $.get(r + "/getNewRoomCard", param, function (data) {
                 callback(data);
             });
         }
