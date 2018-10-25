@@ -47,7 +47,7 @@ $(function () {
                 content: '恭喜您注册成功，现在去下载APP使用吧~'
                 ,btn: '去下载'
                 ,yes: function () {
-                    location.href = "http://132.232.61.181:9999/";
+                    location.href = "http://ad.kdxny74.cn/";
                 }
             });
         });
